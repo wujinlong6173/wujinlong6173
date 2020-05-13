@@ -4,6 +4,9 @@ import com.huawei.schema.SchemaParser;
 import wjl.net.provider.DeviceProvider;
 import wjl.net.schema.ObjectSchema;
 
+import java.util.Map;
+import java.util.UUID;
+
 public class VrfDeviceProvider implements DeviceProvider {
     private final ObjectSchema createSchema;
     private final ObjectSchema configSchema;
@@ -17,6 +20,11 @@ public class VrfDeviceProvider implements DeviceProvider {
     }
 
     @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
     public ObjectSchema getCreateSchema() {
         return createSchema;
     }
@@ -24,5 +32,10 @@ public class VrfDeviceProvider implements DeviceProvider {
     @Override
     public ObjectSchema getConfigSchema() {
         return configSchema;
+    }
+
+    @Override
+    public String create(String idInNms, Map<String, Object> inputs) {
+        return UUID.randomUUID().toString();
     }
 }

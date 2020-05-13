@@ -17,10 +17,10 @@ public class ProviderLoader {
         registerDeviceProviders = new HashMap<>();
         registerLinkProviders = new HashMap<>();
         for (DeviceProvider dev : deviceProviders) {
-            registerDeviceProviders.put(dev.getClass().getName(), dev);
+            registerDeviceProviders.put(dev.getName(), dev);
         }
         for (LinkProvider link : linkProviders) {
-            registerLinkProviders.put(link.getClass().getName(), link);
+            registerLinkProviders.put(link.getName(), link);
         }
     }
 
