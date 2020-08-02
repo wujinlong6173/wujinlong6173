@@ -13,7 +13,7 @@ public class ProviderLoaderTest {
 
     @Test
     public void huaweiProvider() {
-        assertNotNull(ProviderLoader.getDeviceProvider("com.huawei.provider.VrfDeviceProvider"));
-        assertNotNull(ProviderLoader.getLinkProvider("com.huawei.provider.VLanLinkProvider"));
+        assertNotNull(ProviderLoader.getDeviceProvider("com.huawei.vrf.VrfDeviceProvider"));
+        assertNotNull(ProviderLoader.getLinkProvider("com.huawei.vlan.VLanLinkProvider"));
     }
 }

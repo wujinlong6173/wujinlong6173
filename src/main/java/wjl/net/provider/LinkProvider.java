@@ -31,7 +31,8 @@ public interface LinkProvider {
      * @return 新链路在提供者的标识
      * @throws ProviderException 创建失败
      */
-    String create(String idInNms, String srcOuterId, String dstOuterId,
-                  String srcProvider, String dstProvider,
-                  Map<String,Object> inputs) throws ProviderException;
+    String create(String idInNms, 
+            String srcOuterId, String srcPortName, String srcProvider,
+            String dstOuterId, String dstPortName, String dstProvider,
+            Map<String,Object> inputs) throws ProviderException;
 }

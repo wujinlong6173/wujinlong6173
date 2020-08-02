@@ -17,8 +17,8 @@ public class AppTest
     public void net1() {
         App app = new App();
 
-        DeviceProvider vrfProvider = ProviderLoader.getDeviceProvider("com.huawei.provider.VrfDeviceProvider");
-        LinkProvider vlanProvider = ProviderLoader.getLinkProvider("com.huawei.provider.VLanLinkProvider");
+        DeviceProvider vrfProvider = ProviderLoader.getDeviceProvider("com.huawei.vrf.VrfDeviceProvider");
+        LinkProvider vlanProvider = ProviderLoader.getLinkProvider("com.huawei.vlan.VLanLinkProvider");
         Map<String,Object> inputs = new HashMap<>();
         inputs.put("name", "R1");
         inputs.put("host", "AG01");

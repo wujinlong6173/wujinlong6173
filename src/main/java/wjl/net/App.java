@@ -61,8 +61,10 @@ public class App
 
         try {
             String linkId = UUID.randomUUID().toString();
-            String outerId = provider.create(linkId, srcMapper.getOuterId(), dstMapper.getOuterId(),
-                    srcMapper.getProvider(), dstMapper.getProvider(), inputs);
+            String outerId = provider.create(linkId,
+                    srcMapper.getOuterId(), "eth0", srcMapper.getProvider(),
+                    dstMapper.getOuterId(), "eth1", dstMapper.getProvider(), 
+                    inputs);
             LinkMapper mapper = new LinkMapper(linkId, outerId, provider.getName(), inputs);
             MapperMgr.addLinkMapper(mapper);
         } catch (ProviderException err) {

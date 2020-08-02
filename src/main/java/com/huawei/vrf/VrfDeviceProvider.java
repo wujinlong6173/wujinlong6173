@@ -1,4 +1,4 @@
-package com.huawei.provider;
+package com.huawei.vrf;
 
 import com.huawei.schema.SchemaParser;
 import wjl.net.provider.DeviceProvider;
@@ -36,6 +36,10 @@ public class VrfDeviceProvider implements DeviceProvider {
 
     @Override
     public String create(String idInNms, Map<String, Object> inputs) {
-        return UUID.randomUUID().toString();
+        Vrf vrf = new Vrf();
+        vrf.setId(UUID.randomUUID().toString());
+        vrf.setHost((String)inputs.get("host"));
+        vrf.setName((String)inputs.get("name"));
+        return vrf.getId();
     }
 }
