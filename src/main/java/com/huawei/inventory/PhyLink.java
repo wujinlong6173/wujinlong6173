@@ -9,6 +9,7 @@ public class PhyLink {
     private String dstDevice;
     private String srcPort;
     private String dstPort;
+    private int nextVlan;
     
     public String getId() {
         return id;
@@ -48,5 +49,14 @@ public class PhyLink {
     
     public void setDstPort(String dstPort) {
         this.dstPort = dstPort;
+    }
+    
+    /**
+     * 简单粗暴地分配VLAN ID
+     * 
+     * @return 分配到得VLAN ID
+     */
+    public int allocVlanId() {
+        return ++nextVlan;
     }
 }

@@ -3,7 +3,7 @@ package com.huawei.vlan;
 public class VlanSubIf {
     private String id;
     private String host;
-    private String phyLink;
+    private String port;
     private int vlanId;
     
     public String getId() {
@@ -22,12 +22,12 @@ public class VlanSubIf {
         this.host = host;
     }
     
-    public String getPhyLink() {
-        return phyLink;
+    public String getPort() {
+        return port;
     }
     
-    public void setPhyLink(String phyLink) {
-        this.phyLink = phyLink;
+    public void setPort(String port) {
+        this.port = port;
     }
     
     public int getVlanId() {
