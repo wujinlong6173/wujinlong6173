@@ -40,6 +40,7 @@ public class VrfDeviceProvider implements DeviceProvider {
         vrf.setId(UUID.randomUUID().toString());
         vrf.setHost((String)inputs.get("host"));
         vrf.setName((String)inputs.get("name"));
+        VrfMgr.createVrf(vrf);
         return vrf.getId();
     }
 }
