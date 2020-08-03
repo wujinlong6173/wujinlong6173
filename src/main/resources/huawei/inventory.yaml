@@ -1,0 +1,16 @@
+links:
+  - id: link1
+    srcDevice: AG01
+    dstDevice: AG02
+    srcPort: GE1/0
+    dstPort: GE1/1
+  - id: link2
+    srcDevice: AG02
+    dstDevice: AG03
+    srcPort: GE2/0
+    dstPort: GE2/1   
+  - id: link3
+    srcDevice: AG03
+    dstDevice: AG04
+    srcPort: GE3/0
+    dstPort: GE3/1
