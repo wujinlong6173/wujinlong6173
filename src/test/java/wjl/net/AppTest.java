@@ -23,14 +23,16 @@ public class AppTest
         
         inputs.put("name", "R1");
         inputs.put("host", "AG01");
-        app.createDevice("VRF01", vrfProvider, inputs);
+        String r1 = app.createDevice("VRF01", vrfProvider, inputs);
+        String p1 = app.createPort(r1, "eth0", null);
         
         inputs.put("name", "R2");
         inputs.put("host", "AG02");
-        app.createDevice("VRF02", vrfProvider, inputs);
+        String r2 = app.createDevice("VRF02", vrfProvider, inputs);
+        String p2 = app.createPort(r2, "eth1", null);
         
         inputs.clear();
-        app.createLink("VRF01", "VRF02", vlanProvider, inputs);
+        app.createLink(null, p1, p2, vlanProvider, inputs);
         app.getNet();
     }
 }

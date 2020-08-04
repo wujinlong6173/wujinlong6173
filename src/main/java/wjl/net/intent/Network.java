@@ -22,7 +22,27 @@ public class Network {
      */
     private Map<String, Link> links = new HashMap<>();
     
+    public void addDevice(Device dev) {
+        devices.put(dev.getId(), dev);
+    }
+    
+    public Device getDevice(String id) {
+        return devices.get(id);
+    }
+    
     public void addPort(Port pt) {
         ports.put(pt.getId(), pt);
+    }
+    
+    public Port getPort(String id) {
+        return ports.get(id);
+    }
+    
+    public void addLink(Link lk) {
+        links.put(lk.getId(), lk);
+    }
+    
+    public Link getLink(String id) {
+        return links.get(id);
     }
 }
