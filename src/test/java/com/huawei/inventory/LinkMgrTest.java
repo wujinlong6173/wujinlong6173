@@ -25,7 +25,7 @@ public class LinkMgrTest {
         assertEquals(1, LinkMgr.allocVlanId("link3"));
         assertEquals(2, LinkMgr.allocVlanId("link3"));
         assertEquals(3, LinkMgr.allocVlanId("link3"));
-        assertEquals(1, LinkMgr.allocVlanId("link1"));
+        assertEquals(1, LinkMgr.allocVlanId("link4"));
         assertEquals(-1, LinkMgr.allocVlanId("link99"));
     }
    

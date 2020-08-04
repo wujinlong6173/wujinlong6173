@@ -1,6 +1,8 @@
 package com.huawei.vlan;
 
-public class VlanSubIf {
+import com.huawei.common.Interface;
+
+public class VlanSubIf implements Interface {
     private String id;
     private String host;
     private String port;
@@ -36,5 +38,10 @@ public class VlanSubIf {
     
     public void setVlanId(int vlanId) {
         this.vlanId = vlanId;
+    }
+
+    @Override
+    public String getInterfaceName() {
+        return port + "." + vlanId;
     }
 }

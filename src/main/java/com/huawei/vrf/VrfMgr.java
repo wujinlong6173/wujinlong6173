@@ -3,6 +3,8 @@ package com.huawei.vrf;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.huawei.common.Interface;
+
 /**
  * 管理所有的VRF
  */
@@ -12,7 +14,7 @@ public final class VrfMgr {
     /**
      * 新建一个VRF
      * 
-     * @param vrf
+     * @param vrf 待创建的VRF
      */
     public static void createVrf(Vrf vrf) {
         if (vrf == null || vrf.getId() == null) {
@@ -38,6 +40,20 @@ public final class VrfMgr {
             return vrf.getHost();
         } else {
             return null;
+        }
+    }
+    
+    /**
+     * 将接口绑定到VRF
+     * 
+     * @param vrfId VRF的标识
+     * @param portName 接口在虚拟路由器中的名称
+     * @param inf 被绑定的接口 
+     */
+    public static void vrfBindInterface(String vrfId, String portName, Interface inf) {
+        Vrf vrf = allVrf.get(vrfId);
+        if (vrf != null) {
+            vrf.bindInterface(portName, inf);
         }
     }
 }

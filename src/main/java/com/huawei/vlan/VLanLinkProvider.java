@@ -34,16 +34,16 @@ public class VLanLinkProvider implements LinkProvider {
 
     @Override
     public String create(String idInNms, 
-            String srcOuterId, String srcPortName, String srcProvider,  
-            String dstOuterId, String dstPortName, String dstProvider, 
+            String srcVrfId, String srcPortName, String srcProvider,  
+            String dstVrfId, String dstPortName, String dstProvider, 
             Map<String, Object> inputs) throws ProviderException {
         
-        String srcHost = VrfMgr.getHostOfVrf(srcOuterId);
-        String dstHost = VrfMgr.getHostOfVrf(dstOuterId);
+        String srcHost = VrfMgr.getHostOfVrf(srcVrfId);
+        String dstHost = VrfMgr.getHostOfVrf(dstVrfId);
         if (srcHost == null || dstHost == null) {
             throw new ProviderException(ProviderException.OBJECT_NOT_EXIST, 
                     String.format(Locale.ENGLISH, "virtual router %s or %s don't exist.",
-                            srcOuterId, dstOuterId));
+                            srcVrfId, dstVrfId));
         }
         
         String phyLink = LinkMgr.findLinkBetweenDevice(srcHost, dstHost);
@@ -57,14 +57,18 @@ public class VLanLinkProvider implements LinkProvider {
 
         VlanSubIf srcIf = new VlanSubIf();
         srcIf.setId(UUID.randomUUID().toString());
+        srcIf.setHost(srcHost);
         srcIf.setPort(LinkMgr.getPortOfLink(phyLink, srcHost));
         srcIf.setVlanId(vlanId);
-        
+
         VlanSubIf dstIf = new VlanSubIf();
         dstIf.setId(UUID.randomUUID().toString());
+        dstIf.setHost(dstHost);
         dstIf.setPort(LinkMgr.getPortOfLink(phyLink, dstHost));
         dstIf.setVlanId(vlanId);
-        
+
+        VrfMgr.vrfBindInterface(srcVrfId, srcPortName, srcIf);
+        VrfMgr.vrfBindInterface(dstVrfId, dstPortName, dstIf);
         VlanLink lk = new VlanLink();
         lk.setId(UUID.randomUUID().toString());
         return lk.getId();

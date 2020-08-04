@@ -14,3 +14,8 @@ links:
     dstDevice: AG04
     srcPort: GE3/0
     dstPort: GE3/1
+  - id: link4
+    srcDevice: AG04
+    dstDevice: AG05
+    srcPort: GE3/0
+    dstPort: GE3/1
