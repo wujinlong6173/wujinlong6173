@@ -1,25 +1,26 @@
-package wjl.net.inventory;
+package wjl.net.impl;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 保持每条链路对应的提供者信息。
+ * 设备意图背后的实现，映射到供应商的设备对象。
  */
-public class LinkMapper {
-    private final String linkId;
+public class DeviceImpl {
+    private final String devId;
     private final String outerId;
     private final String provider;
     private final Map<String,Object> inputs;
 
-    public LinkMapper(String linkId, String outerId, String provider, Map<String,Object> inputs) {
-        this.linkId = linkId;
+    public DeviceImpl(String devId, String outerId, String provider, Map<String,Object> inputs) {
+        this.devId = devId;
         this.outerId = outerId;
         this.provider = provider;
         this.inputs = inputs;
     }
 
-    public String getLinkId() {
-        return linkId;
+    public String getDevId() {
+        return devId;
     }
 
     public String getOuterId() {

@@ -3,13 +3,13 @@ package wjl.net;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import wjl.net.impl.DeviceImpl;
+import wjl.net.impl.LinkImpl;
+import wjl.net.impl.NetworkImpl;
 import wjl.net.intent.Device;
 import wjl.net.intent.Link;
 import wjl.net.intent.Network;
 import wjl.net.intent.Port;
-import wjl.net.inventory.DeviceMapper;
-import wjl.net.inventory.LinkMapper;
-import wjl.net.inventory.MapperMgr;
 import wjl.net.provider.DeviceProvider;
 import wjl.net.provider.LinkProvider;
 import wjl.net.provider.ProviderException;
@@ -53,8 +53,8 @@ public class App
         try {
             String devId = UUID.randomUUID().toString();
             String outerId = provider.create(devId, inputs);
-            DeviceMapper mapper = new DeviceMapper(devId, outerId, provider.getName(), inputs);
-            MapperMgr.addDeviceMapper(mapper);
+            DeviceImpl mapper = new DeviceImpl(devId, outerId, provider.getName(), inputs);
+            NetworkImpl.addDeviceImpl(mapper);
             Device dev = new Device();
             dev.setId(devId);
             dev.setName(name);
@@ -109,8 +109,8 @@ public class App
             return null;
         }
         
-        DeviceMapper srcMapper = MapperMgr.getDeviceMapper(srcPort.getDevId());
-        DeviceMapper dstMapper = MapperMgr.getDeviceMapper(dstPort.getDevId());
+        DeviceImpl srcMapper = NetworkImpl.getDeviceImpl(srcPort.getDevId());
+        DeviceImpl dstMapper = NetworkImpl.getDeviceImpl(dstPort.getDevId());
 
         ErrorCollector error = new ErrorCollector();
         CreateValidator.checkObject(provider.getCreateSchema(), inputs, error);
@@ -125,8 +125,8 @@ public class App
                     srcMapper.getOuterId(), srcPort.getName(), srcMapper.getProvider(),
                     dstMapper.getOuterId(), dstPort.getName(), dstMapper.getProvider(), 
                     inputs);
-            LinkMapper mapper = new LinkMapper(linkId, outerId, provider.getName(), inputs);
-            MapperMgr.addLinkMapper(mapper);
+            LinkImpl mapper = new LinkImpl(linkId, outerId, provider.getName(), inputs);
+            NetworkImpl.addLinkImpl(mapper);
             Link lk = new Link();
             lk.setId(linkId);
             lk.setName(name);
