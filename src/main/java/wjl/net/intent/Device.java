@@ -11,6 +11,12 @@ public class Device {
     private String name;
     
     /**
+     * 设备在拓扑图上的坐标，单位为DIP，设备无关像素。
+     */
+    private int dipX;
+    private int dipY;
+    
+    /**
      * 设备内的所有端口，以端口名称为索引。
      */
     private Map<String, Port> ports = new HashMap<>();
@@ -33,5 +39,21 @@ public class Device {
     
     public void addPort(Port pt) {
         ports.put(pt.getName(), pt);
+    }
+
+    public int getDipX() {
+        return dipX;
+    }
+
+    public void setDipX(int dipX) {
+        this.dipX = dipX;
+    }
+
+    public int getDipY() {
+        return dipY;
+    }
+
+    public void setDipY(int dipY) {
+        this.dipY = dipY;
     }
 }
