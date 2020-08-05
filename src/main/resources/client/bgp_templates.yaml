@@ -1,0 +1,27 @@
+nodes:
+  - name: AS
+    icon: /images/cloud-32.png
+    size: 200
+    connectable: false
+    style:
+        shape: cloud
+        verticalLabelPosition: middle
+        verticalAlign: middle
+  - name: BGP Peer Group
+    icon: /images/fullmesh-network-64.png
+    size: 20
+    style:
+        shape: image
+        image: /images/fullmesh-network-64.png
+        verticalLabelPosition: bottom
+        verticalAlign: top
+edges:
+  - name: BGP Peer
+    icon: /images/straight-32.png
+    style:
+        align: center
+        verticalAlign: middle
+        strokeColor: red
+        startArrow: oval
+        endArrow: oval
+        labelBackgroundColor: white

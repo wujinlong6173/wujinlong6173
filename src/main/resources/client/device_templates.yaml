@@ -1,0 +1,36 @@
+nodes:
+  - name: Firewall
+    icon: /images/firewall-64.png
+    style:
+        shape: image
+        image: /images/firewall-64.png
+        verticalLabelPosition: bottom
+        verticalAlign: top
+  - name: Router
+    icon: /images/router-60.png
+    style:
+        shape: image
+        image: /images/router-60.png
+        verticalLabelPosition: bottom
+        verticalAlign: top
+  - name: WEB
+    icon: /images/website-48.png
+    style:
+        shape: image
+        image: /images/website-48.png
+        verticalLabelPosition: bottom
+        verticalAlign: top    
+edges:
+  - name: Link
+    icon: /images/network-cable-48.png
+    style:
+        align: center
+        verticalAlign: middle
+        startArrow: image
+        endArrow: image
+        startImage: /images/5-pin-connector-32.png
+        endImage: /images/5-pin-connector-32.png
+        startSize: 10
+        endSize: 10
+        labelBackgroundColor: white
+

@@ -1,5 +1,6 @@
 package wjl.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -33,5 +34,31 @@ public class YamlLoader {
             LOGGER.error(msg, e);
             return null;
         }
+    }
+    
+    public static Object str2obj(String yamlStr) throws IOException {
+        if (yamlStr == null || yamlStr.isEmpty()) {
+            return null;
+        }
+        else {
+            return YAML.readValue(yamlStr, Object.class);
+        }
+    }
+
+    public static <T> T str2obj(String yamlStr, Class<T> objType) throws IOException {
+        if (yamlStr == null || yamlStr.isEmpty()) {
+            return null;
+        }
+        else {
+            return YAML.readValue(yamlStr, objType);
+        }
+    }
+    
+    public static String obj2str(Object obj) throws JsonProcessingException   {
+        return YAML.writeValueAsString(obj);
+    }
+    
+    public static <T> T convert(Object obj, Class<T> objType) {
+        return YAML.convertValue(obj, objType);
     }
 }
