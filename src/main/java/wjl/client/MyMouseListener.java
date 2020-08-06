@@ -13,9 +13,11 @@ import java.awt.event.MouseEvent;
 
 public class MyMouseListener extends MouseAdapter implements MouseWheelListener {
     private final mxGraphComponent component;
+    private final TopoPopupMenu popupMenu;
     
     public MyMouseListener(mxGraphComponent component) {
         this.component = component;
+        this.popupMenu = new TopoPopupMenu(component);
     }
     
     @Override
@@ -34,8 +36,8 @@ public class MyMouseListener extends MouseAdapter implements MouseWheelListener 
     public void mouseReleased(MouseEvent e) {
         if (e.isPopupTrigger()) {
             Point pt = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), component);
-            TopoPopupMenu menu = new TopoPopupMenu(component);
-            menu.show(component, pt.x, pt.y);
+            popupMenu.refreshMenuState();
+            popupMenu.show(component, pt.x, pt.y);
             e.consume();
         }
     }

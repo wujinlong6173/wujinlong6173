@@ -19,8 +19,7 @@ public class TabbedToolsPane extends JTabbedPane {
     private static final long serialVersionUID = 1L;
 
     public void add(String tabName, String cfgFileName) {
-        initEditorPalette(insertPalette(tabName), cfgFileName);
-        initEditorPalette(insertPalette(tabName), cfgFileName);   
+        initEditorPalette(insertPalette(tabName), cfgFileName); 
     }
 
     private EditorPalette insertPalette(String title) {
