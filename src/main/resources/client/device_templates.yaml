@@ -26,11 +26,7 @@ edges:
     style:
         align: center
         verticalAlign: middle
-        startArrow: image
-        endArrow: image
-        startImage: /images/5-pin-connector-32.png
-        endImage: /images/5-pin-connector-32.png
-        startSize: 10
-        endSize: 10
+        startArrow: none
+        endArrow: none
         labelBackgroundColor: white
 

@@ -89,6 +89,12 @@ public class ClientMain {
         graph.setSplitEnabled(false);
         // 拖拽边时，不会解除和节点的绑定，只有拖拽端点才能解除绑定
         graph.setDisconnectOnMove(false);
+        // 禁止改变图标的大小
+        graph.setCellsResizable(false);
+        // 将一个阶段拖放到另一个节点时，不自动调整后者的大小
+        graph.setExtendParentsOnAdd(false);
+        // 禁止拖动边的端点，避免和节点解除绑定
+        graph.setCellsDisconnectable(false);
         
         mxGraphComponent component = new mxGraphComponent(graph);
         // 不需要拖动方式生成连线
@@ -101,6 +107,8 @@ public class ClientMain {
         component.addMouseWheelListener(mouse);
         // 监听鼠标动作，显示右键菜单
         component.getGraphControl().addMouseListener(mouse);
+        // 消除设备图标上面的加号，即展开、收缩的按钮
+        component.setFoldingEnabled(false);
         return component;
     }
 }
