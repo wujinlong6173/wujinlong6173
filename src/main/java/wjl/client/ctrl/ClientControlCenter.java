@@ -16,8 +16,8 @@ public class ClientControlCenter {
     private final JMenuItem undeployMenu;
     private final JMenuItem configMenu;
     
-    private int mouseX;
-    private int mouseY;
+    private double mouseX;
+    private double mouseY;
 
     public ClientControlCenter(mxGraph graph, JPopupMenu popupMenu) {
         this.graph = graph;
@@ -54,7 +54,7 @@ public class ClientControlCenter {
         configMenu.setEnabled(false);
     }
 
-    public void setMousePosition(int x, int y) {
+    public void setMousePosition(double x, double y) {
         this.mouseX = x;
         this.mouseY = y;
     }
@@ -63,11 +63,11 @@ public class ClientControlCenter {
         return graph;
     }
 
-    public int getMouseX() {
+    public double getMouseX() {
         return mouseX;
     }
 
-    public int getMouseY() {
+    public double getMouseY() {
         return mouseY;
     }
     

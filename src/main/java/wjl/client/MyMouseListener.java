@@ -7,6 +7,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxPoint;
 
 import wjl.client.ctrl.ClientControlCenter;
 
@@ -40,9 +41,11 @@ public class MyMouseListener extends MouseAdapter implements MouseWheelListener 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (e.isPopupTrigger()) {
+            mxPoint loc = component.getPointForEvent(e);
+            ccc.setMousePosition(loc.getX(), loc.getY());
+            
             Point pt = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), component);
             ccc.refreshMenuState();
-            ccc.setMousePosition(pt.x, pt.y);
             popupMenu.show(component, pt.x, pt.y);
             e.consume();
         }

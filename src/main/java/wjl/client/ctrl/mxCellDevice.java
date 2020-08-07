@@ -21,7 +21,7 @@ public class mxCellDevice extends mxCell {
      * @param x 中心坐标
      * @param y 中心坐标
      */
-    public mxCellDevice(String name, int x, int y) {
+    public mxCellDevice(String name, double x, double y) {
         super(name,
             new mxGeometry(x - DEVICE_SIZE / 2, y - DEVICE_SIZE / 2, DEVICE_SIZE, DEVICE_SIZE),
             STYLE_UNDEPLOY);

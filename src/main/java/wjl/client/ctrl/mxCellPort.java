@@ -22,7 +22,7 @@ public class mxCellPort extends mxCell {
      * @param x 中心坐标
      * @param y 中心坐标
      */
-    public mxCellPort(String name, int x, int y) {
+    public mxCellPort(String name, double x, double y) {
         super(name,
             new mxGeometry(x - PORT_SIZE / 2, y - PORT_SIZE / 2, PORT_SIZE, PORT_SIZE),
             STYLE_PORT);
