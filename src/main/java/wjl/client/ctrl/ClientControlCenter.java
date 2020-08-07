@@ -35,6 +35,23 @@ public class ClientControlCenter {
         boolean selectEmpty = graph.isSelectionEmpty();
         createDeviceMenu.setEnabled(selectEmpty);
         deleteMenu.setEnabled(!selectEmpty);
+        
+        Object[] selected = graph.getSelectionCells();
+        if (selected.length == 1) {
+            if (selected[0] instanceof mxCellDevice) {
+                // 选中一个网元时使能的菜单
+                createPortMenu.setEnabled(true);
+                deployMenu.setEnabled(true);
+                undeployMenu.setEnabled(true);
+                configMenu.setEnabled(true);
+                return;
+            }
+        }
+        
+        createPortMenu.setEnabled(false);
+        deployMenu.setEnabled(false);
+        undeployMenu.setEnabled(false);
+        configMenu.setEnabled(false);
     }
 
     public void setMousePosition(int x, int y) {
@@ -52,5 +69,20 @@ public class ClientControlCenter {
 
     public int getMouseY() {
         return mouseY;
+    }
+    
+    /**
+     * 只有选中单个设备时，才返回该设备，否则返回空
+     * 
+     * @return 选中的设备或空
+     */
+    public mxCellDevice getSelectedDevice() {
+        Object[] selected = graph.getSelectionCells();
+        if (selected.length == 1) {
+            if (selected[0] instanceof mxCellDevice) {
+                return (mxCellDevice)selected[0];
+            }
+        }
+        return null;
     }
 }
