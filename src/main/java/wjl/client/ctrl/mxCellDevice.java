@@ -15,6 +15,10 @@ public class mxCellDevice extends mxCell {
             "shape=image;image=/images/router-60.png;" +
             "verticalLabelPosition=bottom;verticalAlign=top;";
     
+    private static final String STYLE_DEPLOY = 
+            "shape=image;image=/images/router-deploy.png;" +
+            "verticalLabelPosition=bottom;verticalAlign=top;";
+    
     /**
      * 
      * @param name 图标显示的名称
@@ -35,5 +39,9 @@ public class mxCellDevice extends mxCell {
     
     public double getCenterY() {
         return geometry.getCenterY();
+    }
+
+    public void changeDeployState(boolean deploy) {
+        setStyle(deploy ? STYLE_DEPLOY : STYLE_UNDEPLOY);
     }
 }

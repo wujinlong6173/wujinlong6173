@@ -26,8 +26,8 @@ public class ClientControlCenter {
         createPortMenu = popupMenu.add(new CreatePortAction(this));
         createLinkMenu = popupMenu.add(new CreateLinkAction(this));
         deleteMenu = popupMenu.add(new DeleteAction(this));
-        deployMenu = popupMenu.add(new DeployAction());
-        undeployMenu = popupMenu.add(new UnDeployAction());
+        deployMenu = popupMenu.add(new DeployAction(this, true));
+        undeployMenu = popupMenu.add(new DeployAction(this, false));
         configMenu = popupMenu.add(new ConfigDeviceAction());
     }
     
@@ -45,6 +45,13 @@ public class ClientControlCenter {
                 undeployMenu.setEnabled(true);
                 configMenu.setEnabled(true);
                 return;
+            } else if (selected[0] instanceof mxCellLink) {
+                // 选中一条链路时使能的菜单
+                createPortMenu.setEnabled(false);
+                deployMenu.setEnabled(true);
+                undeployMenu.setEnabled(true);
+                configMenu.setEnabled(false);
+                return;                
             }
         }
         
@@ -81,6 +88,21 @@ public class ClientControlCenter {
         if (selected.length == 1) {
             if (selected[0] instanceof mxCellDevice) {
                 return (mxCellDevice)selected[0];
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * 只有选中单条链路时，才返回该链路，否则返回空
+     * 
+     * @return 选中的链路或空
+     */
+    public mxCellLink getSelectedLink() {
+        Object[] selected = graph.getSelectionCells();
+        if (selected.length == 1) {
+            if (selected[0] instanceof mxCellLink) {
+                return (mxCellLink)selected[0];
             }
         }
         return null;

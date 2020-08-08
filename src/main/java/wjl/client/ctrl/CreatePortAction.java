@@ -42,14 +42,16 @@ class CreatePortAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         mxCellDevice dev = ccc.getSelectedDevice();
         if (dev == null) {
-            JOptionPane.showMessageDialog(null, "选中单个设备才能创建端口", "操作错误", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "选中单个设备才能创建端口",
+                    ErrorMsg.OPER_ERROR, JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         int dir = position(ccc.getMouseX() - dev.getCenterX(), ccc.getMouseY() - dev.getCenterY());
         dir = emptyPosition(dir, dev);
         if (dir < 0) {
-            JOptionPane.showMessageDialog(null, "每个设备最多八个端口", "系统局限", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "每个设备最多八个端口", 
+                    ErrorMsg.SYSTEM_LIMMIT, JOptionPane.ERROR_MESSAGE);
             return;
         }
         
