@@ -28,7 +28,7 @@ public class ClientControlCenter {
         deleteMenu = popupMenu.add(new DeleteAction(this));
         deployMenu = popupMenu.add(new DeployAction(this, true));
         undeployMenu = popupMenu.add(new DeployAction(this, false));
-        configMenu = popupMenu.add(new ConfigDeviceAction());
+        configMenu = popupMenu.add(new ConfigDeviceAction(this));
     }
     
     public void refreshMenuState() {
