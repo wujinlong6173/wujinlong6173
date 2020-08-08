@@ -6,30 +6,32 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxICell;
 
 /**
  * 在选中的设备上创建端口
  */
 class CreatePortAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
-    private static final int POSITION[][];
+    private static final double POSITION[][];
+    private static final int MAX_PORT = 8;
+    private static final int XY_SHIFT = mxCellDevice.DEVICE_SIZE / 2;
     
     static {
-        int d = mxCellDevice.DEVICE_SIZE / 2;
         int r = (mxCellDevice.DEVICE_SIZE - mxCellPort.PORT_SIZE) / 2;
-        POSITION = new int[8][];
-        POSITION[0] = new int[] {d, d-r};
-        POSITION[1] = new int[] {d+r, d-r};
-        POSITION[2] = new int[] {d+r, d};
-        POSITION[3] = new int[] {d+r, d+r};
-        POSITION[4] = new int[] {d, d+r};
-        POSITION[5] = new int[] {d-r, d+r};
-        POSITION[6] = new int[] {d-r, d};
-        POSITION[7] = new int[] {d-r, d-r};
+        double r2 = r * Math.sqrt(0.5);
+        POSITION = new double[MAX_PORT][];
+        POSITION[0] = new double[] {XY_SHIFT,    XY_SHIFT-r};
+        POSITION[1] = new double[] {XY_SHIFT+r2, XY_SHIFT-r2};
+        POSITION[2] = new double[] {XY_SHIFT+r,  XY_SHIFT};
+        POSITION[3] = new double[] {XY_SHIFT+r2, XY_SHIFT+r2};
+        POSITION[4] = new double[] {XY_SHIFT,    XY_SHIFT+r};
+        POSITION[5] = new double[] {XY_SHIFT-r2, XY_SHIFT+r2};
+        POSITION[6] = new double[] {XY_SHIFT-r,  XY_SHIFT};
+        POSITION[7] = new double[] {XY_SHIFT-r2, XY_SHIFT-r2};
     }
     
     private final ClientControlCenter ccc;
-    private int nextId;
     
     public CreatePortAction(ClientControlCenter ccc) {
         super("创建端口");
@@ -43,20 +45,20 @@ class CreatePortAction extends AbstractAction {
             JOptionPane.showMessageDialog(null, "选中单个设备才能创建端口", "操作错误", JOptionPane.ERROR_MESSAGE);
             return;
         }
-     
-        if (dev.getChildCount() >= 8) {
+
+        int dir = position(ccc.getMouseX() - dev.getCenterX(), ccc.getMouseY() - dev.getCenterY());
+        dir = emptyPosition(dir, dev);
+        if (dir < 0) {
             JOptionPane.showMessageDialog(null, "每个设备最多八个端口", "系统局限", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        int dir = angle(ccc.getMouseX() - dev.getCenterX(), ccc.getMouseY() - dev.getCenterY());
-
-        mxCell port = new mxCellPort("P" + ++nextId, POSITION[dir][0], POSITION[dir][1]);
+        mxCell port = new mxCellPort("P" + dir, POSITION[dir][0], POSITION[dir][1]);
         ccc.getGraph().addCell(port, dev);
     }
 
-    // 从顶部算起，逆时针顺序，依次编号为0~7
-    static int angle(double dx, double dy) {
+    // 从顶部算起，顺时针顺序，依次编号为0~7
+    static int position(double dx, double dy) {
         double angle = Math.atan(dy / dx);
         angle += Math.PI * 5 / 8;
         int dir = (int)Math.floor(angle * 4.0 / Math.PI);
@@ -64,5 +66,27 @@ class CreatePortAction extends AbstractAction {
             dir = (dir + 4) % 8;
         }
         return dir;
+    }
+    
+    static int emptyPosition(int start, mxCellDevice dev) {
+        if (dev.getChildCount() >= MAX_PORT) {
+            return -1;
+        }
+        
+        int idx;
+        boolean[] flags = new boolean[MAX_PORT];
+        for (idx = 0; idx < dev.getChildCount(); idx++) {
+            mxICell child = dev.getChildAt(idx);
+            int p = position(child.getGeometry().getCenterX() - XY_SHIFT,
+                    child.getGeometry().getCenterY() - XY_SHIFT);
+            flags[p] = true;
+        }
+        
+        for (idx = 0; idx < MAX_PORT; idx++) {
+            if (!flags[(start + idx) % MAX_PORT]) {
+                return (start + idx) % MAX_PORT;
+            }
+        }
+        return -1;
     }
 }
