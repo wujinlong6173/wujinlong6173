@@ -1,8 +1,11 @@
 package com.huawei.vrf;
 
+import com.huawei.inventory.LinkMgr;
 import com.huawei.schema.SchemaParser;
 import wjl.net.provider.DeviceProvider;
+import wjl.net.provider.ProviderException;
 import wjl.net.schema.ObjectSchema;
+import wjl.util.ErrorType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,10 +38,16 @@ public class VrfDeviceProvider implements DeviceProvider {
     }
 
     @Override
-    public String create(String idInNms, Map<String, Object> inputs) {
+    public String create(String idInNms, Map<String, Object> inputs) throws ProviderException {
+        String host = (String)inputs.get("host");
+        if (!LinkMgr.isDeviceExist(host)) {
+            throw new ProviderException(ErrorType.INPUT_ERROR,
+                    String.format("host %s does not exist.", host));
+        }
+
         Vrf vrf = new Vrf();
         vrf.setId(UUID.randomUUID().toString());
-        vrf.setHost((String)inputs.get("host"));
+        vrf.setHost(host);
         vrf.setName((String)inputs.get("name"));
         VrfMgr.createVrf(vrf);
         return vrf.getId();

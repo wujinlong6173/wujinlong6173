@@ -28,11 +28,7 @@ public class App
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     private final Network net = new Network();
-    
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
+    private final NetworkImpl netImpl = new NetworkImpl();
 
     /**
      * 创建设备的意图
@@ -54,7 +50,7 @@ public class App
             String devId = UUID.randomUUID().toString();
             String outerId = provider.create(devId, inputs);
             DeviceImpl mapper = new DeviceImpl(devId, outerId, provider.getName(), inputs);
-            NetworkImpl.addDeviceImpl(mapper);
+            netImpl.addDeviceImpl(mapper);
             Device dev = new Device();
             dev.setId(devId);
             dev.setName(name);
@@ -109,8 +105,8 @@ public class App
             return null;
         }
         
-        DeviceImpl srcMapper = NetworkImpl.getDeviceImpl(srcPort.getDevId());
-        DeviceImpl dstMapper = NetworkImpl.getDeviceImpl(dstPort.getDevId());
+        DeviceImpl srcMapper = netImpl.getDeviceImpl(srcPort.getDevId());
+        DeviceImpl dstMapper = netImpl.getDeviceImpl(dstPort.getDevId());
 
         ErrorCollector error = new ErrorCollector();
         CreateValidator.checkObject(provider.getCreateSchema(), inputs, error);
@@ -126,7 +122,7 @@ public class App
                     dstMapper.getOuterId(), dstPort.getName(), dstMapper.getProvider(), 
                     inputs);
             LinkImpl mapper = new LinkImpl(linkId, outerId, provider.getName(), inputs);
-            NetworkImpl.addLinkImpl(mapper);
+            netImpl.addLinkImpl(mapper);
             Link lk = new Link();
             lk.setId(linkId);
             lk.setName(name);

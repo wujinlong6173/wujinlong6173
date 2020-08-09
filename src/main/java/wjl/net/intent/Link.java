@@ -37,6 +37,10 @@ public class Link {
         pt.setLinkId(id);
     }
 
+    public List<Port> getPorts() {
+        return ports;
+    }
+    
     public void removeAllPorts() {
         for (Port pt : ports) {
             pt.setLinkId(null);

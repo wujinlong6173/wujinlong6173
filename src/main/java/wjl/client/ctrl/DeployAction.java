@@ -1,11 +1,15 @@
 package wjl.client.ctrl;
 
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import wjl.client.dialog.InputDeployParamDialog;
+import wjl.net.NetworkException;
+import wjl.net.provider.ProviderException;
 import wjl.util.ErrorType;
 
 /**
@@ -47,17 +51,36 @@ class DeployAction extends AbstractAction {
             return;
         }
         
-        dev.changeDeployState(deploy);
-        ccc.getGraph().refresh();
+        try {
+            String provider = "com.huawei.vrf.VrfDeviceProvider";
+            ccc.getNet().deployDevice(dev.getId(), provider, deviceDlg.getInputs());
+            dev.changeDeployState(deploy);
+            ccc.getGraph().refresh();
+        } catch (NetworkException e1) {
+            JOptionPane.showMessageDialog(null, e1.getMessage(), 
+                    e1.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        } catch (ProviderException e2) {
+            JOptionPane.showMessageDialog(null, e2.getMessage(), 
+                    e2.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        }
     }
-    
+
     private void deployLink(mxCellLink link) {
         if (!linkDlg.acquireInputs()) {
             return;
         }
-        
-        link.changeDeployState(deploy);
-        ccc.getGraph().refresh();
+
+        try {
+            String provider = "com.huawei.vlan.VLanLinkProvider";
+            ccc.getNet().deployLink(link.getId(), provider, linkDlg.getInputs());
+            link.changeDeployState(deploy);
+            ccc.getGraph().refresh();
+        } catch (NetworkException e1) {
+            JOptionPane.showMessageDialog(null, e1.getMessage(), 
+                    e1.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        } catch (ProviderException e2) {
+            JOptionPane.showMessageDialog(null, e2.getMessage(), 
+                    e2.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
-

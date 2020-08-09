@@ -1,12 +1,22 @@
 package wjl.net;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import wjl.net.impl.DeviceImpl;
+import wjl.net.impl.LinkImpl;
 import wjl.net.impl.NetworkImpl;
 import wjl.net.intent.Device;
 import wjl.net.intent.Link;
 import wjl.net.intent.Network;
 import wjl.net.intent.Port;
+import wjl.net.provider.DeviceProvider;
+import wjl.net.provider.LinkProvider;
+import wjl.net.provider.ProviderException;
+import wjl.net.provider.ProviderLoader;
+import wjl.net.validator.CreateValidator;
+import wjl.util.ErrorCollector;
 import wjl.util.ErrorType;
 
 /**
@@ -174,5 +184,108 @@ public class NetworkApi {
         }
         
         intent.delDevice(devId);
+    }
+    
+    /**
+     * 部署一台设备
+     * 
+     * @param devId 设备唯一标示
+     * @param provider 设备供应商的名称
+     * @param inputs 供应商需要的参数
+     * @throws NetworkException 设备不存在或已部署，供应商名称错误，输入参数错误
+     * @throws ProviderException 透传供应商的错误
+     */
+    public void deployDevice(String devId, String provider, Map<String,Object> inputs)
+            throws NetworkException, ProviderException {
+        
+        Device dev = intent.getDevice(devId); 
+        if (dev == null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR,
+                    String.format("device %s does not exist.", devId));
+        }
+
+        DeviceImpl devImpl = impl.getDeviceImpl(devId);
+        if (devImpl != null) {
+            dev.setDeploy(true);
+            throw new NetworkException(ErrorType.SERVICE_CONSTRAIN,
+                    String.format("device %s is already deployed.", devId));
+        }
+
+        DeviceProvider dp = ProviderLoader.getDeviceProvider(provider);
+        if (dp == null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR,
+                    String.format("%s is not a device provider.", provider));
+        }
+        
+        ErrorCollector error = new ErrorCollector();
+        CreateValidator.checkObject(dp.getCreateSchema(), inputs, error);
+        if (error.getErrors() != null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR,
+                    error.getErrors().toString());
+        }
+
+        String outerId = dp.create(devId, inputs);
+        DeviceImpl mapper = new DeviceImpl(devId, outerId, provider, inputs);
+        impl.addDeviceImpl(mapper);
+        dev.setDeploy(true);
+    }
+    
+    /**
+     * 部署一条链路
+     * 
+     * @param linkId 链路唯一标识
+     * @param provider 链路供应商的名称
+     * @param inputs 供应商需要的参数
+     * @throws NetworkException 链路不存在或已部署，供应商名称错误，输入参数错误
+     * @throws ProviderException
+     */
+    public void deployLink(String linkId, String provider, Map<String,Object> inputs)
+            throws NetworkException, ProviderException {
+        
+        Link lk = intent.getLink(linkId);
+        if (lk == null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR,
+                    String.format("link %s does not exist.", linkId));
+        }
+        
+        LinkImpl lkImpl = impl.getLinkImpl(linkId);
+        if (lkImpl != null) {
+            lk.setDeploy(true);
+            throw new NetworkException(ErrorType.SERVICE_CONSTRAIN,
+                    String.format("link %s is already deployed.", linkId));
+        }
+        
+
+        LinkProvider dp = ProviderLoader.getLinkProvider(provider);
+        if (dp == null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR,
+                    String.format("%s is not a link provider.", provider));
+        }
+        
+        ErrorCollector error = new ErrorCollector();
+        CreateValidator.checkObject(dp.getCreateSchema(), inputs, error);
+        if (error.getErrors() != null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR,
+                    error.getErrors().toString());
+        }
+        
+        // 到目前为止，肯定是两个端口
+        List<Port> ports = lk.getPorts();
+        Port src = ports.get(0);
+        Port dst = ports.get(1);
+        DeviceImpl srcDevImpl = impl.getDeviceImpl(src.getDevId());
+        DeviceImpl dstDevImpl = impl.getDeviceImpl(dst.getDevId());
+        if (srcDevImpl == null || dstDevImpl == null) {
+            throw new NetworkException(ErrorType.SERVICE_CONSTRAIN,
+                    String.format("deploy devices of link %s first.", linkId));
+        }
+        
+        String outerId = dp.create(linkId,
+                srcDevImpl.getOuterId(), src.getName(), srcDevImpl.getProvider(),
+                dstDevImpl.getOuterId(), dst.getName(), dstDevImpl.getProvider(), 
+                inputs);
+        LinkImpl mapper = new LinkImpl(linkId, outerId, provider, inputs);
+        impl.addLinkImpl(mapper);
+        lk.setDeploy(true);
     }
 }

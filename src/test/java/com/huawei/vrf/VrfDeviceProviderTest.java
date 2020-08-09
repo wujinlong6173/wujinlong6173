@@ -7,9 +7,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import wjl.net.provider.ProviderException;
+
 public class VrfDeviceProviderTest {
     @Test
-    public void createVrf() {
+    public void createVrf() throws ProviderException {
         VrfDeviceProvider provider = new VrfDeviceProvider();
         Map<String,Object> inputs = new HashMap<>();
         inputs.put("host", "AG02");

@@ -7,20 +7,30 @@ import java.awt.FlowLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import wjl.util.ErrorType;
+import wjl.util.YamlLoader;
 
 /**
  * 部署设备或链路时，选择供应商，输入供应商需要的参数
  */
 public class InputDeployParamDialog extends JDialog {
     private static final long serialVersionUID = 1L;
+    
+    private JTextArea textInput;
+    
     private boolean confirm;
+    private Map<String,Object> inputs;
 
     /**
      * 让用户输入数据
@@ -33,6 +43,10 @@ public class InputDeployParamDialog extends JDialog {
         return confirm;
     }
 
+    public Map<String,Object> getInputs() {
+        return inputs;
+    }
+    
     public InputDeployParamDialog() {
         super();
         setTitle("选择供应商并输入参数");
@@ -66,7 +80,7 @@ public class InputDeployParamDialog extends JDialog {
         
         JPanel panelInput = new JPanel(new BorderLayout());
         panelInput.add(new Label("填写参数(YAML格式)"), BorderLayout.NORTH);
-        JTextArea textInput = new JTextArea();
+        textInput = new JTextArea();
         JScrollPane scrollInput = new JScrollPane(textInput);
         scrollInput.setPreferredSize(new Dimension(500, 200));
         panelInput.add(scrollInput, BorderLayout.CENTER);
@@ -85,8 +99,15 @@ public class InputDeployParamDialog extends JDialog {
         ok.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                confirm = true;
-                InputDeployParamDialog.this.dispose();
+                try {
+                    String raw = textInput.getText();
+                    inputs = (Map<String,Object>)YamlLoader.str2obj(raw, Map.class);
+                    confirm = true;
+                    InputDeployParamDialog.this.dispose();
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), 
+                            ErrorType.INPUT_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 

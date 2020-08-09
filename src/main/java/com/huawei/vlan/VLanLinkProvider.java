@@ -7,6 +7,7 @@ import com.huawei.vrf.VrfMgr;
 import wjl.net.provider.LinkProvider;
 import wjl.net.provider.ProviderException;
 import wjl.net.schema.ObjectSchema;
+import wjl.util.ErrorType;
 
 import java.util.Locale;
 import java.util.Map;
@@ -41,14 +42,14 @@ public class VLanLinkProvider implements LinkProvider {
         String srcHost = VrfMgr.getHostOfVrf(srcVrfId);
         String dstHost = VrfMgr.getHostOfVrf(dstVrfId);
         if (srcHost == null || dstHost == null) {
-            throw new ProviderException(ProviderException.OBJECT_NOT_EXIST, 
+            throw new ProviderException(ErrorType.INPUT_ERROR, 
                     String.format(Locale.ENGLISH, "virtual router %s or %s don't exist.",
                             srcVrfId, dstVrfId));
         }
         
         String phyLink = LinkMgr.findLinkBetweenDevice(srcHost, dstHost);
         if (phyLink == null) {
-            throw new ProviderException(ProviderException.NO_USABLE_RESOURCE,
+            throw new ProviderException(ErrorType.NO_USABLE_RESOURCE,
                     String.format(Locale.ENGLISH, "no usable link between %s and %s.",
                             srcHost, dstHost));
         }

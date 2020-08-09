@@ -1,6 +1,8 @@
 package com.huawei.inventory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,6 +14,7 @@ import wjl.util.YamlLoader;
 public class LinkMgr {
     private static LinkMgr linkMgr;
     private List<PhyLink> links;
+    private static Set<String> devices = new HashSet<>();
     
     public List<PhyLink> getLinks() {
         return links;
@@ -27,9 +30,27 @@ public class LinkMgr {
                 if (linkMgr == null) {
                     linkMgr = YamlLoader.fileToObject(LinkMgr.class, 
                             "/huawei/inventory.yaml");
+
+                    if (linkMgr != null && linkMgr.links != null) {
+                        for (PhyLink lk : linkMgr.links) {
+                            devices.add(lk.getSrcDevice());
+                            devices.add(lk.getDstDevice());
+                        }
+                    }
                 }
             }
         }
+    }
+    
+    /**
+     * 判断某设备是否存在
+     * 
+     * @param dev
+     * @return
+     */
+    public static boolean isDeviceExist(String dev) {
+        loadFromFile();
+        return devices.contains(dev);
     }
     
     /**
