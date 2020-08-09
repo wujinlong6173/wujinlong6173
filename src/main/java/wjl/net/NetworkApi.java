@@ -101,6 +101,14 @@ public class NetworkApi {
                     String.format("destination port %s does not exist.", dstPortId));
         }
         
+        if (srcPort.getLinkId() != null) {
+            throw new NetworkException(ErrorType.SERVICE_CONSTRAIN,
+                    String.format("source port %s belongs to link %s.", srcPortId, srcPort.getLinkId()));
+        } else if (dstPort.getLinkId() != null) {
+            throw new NetworkException(ErrorType.SERVICE_CONSTRAIN,
+                    String.format("destination port %s belongs to link %s.", dstPortId, dstPort.getLinkId()));
+        }
+        
         String linkId = UUID.randomUUID().toString();
         Link lk = new Link();
         lk.setId(linkId);
