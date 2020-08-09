@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import wjl.client.dialog.InputDeployParamDialog;
+
 /**
  * 部署选中的设备或链路
  */
@@ -12,6 +14,8 @@ class DeployAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     private final ClientControlCenter ccc;
     private final boolean deploy;
+    private final InputDeployParamDialog deviceDlg = new InputDeployParamDialog();
+    private final InputDeployParamDialog linkDlg = new InputDeployParamDialog();
     
     public DeployAction(ClientControlCenter ccc, boolean deploy) {
         super(deploy ? "部署" : "去部署");
@@ -38,11 +42,19 @@ class DeployAction extends AbstractAction {
     }
 
     private void deployDevice(mxCellDevice dev) {
+        if (!deviceDlg.acquireInputs()) {
+            return;
+        }
+        
         dev.changeDeployState(deploy);
         ccc.getGraph().refresh();
     }
     
     private void deployLink(mxCellLink link) {
+        if (!linkDlg.acquireInputs()) {
+            return;
+        }
+        
         link.changeDeployState(deploy);
         ccc.getGraph().refresh();
     }

@@ -17,6 +17,11 @@ import com.mxgraph.view.mxGraph;
 
 import wjl.util.Config;
 
+/**
+ * 
+ * JVM参数：
+ * -Dfile.encoding=gbk
+ */
 public class ClientMain {
 
     public static void main(String[] args) {
