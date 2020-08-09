@@ -8,6 +8,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import wjl.util.Config;
+import wjl.util.ErrorType;
 
 /**
  * 打开设备的配置终端
@@ -26,21 +27,21 @@ class ConfigDeviceAction extends AbstractAction {
         mxCellDevice dev = ccc.getSelectedDevice();
         if (dev == null) {
             JOptionPane.showMessageDialog(null, "选中一台设备，然后打开配置中的", 
-                    ErrorMsg.OPER_ERROR, JOptionPane.ERROR_MESSAGE);
+                    ErrorType.OPER_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         String telnetClient = Config.instance().getTelnetClient();
         if (telnetClient == null) {
             JOptionPane.showMessageDialog(null, "没有配置Telnet客户端程序的路径", 
-                    ErrorMsg.SYSTEM_ERROR, JOptionPane.ERROR_MESSAGE);
+                    ErrorType.SYSTEM_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         File tcFile = new File(telnetClient);
         if (!tcFile.isFile()) {
             JOptionPane.showMessageDialog(null, "配置的Telnet客户端程序不存在", 
-                    ErrorMsg.SYSTEM_ERROR, JOptionPane.ERROR_MESSAGE);
+                    ErrorType.SYSTEM_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -50,7 +51,7 @@ class ConfigDeviceAction extends AbstractAction {
         } catch (IOException e1) {
             e1.printStackTrace();
             JOptionPane.showMessageDialog(null, e1.getMessage(), 
-                    ErrorMsg.SYSTEM_ERROR, JOptionPane.ERROR_MESSAGE);
+                    ErrorType.SYSTEM_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
         }
     }
 }

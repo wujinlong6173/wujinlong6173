@@ -5,12 +5,18 @@ import javax.swing.JPopupMenu;
 
 import com.mxgraph.view.mxGraph;
 
+import wjl.net.NetworkApi;
+
 public class ClientControlCenter {
+    /**
+     * 默认创建空的网络，可以创建新的网络
+     */
+    private NetworkApi net = new NetworkApi();
+
     private final mxGraph graph;
     
     private final JMenuItem createDeviceMenu;
     private final JMenuItem createPortMenu;
-    private final JMenuItem createLinkMenu;
     private final JMenuItem deleteMenu;
     private final JMenuItem deployMenu;
     private final JMenuItem undeployMenu;
@@ -21,10 +27,10 @@ public class ClientControlCenter {
 
     public ClientControlCenter(mxGraph graph, JPopupMenu popupMenu) {
         this.graph = graph;
-        
+
         createDeviceMenu = popupMenu.add(new CreateDeviceAction(this));
         createPortMenu = popupMenu.add(new CreatePortAction(this));
-        createLinkMenu = popupMenu.add(new CreateLinkAction(this));
+        popupMenu.add(new CreateLinkAction(this));
         deleteMenu = popupMenu.add(new DeleteAction(this));
         deployMenu = popupMenu.add(new DeployAction(this, true));
         undeployMenu = popupMenu.add(new DeployAction(this, false));
@@ -70,6 +76,10 @@ public class ClientControlCenter {
         return graph;
     }
 
+    public NetworkApi getNet() {
+        return net;
+    }
+    
     public double getMouseX() {
         return mouseX;
     }

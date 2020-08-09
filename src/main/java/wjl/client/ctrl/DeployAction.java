@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import wjl.client.dialog.InputDeployParamDialog;
+import wjl.util.ErrorType;
 
 /**
  * 部署选中的设备或链路
@@ -38,7 +39,7 @@ class DeployAction extends AbstractAction {
         }
         
         JOptionPane.showMessageDialog(null, "每次只能部署一台设备或一条链路", 
-                ErrorMsg.SYSTEM_LIMMIT, JOptionPane.ERROR_MESSAGE);
+                ErrorType.SYSTEM_LIMMIT.getDesc(), JOptionPane.ERROR_MESSAGE);
     }
 
     private void deployDevice(mxCellDevice dev) {

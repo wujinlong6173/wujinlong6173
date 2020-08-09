@@ -19,10 +19,13 @@ class CreateDeviceAction extends AbstractAction {
         super("创建设备");
         this.ccc = ccc;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        mxCell dev = new mxCellDevice("Router" + ++nextId, ccc.getMouseX(), ccc.getMouseY());
+        String devName = "Router" + ++nextId;
+        mxCell dev = new mxCellDevice(devName, ccc.getMouseX(), ccc.getMouseY());
+        String devId = ccc.getNet().createDevice(devName);
+        dev.setId(devId);
         ccc.getGraph().addCell(dev);
     }
 }

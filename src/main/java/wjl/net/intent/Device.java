@@ -1,5 +1,6 @@
 package wjl.net.intent;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import java.util.Map;
 public class Device {
     private String id;
     private String name;
+    private boolean deploy;
     
     /**
      * 设备在拓扑图上的坐标，单位为DIP，设备无关像素。
@@ -39,6 +41,35 @@ public class Device {
     
     public void addPort(Port pt) {
         ports.put(pt.getName(), pt);
+    }
+    
+    public Port getPort(String portName) {
+        return ports.get(portName);
+    }
+    
+    public Collection<Port> getPorts() {
+        return ports.values();
+    }
+
+    public void removePort(String portName) {
+        ports.remove(portName);
+    }
+    
+    public boolean hasLinks() {
+        for (Port pt : ports.values()) {
+            if (pt.getLinkId() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isDeploy() {
+        return deploy;
+    }
+
+    public void setDeploy(boolean deploy) {
+        this.deploy = deploy;
     }
 
     public int getDipX() {

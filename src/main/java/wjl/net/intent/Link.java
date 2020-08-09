@@ -9,6 +9,7 @@ import java.util.List;
 public class Link {
     private String id;
     private List<Port> ports = new ArrayList<>();
+    private boolean deploy;
     
     /**
      * 如果两个设备之间存在多条链路，建议用名称加以区分。
@@ -34,5 +35,20 @@ public class Link {
     public void addPort(Port pt) {
         ports.add(pt);
         pt.setLinkId(id);
+    }
+
+    public void removeAllPorts() {
+        for (Port pt : ports) {
+            pt.setLinkId(null);
+        }
+        ports.clear();
+    }
+    
+    public boolean isDeploy() {
+        return deploy;
+    }
+
+    public void setDeploy(boolean deploy) {
+        this.deploy = deploy;
     }
 }

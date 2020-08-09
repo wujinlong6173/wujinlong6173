@@ -8,6 +8,9 @@ import javax.swing.JOptionPane;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 
+import wjl.net.NetworkException;
+import wjl.util.ErrorType;
+
 /**
  * 在选中的设备上创建端口
  */
@@ -43,7 +46,7 @@ class CreatePortAction extends AbstractAction {
         mxCellDevice dev = ccc.getSelectedDevice();
         if (dev == null) {
             JOptionPane.showMessageDialog(null, "选中单个设备才能创建端口",
-                    ErrorMsg.OPER_ERROR, JOptionPane.ERROR_MESSAGE);
+                    ErrorType.OPER_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -51,12 +54,20 @@ class CreatePortAction extends AbstractAction {
         dir = emptyPosition(dir, dev);
         if (dir < 0) {
             JOptionPane.showMessageDialog(null, "每个设备最多八个端口", 
-                    ErrorMsg.SYSTEM_LIMMIT, JOptionPane.ERROR_MESSAGE);
+                    ErrorType.SYSTEM_LIMMIT.getDesc(), JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        mxCell port = new mxCellPort("P" + dir, POSITION[dir][0], POSITION[dir][1]);
-        ccc.getGraph().addCell(port, dev);
+        try {
+            String portName = "P" + dir;
+            mxCell port = new mxCellPort(portName, POSITION[dir][0], POSITION[dir][1]);
+            String portId = ccc.getNet().createPort(dev.getId(), portName, null);
+            port.setId(portId);
+            ccc.getGraph().addCell(port, dev);
+        } catch (NetworkException e1) {
+            JOptionPane.showMessageDialog(null, e1.getMessage(), 
+                    e1.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // 从顶部算起，顺时针顺序，依次编号为0~7

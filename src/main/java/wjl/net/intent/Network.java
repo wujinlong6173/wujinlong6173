@@ -30,6 +30,10 @@ public class Network {
         return devices.get(id);
     }
     
+    public void delDevice(String id) {
+        devices.remove(id);
+    }
+    
     public void addPort(Port pt) {
         ports.put(pt.getId(), pt);
     }
@@ -38,11 +42,19 @@ public class Network {
         return ports.get(id);
     }
     
+    public void delPort(String id) {
+        ports.remove(id);
+    }
+    
     public void addLink(Link lk) {
         links.put(lk.getId(), lk);
     }
     
     public Link getLink(String id) {
         return links.get(id);
+    }
+
+    public void delLink(String id) {
+        links.remove(id);
     }
 }
