@@ -1,8 +1,6 @@
 package wjl.client.ctrl;
 
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -32,13 +30,15 @@ class DeployAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         mxCellDevice dev = ccc.getSelectedDevice();
         if (dev != null) {
-            deployDevice(dev);
+            if (deploy) deployDevice(dev);
+            else undeployDevice(dev);
             return;
         }
         
         mxCellLink link = ccc.getSelectedLink();
         if (link != null) {
-            deployLink(link);
+            if (deploy) deployLink(link);
+            else undeployLink(link);
             return;
         }
         
@@ -64,6 +64,20 @@ class DeployAction extends AbstractAction {
                     e2.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void undeployDevice(mxCellDevice dev) {
+        try {
+            ccc.getNet().undeployDevice(dev.getId());
+            dev.changeDeployState(deploy);
+            ccc.getGraph().refresh();
+        } catch (NetworkException e1) {
+            JOptionPane.showMessageDialog(null, e1.getMessage(), 
+                    e1.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        } catch (ProviderException e2) {
+            JOptionPane.showMessageDialog(null, e2.getMessage(), 
+                    e2.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private void deployLink(mxCellLink link) {
         if (!linkDlg.acquireInputs()) {
@@ -73,6 +87,20 @@ class DeployAction extends AbstractAction {
         try {
             String provider = "com.huawei.vlan.VLanLinkProvider";
             ccc.getNet().deployLink(link.getId(), provider, linkDlg.getInputs());
+            link.changeDeployState(deploy);
+            ccc.getGraph().refresh();
+        } catch (NetworkException e1) {
+            JOptionPane.showMessageDialog(null, e1.getMessage(), 
+                    e1.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        } catch (ProviderException e2) {
+            JOptionPane.showMessageDialog(null, e2.getMessage(), 
+                    e2.getErrorType().getDesc(), JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void undeployLink(mxCellLink link) {
+        try {
+            ccc.getNet().undeployLink(link.getId());
             link.changeDeployState(deploy);
             ccc.getGraph().refresh();
         } catch (NetworkException e1) {

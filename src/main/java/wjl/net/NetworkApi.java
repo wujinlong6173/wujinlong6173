@@ -231,6 +231,36 @@ public class NetworkApi {
     }
     
     /**
+     * 去部署一台设备
+     * 
+     * @param devId 设备唯一标识
+     * @throws NetworkException 供应商不见了
+     * @throws ProviderException 透传供应商的错误
+     */
+    public void undeployDevice(String devId) throws NetworkException, ProviderException {
+        Device dev = intent.getDevice(devId); 
+        if (dev == null) {
+            return;
+        }
+
+        DeviceImpl devImpl = impl.getDeviceImpl(devId);
+        if (devImpl == null) {
+            dev.setDeploy(false);
+            return;
+        }
+
+        DeviceProvider dp = ProviderLoader.getDeviceProvider(devImpl.getProvider());
+        if (dp == null) {
+            throw new NetworkException(ErrorType.SYSTEM_ERROR,
+                    String.format("missing device provider %s.", devImpl.getProvider()));
+        }
+        
+        dp.delete(devImpl.getOuterId(), devImpl.getInputs());
+        impl.delDeviceImpl(devId);
+        dev.setDeploy(false);
+    }
+    
+    /**
      * 部署一条链路
      * 
      * @param linkId 链路唯一标识
@@ -287,5 +317,37 @@ public class NetworkApi {
         LinkImpl mapper = new LinkImpl(linkId, outerId, provider, inputs);
         impl.addLinkImpl(mapper);
         lk.setDeploy(true);
+    }
+    
+    /**
+     * 去部署一条链路
+     * 
+     * @param linkId 链路唯一标识
+     * @throws NetworkException 供应商不见了
+     * @throws ProviderException 透传供应商的错误
+     */
+    public void undeployLink(String linkId) throws NetworkException, ProviderException {
+        
+        Link lk = intent.getLink(linkId);
+        if (lk == null) {
+            return;
+        }
+        
+        LinkImpl lkImpl = impl.getLinkImpl(linkId);
+        if (lkImpl == null) {
+            lk.setDeploy(false);
+            return;
+        }
+        
+
+        LinkProvider dp = ProviderLoader.getLinkProvider(lkImpl.getProvider());
+        if (dp == null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR,
+                    String.format("missing link provider %s.", lkImpl.getProvider()));
+        }
+        
+        dp.delete(lkImpl.getOuterId(), lkImpl.getInputs());
+        impl.delLinkImpl(linkId);
+        lk.setDeploy(false);
     }
 }

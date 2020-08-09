@@ -52,4 +52,9 @@ public class VrfDeviceProvider implements DeviceProvider {
         VrfMgr.createVrf(vrf);
         return vrf.getId();
     }
+
+    @Override
+    public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
+        VrfMgr.deleteVrf(idInProvider);
+    }
 }

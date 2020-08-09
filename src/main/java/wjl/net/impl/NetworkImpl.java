@@ -24,6 +24,14 @@ public class NetworkImpl {
         return implDevices.get(intentId);
     }
 
+    /**
+     * 删除设备意图的实现
+     * @param devId
+     */
+    public void delDeviceImpl(String intentId) {
+        implDevices.remove(intentId);
+    }
+    
     public void addLinkImpl(LinkImpl impl) {
         implLinks.put(impl.getLinkId(), impl);
     }
@@ -36,5 +44,9 @@ public class NetworkImpl {
      */
     public LinkImpl getLinkImpl(String intentId) {
         return implLinks.get(intentId);
+    }
+
+    public void delLinkImpl(String intentId) {
+        implLinks.remove(intentId);
     }
 }

@@ -56,4 +56,8 @@ public final class VrfMgr {
             vrf.bindInterface(portName, inf);
         }
     }
+
+    public static void deleteVrf(String vrfId) {
+        allVrf.remove(vrfId);        
+    }
 }

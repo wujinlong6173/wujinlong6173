@@ -74,4 +74,9 @@ public class VLanLinkProvider implements LinkProvider {
         lk.setId(UUID.randomUUID().toString());
         return lk.getId();
     }
+
+    @Override
+    public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
+        
+    }
 }

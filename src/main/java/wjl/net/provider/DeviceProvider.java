@@ -35,4 +35,13 @@ public interface DeviceProvider {
      * @throws ProviderException 创建失败
      */
     String create(String idInNms, Map<String,Object> inputs) throws ProviderException;
+    
+    /**
+     * 删除设备
+     * 
+     * @param idInProvider 设备在供应商处的标识
+     * @param inputs 或许用于校验
+     * @throws ProviderException 删除失败
+     */
+    void delete(String idInProvider, Map<String,Object> inputs) throws ProviderException;
 }
