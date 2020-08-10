@@ -30,7 +30,18 @@ public class NetworkApi {
         intent = new Network();
         impl = new NetworkImpl();
     }
-    
+
+    /**
+     * 统计
+     *
+     * @return 统计结果
+     */
+    public NetworkSummary summary() {
+        NetworkSummary sum = new NetworkSummary();
+        intent.summary(sum);
+        return sum;
+    }
+
     /**
      * 创建一个设备意图
      * 

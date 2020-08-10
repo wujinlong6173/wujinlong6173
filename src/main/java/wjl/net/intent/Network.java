@@ -1,5 +1,7 @@
 package wjl.net.intent;
 
+import wjl.net.NetworkSummary;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,5 +58,11 @@ public class Network {
 
     public void delLink(String id) {
         links.remove(id);
+    }
+
+    public void summary(NetworkSummary sum) {
+        sum.setDevice(devices.size());
+        sum.setPort(ports.size());
+        sum.setLink(links.size());
     }
 }
