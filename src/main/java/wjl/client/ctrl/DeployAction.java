@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 
 import wjl.client.dialog.InputDeployParamDialog;
 import wjl.net.NetworkException;
-import wjl.net.provider.ProviderException;
+import wjl.provider.ProviderException;
 import wjl.util.ErrorType;
 
 /**

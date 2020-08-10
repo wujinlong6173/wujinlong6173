@@ -11,7 +11,7 @@ import com.huawei.vrf.Vrf;
 import com.huawei.vrf.VrfDeviceProvider;
 import com.huawei.vrf.VrfMgr;
 
-import wjl.net.provider.ProviderException;
+import wjl.provider.ProviderException;
 
 public class VLanLinkProviderTest {
     @Test

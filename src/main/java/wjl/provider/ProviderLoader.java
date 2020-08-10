@@ -1,4 +1,4 @@
-package wjl.net.provider;
+package wjl.provider;
 
 import java.util.HashMap;
 import java.util.Map;

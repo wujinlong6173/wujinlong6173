@@ -4,8 +4,8 @@ import com.huawei.inventory.LinkMgr;
 import com.huawei.schema.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
-import wjl.net.provider.LinkProvider;
-import wjl.net.provider.ProviderException;
+import wjl.provider.LinkProvider;
+import wjl.provider.ProviderException;
 import wjl.net.schema.ObjectSchema;
 import wjl.util.ErrorType;
 

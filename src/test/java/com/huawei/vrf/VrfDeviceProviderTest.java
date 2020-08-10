@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import wjl.net.provider.ProviderException;
+import wjl.provider.ProviderException;
 
 public class VrfDeviceProviderTest {
     @Test

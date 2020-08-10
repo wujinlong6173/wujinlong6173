@@ -2,8 +2,8 @@ package com.huawei.vrf;
 
 import com.huawei.inventory.LinkMgr;
 import com.huawei.schema.SchemaParser;
-import wjl.net.provider.DeviceProvider;
-import wjl.net.provider.ProviderException;
+import wjl.provider.DeviceProvider;
+import wjl.provider.ProviderException;
 import wjl.net.schema.ObjectSchema;
 import wjl.util.ErrorType;
 
