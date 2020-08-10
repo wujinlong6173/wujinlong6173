@@ -257,6 +257,17 @@ public class NetworkApi {
             return;
         }
 
+        for (Port pt : dev.getPorts()) {
+            if (pt.getLinkId() == null) {
+                continue;
+            }
+            Link lk = intent.getLink(pt.getLinkId());
+            if (lk != null && lk.isDeploy()) {
+                throw new NetworkException(ErrorType.SERVICE_CONSTRAIN,
+                        String.format("undeploy link %s first.", lk.getId()));
+            }
+        }
+
         DeviceProvider dp = ProviderLoader.getDeviceProvider(devImpl.getProvider());
         if (dp == null) {
             throw new NetworkException(ErrorType.SYSTEM_ERROR,
