@@ -1,6 +1,6 @@
-package com.huawei.schema;
+package wjl.datamodel;
 
-import wjl.net.schema.*;
+import wjl.datamodel.schema.*;
 import wjl.util.ErrorCollector;
 import wjl.util.YamlLoader;
 

@@ -1,4 +1,4 @@
-package wjl.net.schema;
+package wjl.datamodel.schema;
 
 public abstract class DataSchema {
     private boolean required;

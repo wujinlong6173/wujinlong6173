@@ -1,4 +1,4 @@
-package wjl.net.schema;
+package wjl.datamodel.schema;
 
 public class LeafSchema extends DataSchema {
     // 基本数据类型

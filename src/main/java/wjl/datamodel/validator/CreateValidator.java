@@ -1,6 +1,6 @@
-package wjl.net.validator;
+package wjl.datamodel.validator;
 
-import wjl.net.schema.ObjectSchema;
+import wjl.datamodel.schema.ObjectSchema;
 import wjl.util.ErrorCollector;
 
 import java.util.Map;

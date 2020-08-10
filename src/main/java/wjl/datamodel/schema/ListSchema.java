@@ -1,4 +1,4 @@
-package wjl.net.schema;
+package wjl.datamodel.schema;
 
 import java.util.List;
 

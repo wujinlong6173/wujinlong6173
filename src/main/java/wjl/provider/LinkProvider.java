@@ -1,6 +1,6 @@
 package wjl.provider;
 
-import wjl.net.schema.ObjectSchema;
+import wjl.datamodel.schema.ObjectSchema;
 
 import java.util.Map;
 

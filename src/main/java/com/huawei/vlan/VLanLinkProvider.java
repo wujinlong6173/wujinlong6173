@@ -1,12 +1,12 @@
 package com.huawei.vlan;
 
 import com.huawei.inventory.LinkMgr;
-import com.huawei.schema.SchemaParser;
+import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
 import wjl.provider.LinkProvider;
 import wjl.provider.ProviderException;
-import wjl.net.schema.ObjectSchema;
+import wjl.datamodel.schema.ObjectSchema;
 import wjl.util.ErrorType;
 
 import java.util.Locale;

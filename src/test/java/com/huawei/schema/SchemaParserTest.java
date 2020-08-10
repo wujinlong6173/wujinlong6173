@@ -1,10 +1,11 @@
 package com.huawei.schema;
 
 import org.junit.Test;
-import wjl.net.schema.LeafSchema;
-import wjl.net.schema.ListSchema;
-import wjl.net.schema.MapSchema;
-import wjl.net.schema.ObjectSchema;
+import wjl.datamodel.SchemaParser;
+import wjl.datamodel.schema.LeafSchema;
+import wjl.datamodel.schema.ListSchema;
+import wjl.datamodel.schema.MapSchema;
+import wjl.datamodel.schema.ObjectSchema;
 
 import static org.junit.Assert.*;
 

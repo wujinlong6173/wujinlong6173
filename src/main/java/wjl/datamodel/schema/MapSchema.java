@@ -1,4 +1,4 @@
-package wjl.net.schema;
+package wjl.datamodel.schema;
 
 public class MapSchema extends DataSchema {
     private DataSchema entrySchema;

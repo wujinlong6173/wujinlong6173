@@ -15,7 +15,7 @@ import wjl.provider.DeviceProvider;
 import wjl.provider.LinkProvider;
 import wjl.provider.ProviderException;
 import wjl.provider.ProviderLoader;
-import wjl.net.validator.CreateValidator;
+import wjl.datamodel.validator.CreateValidator;
 import wjl.util.ErrorCollector;
 import wjl.util.ErrorType;
 
