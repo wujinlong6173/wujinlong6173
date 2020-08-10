@@ -14,7 +14,6 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
-
 import wjl.util.Config;
 
 /**
@@ -33,8 +32,8 @@ public class ClientMain {
             e1.printStackTrace();
             return;
         }
-        
-        Config.load("/client/config.yaml");
+
+        Config.load();
 
         mxSwingConstants.SHADOW_COLOR = Color.LIGHT_GRAY;
         mxConstants.W3C_SHADOWCOLOR = "#D3D3D3";

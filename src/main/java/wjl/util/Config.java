@@ -1,32 +1,24 @@
 package wjl.util;
 
-/**
- * 程序的配置参数
- */
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class Config {
-    private static Config instance;
-    
-    public static void load(String filename) {
-        instance = YamlLoader.fileToObject(Config.class, filename);
-        if (instance == null) {
-            instance = new Config();
+    private static Properties cfg = new Properties();
+
+    public static void load() {
+        try (InputStream isCfg = new FileInputStream(
+                new File("/client/cfg.properties"))) {
+            cfg.load(isCfg);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-    
-    public static Config instance() {
-        return instance;
-    }
-    
-    /**
-     * Telnet客户端程序的路径
-     */
-    private String telnetClient;
 
-    public String getTelnetClient() {
-        return telnetClient;
-    }
-
-    public void setTelnetClient(String telnetClient) {
-        this.telnetClient = telnetClient;
+    public static String get(String name) {
+        return (String)cfg.get(name);
     }
 }
