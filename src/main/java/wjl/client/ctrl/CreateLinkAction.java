@@ -26,7 +26,8 @@ class CreateLinkAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         Object[] cells = ccc.getGraph().getSelectionCells();
         if (!isOnlyTwoPort(cells)) {
-            JOptionPane.showMessageDialog(null, "选中两个端口才能创建链路", 
+            JOptionPane.showMessageDialog(null,
+                    "选中两个端口才能创建链路，按住Ctrl键不放弹出右键菜单",
                     ErrorType.OPER_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
             return;
         }

@@ -7,13 +7,13 @@ import static org.junit.Assert.*;
 public class ProviderLoaderTest {
     @Test
     public void notFound() {
-        assertNull(ProviderLoader.getDeviceProvider("wjl.net.DummyProvider"));
-        assertNull(ProviderLoader.getLinkProvider("wjl.net.DummyProvider"));
+        assertNull(ProviderLoader.getDeviceProvider("wjl.net.UndefinedProvider"));
+        assertNull(ProviderLoader.getLinkProvider("wjl.net.UndefinedProvider"));
     }
 
     @Test
     public void huaweiProvider() {
-        assertNotNull(ProviderLoader.getDeviceProvider("com.huawei.vrf.VrfDeviceProvider"));
-        assertNotNull(ProviderLoader.getLinkProvider("com.huawei.vlan.VLanLinkProvider"));
+        assertNotNull(ProviderLoader.getDeviceProvider("wjl.provider.DummyDeviceProvider"));
+        assertNotNull(ProviderLoader.getLinkProvider("wjl.provider.DummyLinkProvider"));
     }
 }

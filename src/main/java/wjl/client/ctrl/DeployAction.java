@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import wjl.client.dialog.InputDeployParamDialog;
 import wjl.net.NetworkException;
 import wjl.provider.ProviderException;
+import wjl.provider.ProviderLoader;
 import wjl.util.ErrorType;
 
 /**
@@ -17,13 +18,18 @@ class DeployAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     private final ClientControlCenter ccc;
     private final boolean deploy;
-    private final InputDeployParamDialog deviceDlg = new InputDeployParamDialog();
-    private final InputDeployParamDialog linkDlg = new InputDeployParamDialog();
+    private final InputDeployParamDialog deviceDlg;
+    private final InputDeployParamDialog linkDlg;
     
     public DeployAction(ClientControlCenter ccc, boolean deploy) {
         super(deploy ? "部署" : "去部署");
         this.ccc = ccc;
         this.deploy = deploy;
+
+        deviceDlg = new InputDeployParamDialog();
+        linkDlg = new InputDeployParamDialog();
+        deviceDlg.setProviders(ProviderLoader.listDeviceProviders());
+        linkDlg.setProviders(ProviderLoader.listLinkProviders());
     }
     
     @Override
@@ -52,8 +58,7 @@ class DeployAction extends AbstractAction {
         }
         
         try {
-            String provider = "com.huawei.vrf.VrfDeviceProvider";
-            ccc.getNet().deployDevice(dev.getId(), provider, deviceDlg.getInputs());
+            ccc.getNet().deployDevice(dev.getId(), deviceDlg.getSelectedProvider(), deviceDlg.getInputs());
             dev.changeDeployState(deploy);
             ccc.getGraph().refresh();
         } catch (NetworkException e1) {
@@ -85,8 +90,7 @@ class DeployAction extends AbstractAction {
         }
 
         try {
-            String provider = "com.huawei.vlan.VLanLinkProvider";
-            ccc.getNet().deployLink(link.getId(), provider, linkDlg.getInputs());
+            ccc.getNet().deployLink(link.getId(), linkDlg.getSelectedProvider(), linkDlg.getInputs());
             link.changeDeployState(deploy);
             ccc.getGraph().refresh();
         } catch (NetworkException e1) {

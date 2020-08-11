@@ -1,8 +1,6 @@
 package wjl.provider;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 /**
  * 加载设备和链路提供商，所有提供商必须在META-INF.services目录中注册。
@@ -26,6 +24,24 @@ public class ProviderLoader {
 
     private static class LazyProviderLoader {
         private static ProviderLoader INSTANCE = new ProviderLoader();
+    }
+
+    /**
+     * 获取所有设备供应商的名称
+     *
+     * @return 名称集合
+     */
+    public static Set<String> listDeviceProviders() {
+        return LazyProviderLoader.INSTANCE.registerDeviceProviders.keySet();
+    }
+
+    /**
+     * 获取所有链路供应商的名称
+     *
+     * @return 名称集合
+     */
+    public static Set<String> listLinkProviders() {
+        return LazyProviderLoader.INSTANCE.registerLinkProviders.keySet();
     }
 
     /**

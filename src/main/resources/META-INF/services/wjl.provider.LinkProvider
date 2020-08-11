@@ -1,1 +1,2 @@
 com.huawei.vlan.VLanLinkProvider
+wjl.provider.DummyLinkProvider

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,8 +27,11 @@ import wjl.util.YamlLoader;
  */
 public class InputDeployParamDialog extends JDialog {
     private static final long serialVersionUID = 1L;
-    
+
+    // 用户输入的文本
     private JTextArea textInput;
+    // 让用户选择供应商名称
+    private JComboBox<String> providerList;
     
     private boolean confirm;
     private Map<String,Object> inputs;
@@ -46,6 +50,10 @@ public class InputDeployParamDialog extends JDialog {
     public Map<String,Object> getInputs() {
         return inputs;
     }
+
+    public String getSelectedProvider() {
+        return (String)providerList.getSelectedItem();
+    }
     
     public InputDeployParamDialog() {
         super();
@@ -58,9 +66,7 @@ public class InputDeployParamDialog extends JDialog {
         
         JPanel panelProvider = new JPanel(new FlowLayout());
         panelProvider.add(new Label("供应商"));
-        JComboBox<String> providerList = new JComboBox<>();
-        providerList.addItem("com.huawei.vrf.VrfDeviceProvider");
-        providerList.addItem("com.huawei.vlan.VLanLinkProvider");
+        providerList = new JComboBox<>();
         panelProvider.add(providerList);
         this.add(panelProvider, BorderLayout.NORTH);
         
@@ -118,5 +124,11 @@ public class InputDeployParamDialog extends JDialog {
                 InputDeployParamDialog.this.dispose();
             }
         });
+    }
+
+    public void setProviders(Set<String> listProviders) {
+        for (String providerName : listProviders) {
+            providerList.addItem(providerName);
+        }
     }
 }

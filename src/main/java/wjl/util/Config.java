@@ -1,7 +1,5 @@
 package wjl.util;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -10,8 +8,7 @@ public class Config {
     private static Properties cfg = new Properties();
 
     public static void load() {
-        try (InputStream isCfg = new FileInputStream(
-                new File("/client/cfg.properties"))) {
+        try (InputStream isCfg = Config.class.getResourceAsStream("/client/config.properties")) {
             cfg.load(isCfg);
         } catch (IOException e) {
             e.printStackTrace();

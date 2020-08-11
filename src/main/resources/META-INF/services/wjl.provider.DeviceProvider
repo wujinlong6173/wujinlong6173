@@ -1,1 +1,2 @@
 com.huawei.vrf.VrfDeviceProvider
+wjl.provider.DummyDeviceProvider

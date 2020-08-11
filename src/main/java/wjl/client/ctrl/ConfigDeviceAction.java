@@ -31,7 +31,7 @@ class ConfigDeviceAction extends AbstractAction {
             return;
         }
         
-        String telnetClient = Config.get("telnetClient");
+        String telnetClient = Config.get("telnet.client");
         if (telnetClient == null) {
             JOptionPane.showMessageDialog(null, "没有配置Telnet客户端程序的路径", 
                     ErrorType.SYSTEM_ERROR.getDesc(), JOptionPane.ERROR_MESSAGE);
