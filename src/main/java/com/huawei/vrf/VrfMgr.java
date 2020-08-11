@@ -50,10 +50,25 @@ public final class VrfMgr {
      * @param portName 接口在虚拟路由器中的名称
      * @param inf 被绑定的接口 
      */
-    public static void vrfBindInterface(String vrfId, String portName, Interface inf) {
+    public static void bindInterface(String vrfId, String portName, Interface inf) {
         Vrf vrf = allVrf.get(vrfId);
         if (vrf != null) {
             vrf.bindInterface(portName, inf);
+        }
+    }
+
+    /**
+     * 解除接口和VRF的绑定
+     *
+     * @param inf 接口
+     */
+    public static void unBindInterface(Interface inf) {
+        if (inf == null || inf.getBindService() == null) {
+            return;
+        }
+        Vrf vrf = allVrf.get(inf.getBindService());
+        if (vrf != null) {
+            vrf.unBindInterface(inf);
         }
     }
 

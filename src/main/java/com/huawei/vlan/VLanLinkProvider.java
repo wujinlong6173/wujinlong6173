@@ -18,9 +18,7 @@ public class VLanLinkProvider implements LinkProvider {
 
     public VLanLinkProvider() {
         SchemaParser parser = new SchemaParser();
-        createSchema = parser.parse("HW.VLan", "properties:\n" +
-                "link: {type: string, flag: CR}\n" +
-                "vlanId: {type: integer, flag: CR}\n");
+        createSchema = parser.parse("HW.VLan", "properties: {}");
     }
 
     @Override
@@ -54,29 +52,47 @@ public class VLanLinkProvider implements LinkProvider {
                             srcHost, dstHost));
         }
         
-        int vlanId = LinkMgr.allocVlanId(phyLink);
+        int vLanId = LinkMgr.allocVlanId(phyLink);
 
-        VlanSubIf srcIf = new VlanSubIf();
+        VLanSubIf srcIf = new VLanSubIf();
         srcIf.setId(UUID.randomUUID().toString());
         srcIf.setHost(srcHost);
         srcIf.setPort(LinkMgr.getPortOfLink(phyLink, srcHost));
-        srcIf.setVlanId(vlanId);
+        srcIf.setVlanId(vLanId);
 
-        VlanSubIf dstIf = new VlanSubIf();
+        VLanSubIf dstIf = new VLanSubIf();
         dstIf.setId(UUID.randomUUID().toString());
         dstIf.setHost(dstHost);
         dstIf.setPort(LinkMgr.getPortOfLink(phyLink, dstHost));
-        dstIf.setVlanId(vlanId);
+        dstIf.setVlanId(vLanId);
 
-        VrfMgr.vrfBindInterface(srcVrfId, srcPortName, srcIf);
-        VrfMgr.vrfBindInterface(dstVrfId, dstPortName, dstIf);
-        VlanLink lk = new VlanLink();
+        VrfMgr.bindInterface(srcVrfId, srcPortName, srcIf);
+        VrfMgr.bindInterface(dstVrfId, dstPortName, dstIf);
+        VLanLink lk = new VLanLink();
         lk.setId(UUID.randomUUID().toString());
+        lk.setSrcSubIf(srcIf.getId());
+        lk.setDstSubIf(dstIf.getId());
+
+        VLanDao.addVLanLink(lk);
+        VLanDao.addVLanSubIf(srcIf);
+        VLanDao.addVLanSubIf(dstIf);
         return lk.getId();
     }
 
     @Override
     public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
-        
+        VLanLink lk = VLanDao.getVLanLink(idInProvider);
+        if (lk == null) {
+            return;
+        }
+
+        VLanSubIf srcIf = VLanDao.getVLanSubIf(lk.getSrcSubIf());
+        VLanSubIf dstIf = VLanDao.getVLanSubIf(lk.getDstSubIf());
+        VrfMgr.unBindInterface(srcIf);
+        VrfMgr.unBindInterface(dstIf);
+
+        VLanDao.delVLanLink(idInProvider);
+        VLanDao.delVLanSubIf(lk.getSrcSubIf());
+        VLanDao.delVLanSubIf(lk.getDstSubIf());
     }
 }

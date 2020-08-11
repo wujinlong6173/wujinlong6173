@@ -2,27 +2,12 @@ package com.huawei.vlan;
 
 import com.huawei.common.Interface;
 
-public class VlanSubIf implements Interface {
-    private String id;
-    private String host;
+/**
+ * VLan子接口
+ */
+public class VLanSubIf extends Interface {
     private String port;
     private int vlanId;
-    
-    public String getId() {
-        return id;
-    }
-    
-    public void setId(String id) {
-        this.id = id;
-    }
-    
-    public String getHost() {
-        return host;
-    }
-    
-    public void setHost(String host) {
-        this.host = host;
-    }
     
     public String getPort() {
         return port;
