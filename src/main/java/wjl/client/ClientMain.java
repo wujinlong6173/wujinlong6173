@@ -103,7 +103,9 @@ public class ClientMain {
         graph.setExtendParentsOnAdd(false);
         // 禁止拖动边的端点，避免和节点解除绑定
         graph.setCellsDisconnectable(false);
-        
+        // 允许选中多个对象
+        graph.setCellsSelectable(true);
+
         mxGraphComponent component = new mxGraphComponent(graph);
         // 不需要拖动方式生成连线
         component.getConnectionHandler().setEnabled(false);
@@ -117,6 +119,10 @@ public class ClientMain {
         component.getGraphControl().addMouseListener(mouse);
         // 消除设备图标上面的加号，即展开、收缩的按钮
         component.setFoldingEnabled(false);
+        component.setKeepSelectionVisibleOnZoom(true);
+        component.setAutoExtend(true);
+        component.setWheelScrollingEnabled(true);
+
         return component;
     }
 }

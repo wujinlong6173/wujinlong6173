@@ -12,7 +12,7 @@ public final class VLanDao {
 
     static {
         vLanLinks = new ConcurrentHashMap<>();
-        vLanLinks = new ConcurrentHashMap<>();
+        vLanSubIfs = new ConcurrentHashMap<>();
     }
 
     public static void addVLanLink(VLanLink link) {

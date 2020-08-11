@@ -1,7 +1,5 @@
 package com.huawei.vlan;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +11,11 @@ import com.huawei.vrf.VrfMgr;
 
 import wjl.provider.ProviderException;
 
+import static org.junit.Assert.*;
+
 public class VLanLinkProviderTest {
     @Test
-    public void createVlanLink() throws ProviderException {
+    public void createVLanLink() throws ProviderException {
         Map<String,Object> inputs = new HashMap<>();
         
         // 准备数据
@@ -28,7 +28,8 @@ public class VLanLinkProviderTest {
         String r2 = vrfProvider.create("---", inputs);
         
         VLanLinkProvider provider = new VLanLinkProvider();
-        
+
+        // 创建链路
         inputs.clear();
         String lk = provider.create("---", 
                 r1, "Eth1", vrfProvider.getName(),
@@ -39,5 +40,12 @@ public class VLanLinkProviderTest {
         assertTrue(vrf1.getBindInterfaces().containsKey("Eth1"));
         Vrf vrf2 = VrfMgr.getVrf(r2);
         assertTrue(vrf2.getBindInterfaces().containsKey("Eth2"));
+
+        // 删除链路
+        provider.delete(lk, inputs);
+        assertNull(VLanDao.getVLanLink(lk));
+        assertTrue(vrf1.getBindInterfaces().isEmpty());
+        assertTrue(vrf2.getBindInterfaces().isEmpty());
     }
 }
+
