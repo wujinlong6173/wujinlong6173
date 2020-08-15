@@ -46,7 +46,7 @@ class ConfigDeviceAction extends AbstractAction {
         }
 
         try {
-            String cmd = String.format("%s %s %s", telnetClient, "127.0.0.1", "23");
+            String cmd = String.format("%s -telnet %s %s", telnetClient, "127.0.0.1", "23");
             Runtime.getRuntime().exec(cmd);
         } catch (IOException e1) {
             e1.printStackTrace();

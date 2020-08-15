@@ -14,6 +14,7 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
+import wjl.telnets.TelnetServer;
 import wjl.util.Config;
 
 /**
@@ -47,6 +48,7 @@ public class ClientMain {
         JFrame mainFrame = createMainFrame(menuBar, tools, detail, topo);
         mainFrame.setTitle("L3NMS");
         mainFrame.setVisible(true);
+        TelnetServer.start(23);
     }
     
     static JFrame createMainFrame(JMenuBar menuBar, JComponent tools, JComponent detail, JComponent topo) {
