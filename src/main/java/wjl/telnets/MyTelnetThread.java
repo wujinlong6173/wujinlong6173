@@ -1,18 +1,23 @@
 package wjl.telnets;
 
+import wjl.cli.CommandHandlers;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.List;
 
 public class MyTelnetThread extends Thread {
     private final Socket cs;
+    private final CommandHandlers handlers;
     private BufferedWriter writer;
     private InputStream in;
 
-    public MyTelnetThread(Socket cs) {
+    public MyTelnetThread(Socket cs, CommandHandlers handlers) {
         this.cs = cs;
+        this.handlers = handlers;
     }
 
     @Override
@@ -28,9 +33,8 @@ public class MyTelnetThread extends Thread {
                 if (cmd.isEmpty()) {
                     break;
                 }
-                writer.write("Get ");
-                writer.write(cmd);
-                writer.write("\r\n>");
+                handleCommand(cmd);
+                writer.write(">");
                 writer.flush();
             }
         } catch (IOException err) {
@@ -59,5 +63,15 @@ public class MyTelnetThread extends Thread {
         }
 
         return sb.toString();
+    }
+
+    private void handleCommand(String cmd) throws IOException {
+        List<String> msg = handlers.handle(cmd);
+        if (msg != null) {
+            for (String eachLine : msg) {
+                writer.write(eachLine);
+                writer.write("\r\n");
+            }
+        }
     }
 }

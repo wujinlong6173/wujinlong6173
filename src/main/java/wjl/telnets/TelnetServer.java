@@ -1,5 +1,9 @@
 package wjl.telnets;
 
+import com.huawei.cli.SystemView;
+import wjl.cli.CommandHandler;
+import wjl.cli.CommandHandlers;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,7 +21,10 @@ public class TelnetServer {
             ServerSocket ss = new ServerSocket(port);
             while (true) {
                 Socket cs = ss.accept();
-                MyTelnetThread thread = new MyTelnetThread(cs);
+                // TODO 不应该反向依赖com.huawei中的内容
+                CommandHandlers handlers = new CommandHandlers(
+                        new CommandHandler(new SystemView()));
+                MyTelnetThread thread = new MyTelnetThread(cs, handlers);
                 thread.start();
             }
         } catch (IOException err) {
