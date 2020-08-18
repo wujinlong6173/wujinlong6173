@@ -23,7 +23,7 @@ public class TelnetServer {
                 Socket cs = ss.accept();
                 // TODO 不应该反向依赖com.huawei中的内容
                 CommandHandlers handlers = new CommandHandlers(
-                        new CommandHandler(new SystemView()));
+                        new CommandHandler("System", new SystemView()));
                 MyTelnetThread thread = new MyTelnetThread(cs, handlers);
                 thread.start();
             }

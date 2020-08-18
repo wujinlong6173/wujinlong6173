@@ -10,6 +10,7 @@ import java.util.Map;
 public class CommandHandler {
     private static final String ERROR_UNKNOWN_COMMAND = "unknown command";
     private final Map<String, CommandMethod> commands;
+    private final String cmdName;
 
     /**
      * 注册根命令，扫描输入对象的所有公开方法，如果有@CommandView或@Command标记，
@@ -17,11 +18,11 @@ public class CommandHandler {
      *
      * @param handler 处理命令的对象
      */
-    public CommandHandler(Object handler) {
+    public CommandHandler(String cmdName, Object handler) {
+        this.cmdName = cmdName;
         this.commands = new HashMap<>();
         Class<?> cls = handler.getClass();
         for (Method method : cls.getMethods()) {
-
             if (method.isAnnotationPresent(Command.class)) {
                 CommandMethod cm = new CommandMethod();
                 cm.handler = handler;
@@ -60,7 +61,7 @@ public class CommandHandler {
      * @param outputMsg 接收需要返回的形象。
      * @return 如果进入下一级命令，则返回下一级命令的处理器。
      */
-    public Object handle(String fullCmd, List<String> outputMsg) {
+    public CommandHandler handle(String fullCmd, List<String> outputMsg) {
         String[] splitCmd = fullCmd.split("[ \t]+");
         CommandMethod method = commands.get(splitCmd[0]);
         if (method == null) {
@@ -75,11 +76,20 @@ public class CommandHandler {
             }
 
             Object ret = method.method.invoke(method.handler, args);
-            return method.view ? ret : null;
+            return method.view ? new CommandHandler(splitCmd[0], ret) : null;
         } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
             e.printStackTrace();
             outputMsg.add(e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 获取命令提示符
+     *
+     * @return
+     */
+    public String getPrompt() {
+        return cmdName;
     }
 }

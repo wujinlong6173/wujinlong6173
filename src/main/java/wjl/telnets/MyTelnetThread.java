@@ -25,7 +25,7 @@ public class MyTelnetThread extends Thread {
         try {
             in = cs.getInputStream();
             writer = new BufferedWriter(new OutputStreamWriter(cs.getOutputStream()));
-            writer.write(">");
+            writer.write(handlers.getPrompt());
             writer.flush();
             String cmd;
             while (cs.isConnected()) {
@@ -34,7 +34,7 @@ public class MyTelnetThread extends Thread {
                     break;
                 }
                 handleCommand(cmd);
-                writer.write(">");
+                writer.write(handlers.getPrompt());
                 writer.flush();
             }
         } catch (IOException err) {

@@ -40,12 +40,26 @@ public class CommandHandlers {
             default: {
                 List<String> msg = new ArrayList<>();
                 CommandHandler handler = stack.peek();
-                Object nextHandler = handler.handle(fullCmd, msg);
+                CommandHandler nextHandler = handler.handle(fullCmd, msg);
                 if (nextHandler != null) {
-                    stack.push(new CommandHandler(nextHandler));
+                    stack.push(nextHandler);
                 }
                 return msg;
             }
         }
+    }
+
+    /**
+     * 获取命令提示符
+     *
+     * @return
+     */
+    public String getPrompt() {
+        StringBuilder sb = new StringBuilder();
+        for (CommandHandler handler : stack) {
+            sb.append(handler.getPrompt());
+            sb.append(">");
+        }
+        return sb.toString();
     }
 }
