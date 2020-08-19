@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * 使用org.apache.sshd搭建的服务器，只利用其用户名和密码的特性。
  * 关键设计：不同的用户名登录到不同的虚拟路由器。
- * 
+ *
  * 客户端连接 putty.exe -ssh -l user -pw password 127.0.0.1 22
  * 客户端显示乱码，Putty窗口 > Change Setting > Window > Transaction
  * > Remote character set > use font encoding.
@@ -40,7 +40,8 @@ public class MySshServer {
         ss.setPort(port);
         ss.setPasswordAuthenticator(new MyAuthenticator());
         ss.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
-        ss.setShellFactory(winShellFactory());
+        //ss.setShellFactory(winShellFactory());
+        ss.setShellFactory(new MySshShellFactory());
         ss.start(); // 本函数会立即返回
     }
 
