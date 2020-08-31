@@ -4,18 +4,27 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.command.Command;
+import wjl.cli.CommandHandlers;
 
 import java.io.*;
+import java.util.List;
 
 public class MySshShell extends Thread implements Command {
+    private static byte[] CR_LF = "\r\n".getBytes();
+    private static String BYE_BYE = "Bye bye !";
+
     private InputStream in;
     private OutputStream out;
     private OutputStream err;
     private final ChannelSession channel;
     private boolean crlf;
 
-    public MySshShell(ChannelSession channel) {
+    // 命令行处理器
+    private final CommandHandlers handlers;
+
+    public MySshShell(ChannelSession channel, CommandHandlers handlers) {
         this.channel = channel;
+        this.handlers = handlers;
     }
 
     @Override
@@ -53,6 +62,11 @@ public class MySshShell extends Thread implements Command {
     public void run() {
         try {
             while (!channel.isClosed()) {
+                // 输出命令提示符
+                out.write(handlers.getPrompt().getBytes());
+                out.flush();
+
+                // 读取命令
                 String cmd = readCommand();
                 if (cmd == null) {
                     break;
@@ -61,11 +75,15 @@ public class MySshShell extends Thread implements Command {
                     continue;
                 }
 
-                out.write(cmd.getBytes());
-                out.write('\r');
-                out.write('\n');
-                out.flush();
+                handleCommand(cmd);
+                if (handlers.isEmpty()) {
+                    break;
+                }
             }
+
+            out.write(BYE_BYE.getBytes());
+            out.flush();
+            channel.getSession().disconnect(11, BYE_BYE);
         } catch (Exception err) {
             err.printStackTrace();
         }
@@ -93,6 +111,16 @@ public class MySshShell extends Thread implements Command {
                     sb.append((char)ch);
                     out.write(ch);
                     out.flush();
+            }
+        }
+    }
+
+    private void handleCommand(String cmd) throws IOException {
+        List<String> msg = handlers.handle(cmd);
+        if (msg != null) {
+            for (String eachLine : msg) {
+                out.write(eachLine.getBytes());
+                out.write(CR_LF);
             }
         }
     }

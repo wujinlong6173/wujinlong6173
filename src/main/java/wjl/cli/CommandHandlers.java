@@ -19,6 +19,15 @@ public class CommandHandlers {
     }
 
     /**
+     * 如果处理器堆栈为空，应该退出回话
+     *
+     * @return 处理器堆栈为空
+     */
+    public boolean isEmpty() {
+        return stack.isEmpty();
+    }
+
+    /**
      *
      * @param fullCmd 完整的一行命令，包括命令名称和参数。
      * @return 需要显示的多行字符串。
@@ -26,7 +35,7 @@ public class CommandHandlers {
     public List<String> handle(String fullCmd) {
         switch (fullCmd) {
             case QUIT: {
-                if (stack.size() > 1) {
+                if (!stack.isEmpty()) {
                     stack.pop();
                 }
                 return null;
