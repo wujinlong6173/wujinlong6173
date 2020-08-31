@@ -1,6 +1,7 @@
 package wjl.net;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -56,7 +57,7 @@ public class NetworkApi {
         intent.addDevice(dev);
         return devId;
     }
-    
+
     /**
      * 创建一个端口意图
      * 
@@ -379,5 +380,22 @@ public class NetworkApi {
         dp.delete(lkImpl.getOuterId(), lkImpl.getInputs());
         impl.delLinkImpl(linkId);
         lk.setDeploy(false);
+    }
+
+    /**
+     * 获取配置设备的入口地址
+     *
+     * @param devId 设备唯一标识
+     * @return SSH连接的客户端参数
+     */
+    public String getDeviceConfigEntry(String devId) {
+        DeviceImpl devImpl = impl.getDeviceImpl(devId);
+        if (devImpl == null) {
+            return null;
+        }
+
+        // 与供应商的约定：设备意图的标识作为用户名，供应商的标识作为密码
+        return String.format(Locale.ENGLISH, "-ssh -l %s -pw %s %s %s",
+                devId, devImpl.getOuterId(), "127.0.0.1", "22");
     }
 }

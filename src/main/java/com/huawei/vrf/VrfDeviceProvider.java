@@ -47,6 +47,7 @@ public class VrfDeviceProvider implements DeviceProvider {
 
         Vrf vrf = new Vrf();
         vrf.setId(UUID.randomUUID().toString());
+        vrf.setIdInNms(idInNms);
         vrf.setHost(host);
         vrf.setName((String)inputs.get("name"));
         VrfMgr.createVrf(vrf);

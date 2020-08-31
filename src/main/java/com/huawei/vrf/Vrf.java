@@ -8,6 +8,7 @@ import com.huawei.common.Interface;
 
 public class Vrf {
     private String id;
+    private String idInNms;
     private String name;
     private String host;
     private Map<String, Interface> bindInterfaces = new HashMap<>();
@@ -19,7 +20,15 @@ public class Vrf {
     public void setId(String id) {
         this.id = id;
     }
-    
+
+    public String getIdInNms() {
+        return idInNms;
+    }
+
+    public void setIdInNms(String idInNms) {
+        this.idInNms = idInNms;
+    }
+
     public String getName() {
         return name;
     }

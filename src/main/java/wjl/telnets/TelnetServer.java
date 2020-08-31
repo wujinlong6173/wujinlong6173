@@ -1,6 +1,6 @@
 package wjl.telnets;
 
-import com.huawei.cli.SystemView;
+import com.huawei.cli.HuaWeiSystem;
 import wjl.cli.CommandHandler;
 import wjl.cli.CommandHandlers;
 
@@ -23,7 +23,7 @@ public class TelnetServer {
                 Socket cs = ss.accept();
                 // TODO 不应该反向依赖com.huawei中的内容
                 CommandHandlers handlers = new CommandHandlers(
-                        new CommandHandler("System", new SystemView()));
+                        new CommandHandler("System", new HuaWeiSystem()));
                 MyTelnetThread thread = new MyTelnetThread(cs, handlers);
                 thread.start();
             }

@@ -1,14 +1,8 @@
 package wjl.telnets;
 
+import com.huawei.cli.HuaWeiSystem;
 import org.apache.sshd.server.SshServer;
-import org.apache.sshd.server.auth.AsyncAuthException;
-import org.apache.sshd.server.auth.password.PasswordAuthenticator;
-import org.apache.sshd.server.auth.password.PasswordChangeRequiredException;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.apache.sshd.server.session.ServerSession;
-import org.apache.sshd.server.shell.ProcessShellFactory;
-import org.apache.sshd.server.shell.ShellFactory;
-
 import java.io.IOException;
 
 /**
@@ -20,40 +14,32 @@ import java.io.IOException;
  * > Remote character set > use font encoding.
  */
 public class MySshServer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        start(22);
+        System.out.println("SSH Server 22 is running...");
+        // 让主线程一直等着
+        Object dead = new Object();
+        synchronized (dead) {
+            dead.wait();
+        }
+    }
+
+    public static void start(int port) {
         try {
-            start(22);
-            System.out.println("SSH Server 22 is running...");
-            // 让主线程一直等着
-            Object dead = new Object();
-            synchronized (dead) {
-                dead.wait();
-            }
-        } catch (IOException | InterruptedException e) {
+            SshServer ss = SshServer.setUpDefaultServer();
+            ss.setHost("127.0.0.1");
+            ss.setPort(port);
+            ss.setPasswordAuthenticator(new HuaWeiSystem());
+            ss.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
+            //ss.setShellFactory(winShellFactory());
+            ss.setShellFactory(new MySshShellFactory());
+            ss.start(); // 本函数会立即返回
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void start(int port) throws IOException {
-        SshServer ss = SshServer.setUpDefaultServer();
-        ss.setHost("127.0.0.1");
-        ss.setPort(port);
-        ss.setPasswordAuthenticator(new MyAuthenticator());
-        ss.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
-        //ss.setShellFactory(winShellFactory());
-        ss.setShellFactory(new MySshShellFactory());
-        ss.start(); // 本函数会立即返回
-    }
-
-    static class MyAuthenticator implements PasswordAuthenticator {
-        @Override
-        public boolean authenticate(String username, String password, ServerSession session)
-                throws PasswordChangeRequiredException, AsyncAuthException {
-            return true;
-        }
-    }
-
-    static ShellFactory winShellFactory() {
-        return new ProcessShellFactory("cmd.exe", "Echo", "ICrN1", "ON1Cr");
-    }
+    //static ShellFactory winShellFactory() {
+    //return new ProcessShellFactory("cmd.exe", "Echo", "ICrN1", "ON1Cr");
+    //}
 }
