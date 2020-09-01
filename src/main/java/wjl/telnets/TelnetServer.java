@@ -3,7 +3,6 @@ package wjl.telnets;
 import com.huawei.cli.HuaWeiSystem;
 import wjl.cli.CommandHandler;
 import wjl.cli.CommandHandlers;
-import wjl.cli.CommandClass;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -24,8 +23,7 @@ public class TelnetServer {
                 Socket cs = ss.accept();
                 // TODO 不应该反向依赖com.huawei中的内容
                 CommandHandlers handlers = new CommandHandlers(
-                        new CommandHandler("System", new HuaWeiSystem(),
-                                CommandClass.build(HuaWeiSystem.class)));
+                        CommandHandler.build("System", new HuaWeiSystem()));
                 MyTelnetThread thread = new MyTelnetThread(cs, handlers);
                 thread.start();
             }

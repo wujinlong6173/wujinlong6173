@@ -9,7 +9,16 @@ public class CommandHandler {
     private static final String ERROR_UNKNOWN_COMMAND = "unknown command";
     private final Object handler;
     private final String cmdName;
-    private final CommandClass methods;
+    private final CommandClass cmdClass;
+
+    public static CommandHandler build(String cmdName, Object handler) {
+        CommandClass cmdClass = CommandClass.build(handler.getClass());
+        if (cmdClass != null) {
+            return new CommandHandler(cmdName, handler, cmdClass);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * 注册根命令，扫描输入对象的所有公开方法，如果有@CommandView或@Command标记，
@@ -17,14 +26,14 @@ public class CommandHandler {
      *
      * @param handler 处理命令的对象
      */
-    public CommandHandler(String cmdName, Object handler, CommandClass methods) {
+    public CommandHandler(String cmdName, Object handler, CommandClass cmdClass) {
         this.cmdName = cmdName;
         this.handler = handler;
-        this.methods = methods;
+        this.cmdClass = cmdClass;
     }
 
-    public CommandClass getMethods() {
-        return methods;
+    public CommandClass getCmdClass() {
+        return cmdClass;
     }
 
     /**
@@ -35,7 +44,7 @@ public class CommandHandler {
      */
     public CommandHandler handle(String fullCmd, List<String> outputMsg) {
         String[] splitCmd = fullCmd.split("[ \t]+");
-        Method method = methods.findMethod(splitCmd[0]);
+        Method method = cmdClass.findMethod(splitCmd);
         if (method == null) {
             outputMsg.add(ERROR_UNKNOWN_COMMAND);
             return null;
