@@ -1,9 +1,9 @@
 package com.huawei.cli;
 
-import wjl.cli.CommandView;
+import wjl.cli.Command;
 
 public class OspfView {
-    @CommandView(command="area")
+    @Command(command="area")
     public OspfAreaView makeArea(Integer id) {
         return new OspfAreaView();
     }

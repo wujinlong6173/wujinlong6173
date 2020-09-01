@@ -6,6 +6,7 @@ import org.apache.sshd.server.command.Command;
 import org.apache.sshd.server.shell.ShellFactory;
 import wjl.cli.CommandHandler;
 import wjl.cli.CommandHandlers;
+import wjl.cli.CommandClass;
 
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ public class MySshShellFactory implements ShellFactory {
         final String user = channel.getSession().getUsername();
         Object cmdView = HuaWeiSystem.getCommandView(user);
         CommandHandlers handlers = new CommandHandlers(
-                new CommandHandler(user, cmdView));
+                new CommandHandler(user, cmdView, CommandClass.build(cmdView.getClass())));
         return new MySshShell(channel, handlers);
     }
 }

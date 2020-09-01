@@ -43,7 +43,7 @@ public class CommandHandlers {
 
             case HELP: {
                 CommandHandler handler = stack.peek();
-                return handler.listCommands();
+                return handler.getMethods().listCommands();
             }
 
             default: {

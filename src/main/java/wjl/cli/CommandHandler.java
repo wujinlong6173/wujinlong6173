@@ -2,15 +2,14 @@ package wjl.cli;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CommandHandler {
     private static final String ERROR_UNKNOWN_COMMAND = "unknown command";
-    private final Map<String, CommandMethod> commands;
+    private final Object handler;
     private final String cmdName;
+    private final CommandClass methods;
 
     /**
      * 注册根命令，扫描输入对象的所有公开方法，如果有@CommandView或@Command标记，
@@ -18,41 +17,14 @@ public class CommandHandler {
      *
      * @param handler 处理命令的对象
      */
-    public CommandHandler(String cmdName, Object handler) {
+    public CommandHandler(String cmdName, Object handler, CommandClass methods) {
         this.cmdName = cmdName;
-        this.commands = new HashMap<>();
-        Class<?> cls = handler.getClass();
-        for (Method method : cls.getMethods()) {
-            if (method.isAnnotationPresent(Command.class)) {
-                CommandMethod cm = new CommandMethod();
-                cm.handler = handler;
-                cm.method = method;
-                cm.view = false;
-                commands.put(method.getAnnotation(Command.class).command(), cm);
-            } else if (method.isAnnotationPresent(CommandView.class)) {
-                if (method.getReturnType() != Void.class) {
-                    CommandMethod cm = new CommandMethod();
-                    cm.handler = handler;
-                    cm.method = method;
-                    cm.view = true;
-                    commands.put(method.getAnnotation(CommandView.class).command(), cm);
-                }
-            }
-        }
+        this.handler = handler;
+        this.methods = methods;
     }
 
-    static class CommandMethod {
-        Object handler;
-        Method method;
-        boolean view;
-    }
-
-    public List<String> listCommands() {
-        List<String> cmdHelp = new ArrayList<>();
-        for (Map.Entry<String, CommandMethod> entry : commands.entrySet()) {
-            cmdHelp.add(entry.getKey());
-        }
-        return cmdHelp;
+    public CommandClass getMethods() {
+        return methods;
     }
 
     /**
@@ -63,7 +35,7 @@ public class CommandHandler {
      */
     public CommandHandler handle(String fullCmd, List<String> outputMsg) {
         String[] splitCmd = fullCmd.split("[ \t]+");
-        CommandMethod method = commands.get(splitCmd[0]);
+        Method method = methods.findMethod(splitCmd[0]);
         if (method == null) {
             outputMsg.add(ERROR_UNKNOWN_COMMAND);
             return null;
@@ -75,8 +47,24 @@ public class CommandHandler {
                 args[i - 1] = splitCmd[i];
             }
 
-            Object ret = method.method.invoke(method.handler, args);
-            return method.view ? new CommandHandler(splitCmd[0], ret) : null;
+            Object ret = method.invoke(handler, args);
+            if (ret == null) {
+
+            } else if (ret instanceof String) {
+                outputMsg.add((String)ret);
+            } else if (ret instanceof List) {
+                for (Object retItem : (List<?>)ret) {
+                    outputMsg.add((String)retItem);
+                }
+            } else if (ret instanceof Map) {
+
+            } else {
+                CommandClass subMethods = CommandClass.build(ret.getClass());
+                if (subMethods != null) {
+                    return new CommandHandler(splitCmd[0], ret, subMethods);
+                }
+            }
+            return null;
         } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
             e.printStackTrace();
             outputMsg.add(e.getMessage());

@@ -1,19 +1,19 @@
 package com.huawei.cli;
 
-import wjl.cli.CommandView;
+import wjl.cli.Command;
 
 public class RouterView {
-    @CommandView(command="interface")
+    @Command(command="interface")
     public InterfaceView makeInterface(String name) {
         return new InterfaceView();
     }
 
-    @CommandView(command="ospf")
+    @Command(command="ospf")
     public OspfView makeOspf() {
         return new OspfView();
     }
 
-    @CommandView(command="bgp")
+    @Command(command="bgp")
     public BgpView makeBgp() {
         return new BgpView();
     }

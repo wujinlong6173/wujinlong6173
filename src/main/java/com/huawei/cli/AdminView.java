@@ -1,7 +1,6 @@
 package com.huawei.cli;
 
 import wjl.cli.Command;
-import wjl.cli.CommandView;
 
 /**
  * 管理物理网络
@@ -12,7 +11,7 @@ public class AdminView {
 
     }
 
-    @CommandView(command="router")
+    @Command(command="router")
     public RouterView getRouter(String name) {
         return new RouterView();
     }
