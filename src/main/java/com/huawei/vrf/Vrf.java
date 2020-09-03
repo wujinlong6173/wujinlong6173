@@ -12,7 +12,7 @@ public class Vrf {
     private String name;
     private String host;
     private Map<String, Interface> bindInterfaces = new HashMap<>();
-    
+
     public String getId() {
         return id;
     }

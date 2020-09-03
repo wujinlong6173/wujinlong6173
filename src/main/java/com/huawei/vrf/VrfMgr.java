@@ -75,4 +75,13 @@ public final class VrfMgr {
     public static void deleteVrf(String vrfId) {
         allVrf.remove(vrfId);        
     }
+
+    public static Vrf getVrfByNmsId(String idInNms) {
+        for (Vrf vrf : allVrf.values()) {
+            if (idInNms.equals(vrf.getIdInNms())) {
+                return vrf;
+            }
+        }
+        return null;
+    }
 }

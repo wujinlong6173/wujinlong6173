@@ -27,13 +27,20 @@ public class HuaWeiSystem implements PasswordAuthenticator {
     /**
      * 获取某个路由器的命令行视图
      *
-     * @param username
+     * @param username 虚拟路由器在网络意图中的标识
      * @return 命令行视图
      */
     public static CommandView getCommandView(String username) {
         if (ADMIN_NAME.equals(username)) {
             return new AdminView();
         }
-        return new RouterView();
+
+        // 鉴权时已经确保VRF存在
+        Vrf vrf = VrfMgr.getVrfByNmsId(username);
+        if (vrf == null) {
+            return null;
+        }
+
+        return new VirRouterView(vrf.getId(), vrf.getName());
     }
 }
