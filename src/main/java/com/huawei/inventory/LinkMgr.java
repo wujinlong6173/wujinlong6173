@@ -24,7 +24,7 @@ public class LinkMgr {
         this.links = links;
     }
 
-    private static void loadFromFile() {
+    public static void loadFromFile() {
         if (linkMgr == null) {
             synchronized (LinkMgr.class) {
                 if (linkMgr == null) {
@@ -52,7 +52,11 @@ public class LinkMgr {
         loadFromFile();
         return devices.contains(dev);
     }
-    
+
+    public static Set<String> getDevices() {
+        return devices;
+    }
+
     /**
      * 在两台设备之间寻找链路，假设所有链路都是双向的
      * 
