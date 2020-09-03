@@ -12,12 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class CommandClass {
     // 缓存已经解析过的类
-    private static final Map<Class<?>, CommandClass> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Class<? extends CommandView>, CommandClass> CACHE = new ConcurrentHashMap<>();
 
     // 键值是命令名称，即命令的第一个单词
     private Map<String, List<CommandMethod>> cmdMappingMethods;
 
-    public static CommandClass build(Class<?> cls) {
+    public static CommandClass build(Class<? extends CommandView> cls) {
         CommandClass ret = CACHE.get(cls);
         if (ret != null) {
             return ret;
@@ -27,7 +27,7 @@ class CommandClass {
         for (Method method : cls.getMethods()) {
             CommandMethod cmdMethod = CommandMethod.build(method);
             if (cmdMethod != null) {
-                mapping.computeIfAbsent(cmdMethod.getCmdName(), key -> new ArrayList<CommandMethod>())
+                mapping.computeIfAbsent(cmdMethod.getCmdName(), key -> new ArrayList<>())
                         .add(cmdMethod);
             }
         }

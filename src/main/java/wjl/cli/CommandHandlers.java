@@ -66,7 +66,7 @@ public class CommandHandlers {
     public String getPrompt() {
         StringBuilder sb = new StringBuilder();
         for (CommandHandler handler : stack) {
-            sb.append(handler.getPrompt());
+            sb.append(handler.getHandler().getPrompt());
             sb.append(">");
         }
         return sb.toString();

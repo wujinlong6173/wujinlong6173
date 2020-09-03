@@ -7,7 +7,12 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class CommandClassTest {
+public class CommandClassTest implements CommandView {
+    @Override
+    public String getPrompt() {
+        return null;
+    }
+
     @Command(command="mpls")
     public void enableMpls() {
     }

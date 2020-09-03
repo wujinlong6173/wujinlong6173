@@ -6,6 +6,7 @@ import org.apache.sshd.server.auth.AsyncAuthException;
 import org.apache.sshd.server.auth.password.PasswordAuthenticator;
 import org.apache.sshd.server.auth.password.PasswordChangeRequiredException;
 import org.apache.sshd.server.session.ServerSession;
+import wjl.cli.CommandView;
 
 public class HuaWeiSystem implements PasswordAuthenticator {
     // 这是演示用的程序，没有任何危害
@@ -29,7 +30,7 @@ public class HuaWeiSystem implements PasswordAuthenticator {
      * @param username
      * @return 命令行视图
      */
-    public static Object getCommandView(String username) {
+    public static CommandView getCommandView(String username) {
         if (ADMIN_NAME.equals(username)) {
             return new AdminView();
         }

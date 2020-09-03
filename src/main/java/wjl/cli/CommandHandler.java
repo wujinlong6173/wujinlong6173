@@ -3,18 +3,16 @@ package wjl.cli;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Map;
 
 public class CommandHandler {
     private static final String ERROR_UNKNOWN_COMMAND = "unknown command";
-    private final Object handler;
-    private final String cmdName;
+    private final CommandView handler;
     private final CommandClass cmdClass;
 
-    public static CommandHandler build(String cmdName, Object handler) {
+    public static CommandHandler build(CommandView handler) {
         CommandClass cmdClass = CommandClass.build(handler.getClass());
         if (cmdClass != null) {
-            return new CommandHandler(cmdName, handler, cmdClass);
+            return new CommandHandler(handler, cmdClass);
         } else {
             return null;
         }
@@ -26,14 +24,17 @@ public class CommandHandler {
      *
      * @param handler 处理命令的对象
      */
-    public CommandHandler(String cmdName, Object handler, CommandClass cmdClass) {
-        this.cmdName = cmdName;
+    public CommandHandler(CommandView handler, CommandClass cmdClass) {
         this.handler = handler;
         this.cmdClass = cmdClass;
     }
 
     public CommandClass getCmdClass() {
         return cmdClass;
+    }
+
+    public CommandView getHandler() {
+        return handler;
     }
 
     /**
@@ -65,12 +66,11 @@ public class CommandHandler {
                 for (Object retItem : (List<?>)ret) {
                     outputMsg.add((String)retItem);
                 }
-            } else if (ret instanceof Map) {
-
-            } else {
-                CommandClass subMethods = CommandClass.build(ret.getClass());
-                if (subMethods != null) {
-                    return new CommandHandler(splitCmd[0], ret, subMethods);
+            } else if (ret instanceof CommandView) {
+                CommandView cmdView = (CommandView)ret;
+                CommandClass subClass = CommandClass.build(cmdView.getClass());
+                if (subClass != null) {
+                    return new CommandHandler(cmdView, subClass);
                 }
             }
             return null;
@@ -79,14 +79,5 @@ public class CommandHandler {
             outputMsg.add(e.getMessage());
             return null;
         }
-    }
-
-    /**
-     * 获取命令提示符
-     *
-     * @return
-     */
-    public String getPrompt() {
-        return cmdName;
     }
 }
