@@ -1,5 +1,7 @@
 package com.huawei.inventory;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 物理链路
  */
@@ -9,7 +11,7 @@ public class PhyLink {
     private String dstDevice;
     private String srcPort;
     private String dstPort;
-    private int nextVlan;
+    private int nextVLan;
     
     public String getId() {
         return id;
@@ -56,7 +58,23 @@ public class PhyLink {
      * 
      * @return 分配到得VLAN ID
      */
-    public int allocVlanId() {
-        return ++nextVlan;
+    public int allocVLanId() {
+        return ++nextVLan;
+    }
+
+    /**
+     * 获取链路在指定网元上的端口
+     *
+     * @param deviceName 物理设备的名称
+     * @return 空表示查找失败
+     */
+    public String getPortOfLink( String deviceName) {
+        if (StringUtils.equals(deviceName, srcDevice)) {
+            return srcPort;
+        } else if (StringUtils.equals(deviceName, dstDevice)) {
+            return dstPort;
+        } else {
+            return null;
+        }
     }
 }

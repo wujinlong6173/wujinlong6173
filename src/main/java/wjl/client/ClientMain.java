@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 
+import com.huawei.inventory.HuaWeiInventory;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
@@ -48,6 +49,8 @@ public class ClientMain {
         JFrame mainFrame = createMainFrame(menuBar, tools, detail, topo);
         mainFrame.setTitle("L3NMS");
         mainFrame.setVisible(true);
+
+        HuaWeiInventory.loadFromFile("/huawei/inventory.yaml");
         MySshServer.start(22);
     }
     

@@ -1,6 +1,6 @@
 package com.huawei.vrf;
 
-import com.huawei.inventory.HuaWeiInventory;
+import com.huawei.inventory.PhyRouterMgr;
 import wjl.datamodel.SchemaParser;
 import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderException;
@@ -40,7 +40,7 @@ public class VrfDeviceProvider implements DeviceProvider {
     @Override
     public String create(String idInNms, Map<String, Object> inputs) throws ProviderException {
         String host = (String)inputs.get("host");
-        if (!HuaWeiInventory.isDeviceExist(host)) {
+        if (!PhyRouterMgr.isDeviceExist(host)) {
             throw new ProviderException(ErrorType.INPUT_ERROR,
                     String.format("host %s does not exist.", host));
         }
