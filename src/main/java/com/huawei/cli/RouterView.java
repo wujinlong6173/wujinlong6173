@@ -16,11 +16,6 @@ public class RouterView implements CommandView {
         return null;
     }
 
-    @Command(command="interface {name}")
-    public InterfaceView makeInterface(String name) {
-        return new InterfaceView();
-    }
-
     @Command(command="ospf")
     public OspfView makeOspf() {
         return new OspfView();

@@ -11,6 +11,8 @@ public class Vrf {
     private String idInNms;
     private String name;
     private String host;
+
+    // 键值是接口在虚拟路由器中的名称
     private Map<String, Interface> bindInterfaces = new HashMap<>();
 
     public String getId() {

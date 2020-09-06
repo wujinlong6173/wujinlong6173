@@ -6,6 +6,8 @@ package com.huawei.common;
 public abstract class Interface {
     private String id;
     private String host;
+
+    // 绑定的业务标识，例如VRF的标识
     private String bindService;
 
     public String getId() {
