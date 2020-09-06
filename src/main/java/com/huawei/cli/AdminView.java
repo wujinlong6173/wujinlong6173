@@ -1,6 +1,7 @@
 package com.huawei.cli;
 
 import com.huawei.inventory.HuaWeiInventory;
+import com.huawei.inventory.PhyRouter;
 import com.huawei.inventory.PhyRouterMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
@@ -31,7 +32,11 @@ public class AdminView implements CommandView {
     }
 
     @Command(command="router {name}")
-    public RouterView getRouter(String name) {
-        return new RouterView();
+    public Object getRouter(String name) {
+        PhyRouter pr = PhyRouterMgr.getRouter(name);
+        if (pr == null) {
+            return "Error : invalid router name.";
+        }
+        return new RouterView(pr);
     }
 }

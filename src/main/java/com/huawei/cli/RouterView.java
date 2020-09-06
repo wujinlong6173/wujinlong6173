@@ -1,14 +1,26 @@
 package com.huawei.cli;
 
+import com.huawei.inventory.PhyRouter;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 
 import java.util.List;
 
 public class RouterView implements CommandView {
+    private PhyRouter phyRouter;
+
+    public RouterView(PhyRouter phyRouter) {
+        this.phyRouter = phyRouter;
+    }
+
     @Override
     public String getPrompt() {
-        return "router";
+        return phyRouter.getName();
+    }
+
+    @Command(command="display")
+    public List<String> displayConfigs() {
+        return phyRouter.getConfigs();
     }
 
     @Command(command="interface")
