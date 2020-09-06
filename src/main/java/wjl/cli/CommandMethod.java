@@ -1,5 +1,6 @@
 package wjl.cli;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -14,6 +15,7 @@ class CommandMethod {
 
     // 命令名称，即命令的第一个单词
     private final String[] splitCmdFormat;
+    private final int[] cmdParamsPosition;
 
     public static CommandMethod build(Method method) {
         if (method.isAnnotationPresent(Command.class)) {
@@ -29,6 +31,20 @@ class CommandMethod {
         this.method = method;
 
         this.splitCmdFormat = cmdFormat.split("[ \t]+");
+
+        int paramsCount = 0;
+        for (String item : this.splitCmdFormat) {
+            if (item.matches("\\{[_0-9A-Za-z]+}")) {
+                paramsCount ++;
+            }
+        }
+        this.cmdParamsPosition = new int[paramsCount];
+        paramsCount = 0;
+        for (int position = 0; position < splitCmdFormat.length; position++) {
+            if (splitCmdFormat[position].matches("\\{[_0-9A-Za-z]+}")) {
+                cmdParamsPosition[paramsCount++] = position;
+            }
+        }
     }
 
     public boolean match(String[] splitCmd) {
@@ -45,5 +61,25 @@ class CommandMethod {
 
     public String getCmdName() {
         return splitCmdFormat[0];
+    }
+
+    /**
+     * 处理输入的命令
+     *
+     * @param handler 当前的命令视图
+     * @param splitCmd 输入的命令
+     * @return 执行结果或错误信息
+     */
+    public Object invoke(CommandView handler, String[] splitCmd) {
+        try {
+            Object[] args = new Object[cmdParamsPosition.length];
+            for (int i = 0; i < cmdParamsPosition.length; i++) {
+                args[i] = splitCmd[cmdParamsPosition[i]];
+            }
+            return method.invoke(handler, args);
+        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
     }
 }

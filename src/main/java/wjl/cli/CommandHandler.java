@@ -1,7 +1,5 @@
 package wjl.cli;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
 public class CommandHandler {
@@ -45,39 +43,28 @@ public class CommandHandler {
      */
     public CommandHandler handle(String fullCmd, List<String> outputMsg) {
         String[] splitCmd = fullCmd.split("[ \t]+");
-        Method method = cmdClass.findMethod(splitCmd);
+        CommandMethod method = cmdClass.findMethod(splitCmd);
         if (method == null) {
             outputMsg.add(ERROR_UNKNOWN_COMMAND);
             return null;
         }
 
-        try {
-            Object[] args = new Object[splitCmd.length - 1];
-            for (int i = 1; i < splitCmd.length; i++) {
-                args[i - 1] = splitCmd[i];
-            }
+        Object ret = method.invoke(handler, splitCmd);
+        if (ret == null) {
 
-            Object ret = method.invoke(handler, args);
-            if (ret == null) {
-
-            } else if (ret instanceof String) {
-                outputMsg.add((String)ret);
-            } else if (ret instanceof List) {
-                for (Object retItem : (List<?>)ret) {
-                    outputMsg.add((String)retItem);
-                }
-            } else if (ret instanceof CommandView) {
-                CommandView cmdView = (CommandView)ret;
-                CommandClass subClass = CommandClass.build(cmdView.getClass());
-                if (subClass != null) {
-                    return new CommandHandler(cmdView, subClass);
-                }
+        } else if (ret instanceof String) {
+            outputMsg.add((String)ret);
+        } else if (ret instanceof List) {
+            for (Object retItem : (List<?>)ret) {
+                outputMsg.add((String)retItem);
             }
-            return null;
-        } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
-            e.printStackTrace();
-            outputMsg.add(e.getMessage());
-            return null;
+        } else if (ret instanceof CommandView) {
+            CommandView cmdView = (CommandView)ret;
+            CommandClass subClass = CommandClass.build(cmdView.getClass());
+            if (subClass != null) {
+                return new CommandHandler(cmdView, subClass);
+            }
         }
+        return null;
     }
 }

@@ -51,7 +51,13 @@ class CommandClass {
         return cmdHelp;
     }
 
-    public Method findMethod(String[] splitCmd) {
+    /**
+     * 根据输入的命令查找注册的处理方法
+     *
+     * @param splitCmd 输入的命令
+     * @return 处理方法
+     */
+    public CommandMethod findMethod(String[] splitCmd) {
         List<CommandMethod> byName = cmdMappingMethods.get(splitCmd[0]);
         if (byName == null) {
             return null;
@@ -59,7 +65,7 @@ class CommandClass {
 
         for (CommandMethod eachMethod : byName) {
             if (eachMethod.match(splitCmd)) {
-                return eachMethod.getMethod();
+                return eachMethod;
             }
         }
 

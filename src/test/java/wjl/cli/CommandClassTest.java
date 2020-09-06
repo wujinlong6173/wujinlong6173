@@ -2,7 +2,6 @@ package wjl.cli;
 
 import org.junit.Test;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -14,15 +13,23 @@ public class CommandClassTest implements CommandView {
     }
 
     @Command(command="mpls")
-    public void enableMpls() {
+    public String enableMpls() {
+        return "mpls";
     }
 
     @Command(command="mpls ldp")
-    public void enableMplsLdp() {
+    public String enableMplsLdp() {
+        return "mpls ldp";
     }
 
     @Command(command="mpls lsr-id {id}")
-    public void setLsrId(String id) {
+    public String setLsrId(String id) {
+        return id;
+    }
+
+    @Command(command="vlan from {start} to {end}")
+    public String setVLan(String start, String end) {
+        return start + ":" + end;
     }
 
     @Test
@@ -31,13 +38,26 @@ public class CommandClassTest implements CommandView {
         assertNotNull(cmdClass);
 
         List<String> cmdList = cmdClass.listCommands();
-        assertEquals(3, cmdList.size());
+        assertEquals(4, cmdList.size());
 
-        Method mpls = cmdClass.findMethod(new String[]{"mpls"});
-        Method ldp = cmdClass.findMethod(new String[]{"mpls", "ldp"});
-        Method lsr = cmdClass.findMethod(new String[]{"mpls", "lsr-id", "192.168.1.1"});
-        assertEquals("enableMpls", mpls.getName());
-        assertEquals("enableMplsLdp", ldp.getName());
-        assertEquals("setLsrId", lsr.getName());
+        String[] cmd1 = new String[]{"mpls"};
+        CommandMethod mpls = cmdClass.findMethod(cmd1);
+        assertEquals("enableMpls", mpls.getMethod().getName());
+        assertEquals("mpls", mpls.invoke(this, cmd1));
+
+        String[] cmd2 = new String[]{"mpls", "ldp"};
+        CommandMethod ldp = cmdClass.findMethod(cmd2);
+        assertEquals("enableMplsLdp", ldp.getMethod().getName());
+        assertEquals("mpls ldp", ldp.invoke(this, cmd2));
+
+        String[] cmd3 = new String[]{"mpls", "lsr-id", "192.168.1.1"};
+        CommandMethod lsr = cmdClass.findMethod(cmd3);
+        assertEquals("setLsrId", lsr.getMethod().getName());
+        assertEquals("192.168.1.1", lsr.invoke(this, cmd3));
+
+        String[] cmd4 = new String[]{"vlan", "from", "100", "to", "150"};
+        CommandMethod vlan = cmdClass.findMethod(cmd4);
+        assertEquals("setVLan", vlan.getMethod().getName());
+        assertEquals("100:150", vlan.invoke(this, cmd4));
     }
 }
