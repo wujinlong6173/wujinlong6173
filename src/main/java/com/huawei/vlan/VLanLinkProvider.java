@@ -1,6 +1,6 @@
 package com.huawei.vlan;
 
-import com.huawei.inventory.LinkMgr;
+import com.huawei.inventory.HuaWeiInventory;
 import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
@@ -45,25 +45,25 @@ public class VLanLinkProvider implements LinkProvider {
                             srcVrfId, dstVrfId));
         }
         
-        String phyLink = LinkMgr.findLinkBetweenDevice(srcHost, dstHost);
+        String phyLink = HuaWeiInventory.findLinkBetweenDevice(srcHost, dstHost);
         if (phyLink == null) {
             throw new ProviderException(ErrorType.NO_USABLE_RESOURCE,
                     String.format(Locale.ENGLISH, "no usable link between %s and %s.",
                             srcHost, dstHost));
         }
         
-        int vLanId = LinkMgr.allocVlanId(phyLink);
+        int vLanId = HuaWeiInventory.allocVlanId(phyLink);
 
         VLanSubIf srcIf = new VLanSubIf();
         srcIf.setId(UUID.randomUUID().toString());
         srcIf.setHost(srcHost);
-        srcIf.setPort(LinkMgr.getPortOfLink(phyLink, srcHost));
+        srcIf.setPort(HuaWeiInventory.getPortOfLink(phyLink, srcHost));
         srcIf.setVlanId(vLanId);
 
         VLanSubIf dstIf = new VLanSubIf();
         dstIf.setId(UUID.randomUUID().toString());
         dstIf.setHost(dstHost);
-        dstIf.setPort(LinkMgr.getPortOfLink(phyLink, dstHost));
+        dstIf.setPort(HuaWeiInventory.getPortOfLink(phyLink, dstHost));
         dstIf.setVlanId(vLanId);
 
         VrfMgr.bindInterface(srcVrfId, srcPortName, srcIf);

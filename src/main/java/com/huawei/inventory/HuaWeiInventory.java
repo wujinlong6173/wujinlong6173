@@ -11,8 +11,8 @@ import wjl.util.YamlLoader;
 /**
  * 简单粗暴的链路管理器
  */
-public class LinkMgr {
-    private static LinkMgr linkMgr;
+public class HuaWeiInventory {
+    private static HuaWeiInventory huaWeiInventory;
     private List<PhyLink> links;
     private static Set<String> devices = new HashSet<>();
     
@@ -25,14 +25,14 @@ public class LinkMgr {
     }
 
     public static void loadFromFile() {
-        if (linkMgr == null) {
-            synchronized (LinkMgr.class) {
-                if (linkMgr == null) {
-                    linkMgr = YamlLoader.fileToObject(LinkMgr.class, 
+        if (huaWeiInventory == null) {
+            synchronized (HuaWeiInventory.class) {
+                if (huaWeiInventory == null) {
+                    huaWeiInventory = YamlLoader.fileToObject(HuaWeiInventory.class,
                             "/huawei/inventory.yaml");
 
-                    if (linkMgr != null && linkMgr.links != null) {
-                        for (PhyLink lk : linkMgr.links) {
+                    if (huaWeiInventory != null && huaWeiInventory.links != null) {
+                        for (PhyLink lk : huaWeiInventory.links) {
                             devices.add(lk.getSrcDevice());
                             devices.add(lk.getDstDevice());
                         }
@@ -67,7 +67,7 @@ public class LinkMgr {
     public static String findLinkBetweenDevice(String src, String dst) {
         loadFromFile();
         
-        for (PhyLink lk : linkMgr.links) {
+        for (PhyLink lk : huaWeiInventory.links) {
             if (StringUtils.equals(src, lk.getSrcDevice())) {
                 if (StringUtils.equals(dst,  lk.getDstDevice())) {
                     return lk.getId();
@@ -121,7 +121,7 @@ public class LinkMgr {
     private static PhyLink getLink(String linkId) {
        loadFromFile();
         
-        for (PhyLink lk : linkMgr.links) {
+        for (PhyLink lk : huaWeiInventory.links) {
             if (StringUtils.equals(linkId, lk.getId())) {
                 return lk;
             }

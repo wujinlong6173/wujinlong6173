@@ -1,6 +1,6 @@
 package com.huawei.cli;
 
-import com.huawei.inventory.LinkMgr;
+import com.huawei.inventory.HuaWeiInventory;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 
@@ -19,13 +19,13 @@ public class AdminView implements CommandView {
 
     @Command(command="load {filename}")
     public String loadPhyNet(String filename) {
-        LinkMgr.loadFromFile();
+        HuaWeiInventory.loadFromFile();
         return "ok";
     }
 
     @Command(command="router")
     public List<String> listRouters() {
-        List<String> ret = new ArrayList<>(LinkMgr.getDevices());
+        List<String> ret = new ArrayList<>(HuaWeiInventory.getDevices());
         Collections.sort(ret);
         return ret;
     }
