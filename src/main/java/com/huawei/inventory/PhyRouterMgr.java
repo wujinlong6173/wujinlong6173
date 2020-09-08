@@ -7,6 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PhyRouterMgr {
     private static final Map<String, PhyRouter> ROUTERS = new ConcurrentHashMap<>();
 
+    /**
+     * 单元测试
+     */
+    public static void clear() {
+        ROUTERS.clear();
+    }
+
     public static PhyRouter getRouter(String name) {
         return ROUTERS.get(name);
     }

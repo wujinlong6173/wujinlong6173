@@ -1,7 +1,10 @@
 package com.huawei.vlan;
 
+import com.huawei.common.CLI;
 import com.huawei.inventory.PhyLink;
 import com.huawei.inventory.PhyLinkMgr;
+import com.huawei.inventory.PhyRouter;
+import com.huawei.inventory.PhyRouterMgr;
 import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
@@ -55,29 +58,35 @@ public class VLanLinkProvider implements LinkProvider {
         
         int vLanId = phyLink.allocVLanId();
 
-        VLanSubIf srcIf = new VLanSubIf();
-        srcIf.setId(UUID.randomUUID().toString());
-        srcIf.setHost(srcHost);
-        srcIf.setPort(phyLink.getPortOfLink(srcHost));
-        srcIf.setVlanId(vLanId);
-
-        VLanSubIf dstIf = new VLanSubIf();
-        dstIf.setId(UUID.randomUUID().toString());
-        dstIf.setHost(dstHost);
-        dstIf.setPort(phyLink.getPortOfLink(dstHost));
-        dstIf.setVlanId(vLanId);
+        VLanSubIf srcIf = createVLanSubIf(srcHost, phyLink.getPortOfLink(srcHost), vLanId);
+        VLanSubIf dstIf = createVLanSubIf(dstHost, phyLink.getPortOfLink(dstHost), vLanId);
 
         VrfMgr.bindInterface(srcVrfId, srcPortName, srcIf);
         VrfMgr.bindInterface(dstVrfId, dstPortName, dstIf);
+
         VLanLink lk = new VLanLink();
         lk.setId(UUID.randomUUID().toString());
         lk.setSrcSubIf(srcIf.getId());
         lk.setDstSubIf(dstIf.getId());
-
         VLanDao.addVLanLink(lk);
-        VLanDao.addVLanSubIf(srcIf);
-        VLanDao.addVLanSubIf(dstIf);
         return lk.getId();
+    }
+
+    private VLanSubIf createVLanSubIf(String host, String port, int vLanId) {
+        VLanSubIf inf = new VLanSubIf();
+        inf.setId(UUID.randomUUID().toString());
+        inf.setHost(host);
+        inf.setPort(port);
+        inf.setVlanId(vLanId);
+
+        VLanDao.addVLanSubIf(inf);
+        PhyRouter pr = PhyRouterMgr.getRouter(host);
+        if (pr != null) {
+            pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
+            pr.addConfig(CLI.__, "encapsulation", "dot1q", String.valueOf(vLanId));
+        }
+
+        return inf;
     }
 
     @Override
@@ -93,7 +102,16 @@ public class VLanLinkProvider implements LinkProvider {
         VrfMgr.unBindInterface(dstIf);
 
         VLanDao.delVLanLink(idInProvider);
-        VLanDao.delVLanSubIf(lk.getSrcSubIf());
-        VLanDao.delVLanSubIf(lk.getDstSubIf());
+        deleteVLanSubIf(srcIf);
+        deleteVLanSubIf(dstIf);
+    }
+
+    private void deleteVLanSubIf(VLanSubIf inf) {
+        VLanDao.delVLanSubIf(inf.getId());
+
+        PhyRouter pr = PhyRouterMgr.getRouter(inf.getHost());
+        if (pr != null) {
+            pr.undoConfig(CLI.INTERFACE, inf.getInterfaceName());
+        }
     }
 }

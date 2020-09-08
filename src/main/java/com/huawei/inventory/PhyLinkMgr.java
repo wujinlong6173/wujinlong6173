@@ -8,6 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PhyLinkMgr {
     private static final Map<String, PhyLink> LINKS = new ConcurrentHashMap<>();
 
+    /**
+     * 单元测试
+     */
+    public static void clear() {
+        LINKS.clear();
+    }
+
     public static void addLink(PhyLink link) {
         LINKS.putIfAbsent(link.getId(), link);
     }

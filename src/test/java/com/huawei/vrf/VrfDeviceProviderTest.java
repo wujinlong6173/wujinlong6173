@@ -5,11 +5,27 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.huawei.inventory.HuaWeiInventory;
+import com.huawei.inventory.PhyLinkMgr;
+import com.huawei.inventory.PhyRouterMgr;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import wjl.provider.ProviderException;
 
 public class VrfDeviceProviderTest {
+    @Before
+    public void init() {
+        HuaWeiInventory.loadFromFile("/huawei/inventory.yaml");
+    }
+
+    @After
+    public void fini() {
+        PhyRouterMgr.clear();
+        PhyLinkMgr.clear();
+    }
+
     @Test
     public void createVrf() throws ProviderException {
         VrfDeviceProvider provider = new VrfDeviceProvider();

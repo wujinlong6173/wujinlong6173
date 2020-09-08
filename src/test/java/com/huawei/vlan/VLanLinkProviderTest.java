@@ -3,6 +3,11 @@ package com.huawei.vlan;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.huawei.inventory.HuaWeiInventory;
+import com.huawei.inventory.PhyLinkMgr;
+import com.huawei.inventory.PhyRouterMgr;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.huawei.vrf.Vrf;
@@ -14,6 +19,17 @@ import wjl.provider.ProviderException;
 import static org.junit.Assert.*;
 
 public class VLanLinkProviderTest {
+    @Before
+    public void init() {
+        HuaWeiInventory.loadFromFile("/huawei/inventory.yaml");
+    }
+
+    @After
+    public void fini() {
+        PhyRouterMgr.clear();
+        PhyLinkMgr.clear();
+    }
+
     @Test
     public void createVLanLink() throws ProviderException {
         Map<String,Object> inputs = new HashMap<>();

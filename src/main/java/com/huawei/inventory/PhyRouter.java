@@ -1,5 +1,6 @@
 package com.huawei.inventory;
 
+import com.huawei.common.CLI;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -22,6 +23,10 @@ public class PhyRouter {
 
     public void addConfig(String... cmd) {
         configs.add(StringUtils.join(cmd, ' '));
+    }
+
+    public void undoConfig(String... cmd) {
+        configs.add("undo " + StringUtils.join(cmd, ' '));
     }
 
     public List<String> getConfigs() {

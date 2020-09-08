@@ -1,5 +1,6 @@
 package com.huawei.vrf;
 
+import com.huawei.common.CLI;
 import com.huawei.inventory.PhyRouter;
 import com.huawei.inventory.PhyRouterMgr;
 import wjl.datamodel.SchemaParser;
@@ -48,7 +49,8 @@ public class VrfDeviceProvider implements DeviceProvider {
                     String.format("host %s does not exist.", host));
         }
 
-        pr.addConfig("ip", "vpn-instance", name);
+        pr.addConfig(CLI.IP, CLI.VPN_INSTANCE, name);
+        pr.addConfig(CLI.__, "address-family", "ipv4", "unicast");
 
         Vrf vrf = new Vrf();
         vrf.setId(UUID.randomUUID().toString());
@@ -61,6 +63,14 @@ public class VrfDeviceProvider implements DeviceProvider {
 
     @Override
     public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
+        Vrf vrf = VrfMgr.getVrf(idInProvider);
+        if (vrf == null) {
+            return;
+        }
+
+        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        pr.undoConfig(CLI.IP, CLI.VPN_INSTANCE, vrf.getName());
+
         VrfMgr.deleteVrf(idInProvider);
     }
 }

@@ -3,7 +3,10 @@ package com.huawei.vrf;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.huawei.common.CLI;
 import com.huawei.common.Interface;
+import com.huawei.inventory.PhyRouter;
+import com.huawei.inventory.PhyRouterMgr;
 
 /**
  * 管理所有的VRF
@@ -42,18 +45,25 @@ public final class VrfMgr {
             return null;
         }
     }
-    
+
     /**
      * 将接口绑定到VRF
-     * 
+     *
      * @param vrfId VRF的标识
      * @param portName 接口在虚拟路由器中的名称
-     * @param inf 被绑定的接口 
+     * @param inf 被绑定的接口
      */
     public static void bindInterface(String vrfId, String portName, Interface inf) {
         Vrf vrf = allVrf.get(vrfId);
-        if (vrf != null) {
-            vrf.bindInterface(portName, inf);
+        if (vrf == null) {
+            return;
+        }
+
+        vrf.bindInterface(portName, inf);
+        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        if (pr != null) {
+            pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
+            pr.addConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
         }
     }
 
@@ -67,8 +77,15 @@ public final class VrfMgr {
             return;
         }
         Vrf vrf = allVrf.get(inf.getBindService());
-        if (vrf != null) {
-            vrf.unBindInterface(inf);
+        if (vrf == null) {
+            return;
+        }
+
+        vrf.unBindInterface(inf);
+        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        if (pr != null) {
+            pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
+            pr.undoConfig(CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
         }
     }
 
