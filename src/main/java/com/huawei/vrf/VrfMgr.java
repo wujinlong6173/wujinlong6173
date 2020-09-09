@@ -85,7 +85,7 @@ public final class VrfMgr {
         PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
-            pr.undoConfig(CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
+            pr.undoConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
         }
     }
 
