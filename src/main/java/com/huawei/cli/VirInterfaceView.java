@@ -1,5 +1,10 @@
 package com.huawei.cli;
 
+import com.huawei.common.CLI;
+import com.huawei.common.Interface;
+import com.huawei.common.InterfaceMgr;
+import com.huawei.inventory.PhyRouter;
+import com.huawei.inventory.PhyRouterMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 
@@ -24,7 +29,15 @@ public class VirInterfaceView implements CommandView {
     }
 
     @Command(command="ip address {ip}")
-    public void setIpAddress(String ip) {
+    public String setIpAddress(String ip) {
+        Interface inf = InterfaceMgr.getInterface(id);
+        if (inf == null) {
+            return "Error : virtual interface is deleted.";
+        }
 
+        PhyRouter pr = PhyRouterMgr.getRouter(inf.getHost());
+        pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
+        pr.addConfig(CLI.__, CLI.IP, CLI.ADDRESS, ip);
+        return null;
     }
 }
