@@ -21,6 +21,9 @@ public class VirBgpView implements CommandView {
 
     @Command(command="import-route {witch}")
     public void importRoute(String witch) {
+        vrf.addConfig(CLI.BGP);
+        vrf.addConfig(CLI.__, CLI.IMPORT_ROUTE, witch);
+
         PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
@@ -29,6 +32,9 @@ public class VirBgpView implements CommandView {
 
     @Command(command="peer {peer} as-number {as}")
     public void addPeer(String peer, String as) {
+        vrf.addConfig(CLI.BGP);
+        vrf.addConfig(CLI.__, CLI.PEER, peer, CLI.AS_NUMBER, as);
+
         PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());

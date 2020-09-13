@@ -8,10 +8,7 @@ import com.huawei.vrf.Vrf;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * 配置虚拟路由器
@@ -26,6 +23,18 @@ public class VirRouterView implements CommandView {
 
     VirRouterView(Vrf vrf) {
         this.vrf = vrf;
+    }
+
+    @Command(command="display")
+    public List<String> displayConfigs() {
+        List<String> ret = vrf.getConfigs();
+        for (Map.Entry<String,Interface> entry : vrf.getBindInterfaces().entrySet()) {
+            ret.add("interface " + entry.getKey());
+            for (String infCfg : entry.getValue().getConfigs()) {
+                ret.add("   " + infCfg);
+            }
+        }
+        return ret;
     }
 
     @Command(command="interface")
@@ -52,6 +61,8 @@ public class VirRouterView implements CommandView {
             return String.format(Locale.ENGLISH, "Error : port %s does not exist.", port);
         }
 
+        vrf.addConfig(CLI.IP, CLI.STATIC_ROUTE, dst, CLI.OUT, port, CLI.NEXT_HOP, nextIp);
+
         PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.IP, CLI.STATIC_ROUTE, CLI.VPN_INSTANCE, vrf.getName(), dst,
                 CLI.OUT, inf.getInterfaceName(), CLI.NEXT_HOP, nextIp);
@@ -60,6 +71,8 @@ public class VirRouterView implements CommandView {
 
     @Command(command="bgp")
     public Object cfgBgp() {
+        vrf.addConfig(CLI.BGP);
+
         PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());

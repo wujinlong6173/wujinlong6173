@@ -7,6 +7,8 @@ import com.huawei.inventory.PhyRouterMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 
+import java.util.List;
+
 /**
  * 配置虚拟路由器的接口
  */
@@ -27,8 +29,15 @@ public class VirInterfaceView implements CommandView {
         return name;
     }
 
+    @Command(command="display")
+    public List<String> displayConfigs() {
+        return inf.getConfigs();
+    }
+
     @Command(command="ip address {ip}")
     public String setIpAddress(String ip) {
+        inf.addConfig(CLI.IP, CLI.ADDRESS, ip);
+
         PhyRouter pr = PhyRouterMgr.getRouter(inf.getHost());
         pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
         pr.addConfig(CLI.__, CLI.IP, CLI.ADDRESS, ip);

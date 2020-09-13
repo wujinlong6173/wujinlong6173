@@ -1,9 +1,11 @@
 package com.huawei.common;
 
+import wjl.cli.ConfigHolder;
+
 /**
  * 所有可以配置业务的接口
  */
-public abstract class Interface {
+public abstract class Interface extends ConfigHolder {
     private String id;
     private String host;
 

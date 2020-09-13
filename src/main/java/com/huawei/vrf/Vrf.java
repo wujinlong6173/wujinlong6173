@@ -5,8 +5,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.huawei.common.Interface;
+import wjl.cli.ConfigHolder;
 
-public class Vrf {
+public class Vrf extends ConfigHolder {
     private String id;
     private String idInNms;
     private String name;
