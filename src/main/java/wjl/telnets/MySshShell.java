@@ -106,6 +106,9 @@ public class MySshShell extends Thread implements Command {
                         return sb.toString();
                     }
                     break;
+                case 27: // 忽略ESC和其它控制字符
+                    in.skip(in.available());
+                    break;
                 case 127: // 退格键
                     if (sb.length() > 0) {
                         sb.deleteCharAt(sb.length() - 1);
