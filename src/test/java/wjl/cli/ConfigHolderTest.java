@@ -1,4 +1,4 @@
-package com.huawei.inventory;
+package wjl.cli;
 
 import com.huawei.common.CLI;
 import org.junit.Test;
@@ -8,10 +8,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class PhyRouterTest {
+public class ConfigHolderTest {
     @Test
     public void cfgOneLevel() {
-        PhyRouter pr = new PhyRouter();
+        ConfigHolder pr = new ConfigHolder();
         pr.addConfig("mpls");
         pr.addConfig("mpls", "ldp");
         pr.addConfig("interface", "GE1/0.100");
@@ -44,7 +44,7 @@ public class PhyRouterTest {
 
     @Test
     public void cfgTwoLevel() {
-        PhyRouter pr = new PhyRouter();
+        ConfigHolder pr = new ConfigHolder();
         pr.addConfig("interface", "GE1/0.100");
         pr.addConfig(CLI.__, "encapsulation", "dot1q", "100");
         pr.addConfig("interface", "GE1/0.200");
@@ -80,7 +80,7 @@ public class PhyRouterTest {
 
     @Test
     public void cfgThreeLevel() {
-        PhyRouter pr = new PhyRouter();
+        ConfigHolder pr = new ConfigHolder();
         pr.addConfig("ospf", "100");
         pr.addConfig(CLI.__, "area", "0.0.1.0");
         pr.addConfig(CLI.__, CLI.__, "network", "192.168.1.0");
