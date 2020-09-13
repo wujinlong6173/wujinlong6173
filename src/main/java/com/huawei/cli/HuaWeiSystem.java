@@ -41,6 +41,6 @@ public class HuaWeiSystem implements PasswordAuthenticator {
             return null;
         }
 
-        return new VirRouterView(vrf.getId(), vrf.getName());
+        return new VirRouterView(vrf);
     }
 }

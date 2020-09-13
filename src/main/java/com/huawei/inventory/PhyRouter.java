@@ -28,6 +28,10 @@ public class PhyRouter {
         this.name = name;
     }
 
+    public String getAsNumber() {
+        return "100";
+    }
+
     /**
      * 添加配置，如果子配置，会根据上次的配置自动找位置。
      *
