@@ -3,18 +3,14 @@ package wjl.client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 import com.huawei.inventory.HuaWeiInventory;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
+import wjl.client.ctrl.HuaWeiAdminAction;
 import wjl.telnets.MySshServer;
 import wjl.util.Config;
 
@@ -40,7 +36,7 @@ public class ClientMain {
         mxSwingConstants.SHADOW_COLOR = Color.LIGHT_GRAY;
         mxConstants.W3C_SHADOWCOLOR = "#D3D3D3";
 
-        JMenuBar menuBar = new JMenuBar();
+        JMenuBar menuBar = createMainMenu();
         
         mxGraph graph = new mxGraph();
         JComponent tools = createToolsPane();
@@ -129,5 +125,14 @@ public class ClientMain {
         component.setWheelScrollingEnabled(true);
 
         return component;
+    }
+
+    static JMenuBar createMainMenu() {
+        JMenu hw = new JMenu("华为");
+        hw.add(new HuaWeiAdminAction());
+
+        JMenuBar bar = new JMenuBar();
+        bar.add(hw);
+        return bar;
     }
 }
