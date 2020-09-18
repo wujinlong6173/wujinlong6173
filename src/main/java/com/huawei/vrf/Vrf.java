@@ -13,6 +13,11 @@ public class Vrf extends ConfigHolder {
     private String name;
     private String host;
 
+    // 下面两个属性，支持传统的BGP Peer配置，对用户体现为命令
+    // peer {peer} as-number {as}，内部通过import/export RT实现。
+    private String bgpRouterId;
+    private String rtForBgpPeer;
+
     // 键值是接口在虚拟路由器中的名称
     private Map<String, Interface> bindInterfaces = new HashMap<>();
 
@@ -47,7 +52,23 @@ public class Vrf extends ConfigHolder {
     public void setHost(String host) {
         this.host = host;
     }
-    
+
+    public String getBgpRouterId() {
+        return bgpRouterId;
+    }
+
+    public void setBgpRouterId(String bgpRouterId) {
+        this.bgpRouterId = bgpRouterId;
+    }
+
+    public String getRtForBgpPeer() {
+        return rtForBgpPeer;
+    }
+
+    public void setRtForBgpPeer(String rtForBgpPeer) {
+        this.rtForBgpPeer = rtForBgpPeer;
+    }
+
     /**
      * 绑定接口
      * 

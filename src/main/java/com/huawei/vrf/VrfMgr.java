@@ -101,4 +101,13 @@ public final class VrfMgr {
         }
         return null;
     }
+
+    public static Vrf getVrfByBgpRouterId(String ip) {
+        for (Vrf vrf : allVrf.values()) {
+            if (ip.equals(vrf.getBgpRouterId())) {
+                return vrf;
+            }
+        }
+        return null;
+    }
 }

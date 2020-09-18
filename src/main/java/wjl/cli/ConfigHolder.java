@@ -81,6 +81,35 @@ public class ConfigHolder {
     }
 
     /**
+     * 检查某条配置是否存在，用于单元测试
+     *
+     * @param cfg
+     * @return 存在或不存在
+     */
+    public boolean checkConfig(String... cfg) {
+        int cfgLevel = countConfigLevel(cfg);
+        if (cfgLevel == 0) {
+            // 从根视图开始配置
+            lastLevel = 0;
+            lastLine = findConfig(cfg);
+            return lastLevel >= 0;
+        } else if (invalidLastLine()) {
+            // 没法定位上次配置的视图
+            return false;
+        } else if (cfgLevel > lastLevel + 1) {
+            // 必须逐级进入下级视图，不能跳级
+            return false;
+        }
+
+        while (cfgLevel <= lastLevel) {
+            // 回退到上次配置位置的上级视图，使cfgLevel等于lastLevel + 1
+            moveToParent();
+        }
+
+        return findConfig(cfg, cfgLevel) >= 0;
+    }
+
+    /**
      * 撤销配置，自动撤销子配置。
      *
      * @param cfg
@@ -192,6 +221,28 @@ public class ConfigHolder {
                 return line;
             }
         }
+        return -1;
+    }
+
+    private int findConfig(String[] cfg, int cfgLevel) {
+        int line;
+        for (line = lastLine + 1; line < configs.size(); line++) {
+            String[] eachCfg = configs.get(line);
+            if (eachCfg == null) {
+                continue;
+            }
+
+            if (Arrays.equals(cfg, eachCfg)) {
+                lastLine = line;
+                lastLevel = cfgLevel;
+                return line;
+            }
+
+            if (countConfigLevel(eachCfg) < cfgLevel) {
+                break;
+            }
+        }
+
         return -1;
     }
 
