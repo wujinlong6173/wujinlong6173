@@ -1,5 +1,7 @@
 package wjl.cli;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -48,7 +50,19 @@ class CommandMethod {
     }
 
     public boolean match(String[] splitCmd) {
-        return splitCmd.length == splitCmdFormat.length;
+        if (splitCmd.length != splitCmdFormat.length) {
+            return false;
+        }
+
+        for (int i = 0; i < splitCmdFormat.length; i++) {
+            if (splitCmdFormat[i].startsWith("{")) {
+                continue;
+            }
+            if (!StringUtils.equals(splitCmdFormat[i], splitCmd[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public String getCmdFormat() {
