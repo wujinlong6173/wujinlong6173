@@ -1,9 +1,6 @@
 package wjl.net;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import wjl.net.impl.DeviceImpl;
 import wjl.net.impl.LinkImpl;
@@ -56,6 +53,21 @@ public class NetworkApi {
         dev.setName(name);
         intent.addDevice(dev);
         return devId;
+    }
+
+    /**
+     * 修改设备在拓扑图上的坐标
+     *
+     * @param devId 设备唯一标识
+     * @param dipX X坐标
+     * @param dipY Y坐标
+     */
+    public void setDevicePosition(String devId, double dipX, double dipY) {
+        Device dev = intent.getDevice(devId);
+        if (dev != null) {
+            dev.setDipX(dipX);
+            dev.setDipY(dipY);
+        }
     }
 
     /**
@@ -402,5 +414,22 @@ public class NetworkApi {
         // 与供应商的约定：设备意图的标识作为用户名，供应商的标识作为密码
         return String.format(Locale.ENGLISH, "-ssh -l %s -pw %s %s %s",
                 devId, devImpl.getOuterId(), "127.0.0.1", "22");
+    }
+
+    /**
+     * 查询所有设备意图，应该返回数据副本。
+     *
+     * @return 设备意图列表
+     */
+    public Collection<Device> getAllDevices() {
+        return intent.getAllDevices();
+    }
+
+    public Collection<Port> getAllPorts() {
+        return intent.getAllPorts();
+    }
+
+    public Collection<Link> getAllLinks() {
+        return intent.getAllLinks();
     }
 }

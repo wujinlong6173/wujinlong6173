@@ -1,11 +1,10 @@
-package wjl.client.ctrl;
+package wjl.client.topo;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import wjl.client.dialog.InputDeployParamDialog;
 import wjl.client.mxgraph.mxCellDevice;
 import wjl.client.mxgraph.mxCellLink;
 import wjl.net.NetworkException;
@@ -18,12 +17,12 @@ import wjl.util.ErrorType;
  */
 class DeployAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
-    private final ClientControlCenter ccc;
+    private final TopoControlCenter ccc;
     private final boolean deploy;
     private final InputDeployParamDialog deviceDlg;
     private final InputDeployParamDialog linkDlg;
     
-    public DeployAction(ClientControlCenter ccc, boolean deploy) {
+    public DeployAction(TopoControlCenter ccc, boolean deploy) {
         super(deploy ? "部署" : "去部署");
         this.ccc = ccc;
         this.deploy = deploy;

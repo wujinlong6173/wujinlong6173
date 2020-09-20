@@ -1,4 +1,4 @@
-package wjl.client.ctrl;
+package wjl.client.topo;
 
 import java.awt.event.ActionEvent;
 
@@ -16,10 +16,10 @@ import wjl.util.ErrorType;
 class CreateLinkAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
-    private final ClientControlCenter ccc;
+    private final TopoControlCenter ccc;
     private int nextId;
     
-    public CreateLinkAction(ClientControlCenter ccc) {
+    public CreateLinkAction(TopoControlCenter ccc) {
         super("创建链路");
         this.ccc = ccc;
     }

@@ -6,13 +6,10 @@ import java.awt.Color;
 import javax.swing.*;
 
 import com.huawei.inventory.HuaWeiInventory;
-import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
-import com.mxgraph.view.mxGraph;
 import wjl.client.ctrl.HuaWeiAdminAction;
-import wjl.demo.CrossIspMgrDemo;
-import wjl.demo.SingleIspMgrDemo;
+import wjl.client.topo.TopoControlCenter;
 import wjl.telnets.MySshServer;
 import wjl.util.Config;
 
@@ -40,10 +37,9 @@ public class ClientMain {
 
         JMenuBar menuBar = createMainMenu();
 
-        mxGraph graph = new mxGraph();
         JComponent tools = createToolsPane();
         JComponent detail = createDetailPane();
-        JComponent topo = createTopoPane(graph);
+        JComponent topo = createTopoPane();
         JFrame mainFrame = createMainFrame(menuBar, tools, detail, topo);
         mainFrame.setTitle("L3NMS");
         mainFrame.setVisible(true);
@@ -93,53 +89,16 @@ public class ClientMain {
         return new JPanel();
     }
     
-    static JComponent createTopoPane(mxGraph graph) {
-        // 从文件加载图数据后不改变缩放比例
-        graph.setResetViewOnRootChange(false);
-        // 拖拽节点到边的中间时，不允许自动分割边
-        graph.setSplitEnabled(false);
-        // 拖拽边时，不会解除和节点的绑定，只有拖拽端点才能解除绑定
-        graph.setDisconnectOnMove(false);
-        // 禁止改变图标的大小
-        graph.setCellsResizable(false);
-        // 将一个阶段拖放到另一个节点时，不自动调整后者的大小
-        graph.setExtendParentsOnAdd(false);
-        // 禁止拖动边的端点，避免和节点解除绑定
-        graph.setCellsDisconnectable(false);
-        // 允许选中多个对象
-        graph.setCellsSelectable(true);
-
-        mxGraphComponent component = new mxGraphComponent(graph);
-        // 不需要拖动方式生成连线
-        component.getConnectionHandler().setEnabled(false);
-        // 设置背景颜色
-        component.getViewport().setBackground(Color.WHITE);
-        
-        MyMouseListener mouse = new MyMouseListener(component);
-        // 通过Ctrl+鼠标滚轮控制缩放
-        component.addMouseWheelListener(mouse);
-        // 监听鼠标动作，显示右键菜单
-        component.getGraphControl().addMouseListener(mouse);
-        // 消除设备图标上面的加号，即展开、收缩的按钮
-        component.setFoldingEnabled(false);
-        component.setKeepSelectionVisibleOnZoom(true);
-        component.setAutoExtend(true);
-        component.setWheelScrollingEnabled(true);
-
-        return component;
+    static JComponent createTopoPane() {
+        TopoControlCenter ccc = new TopoControlCenter(null);
+        return ccc.getComponent();
     }
 
     static JMenuBar createMainMenu() {
         JMenu hw = new JMenu("华为");
         hw.add(new HuaWeiAdminAction());
 
-        JMenu isp = new JMenu("运营商");
-        isp.add(new SingleIspMgrDemo("移动"));
-        isp.add(new SingleIspMgrDemo("电信"));
-        isp.add(new CrossIspMgrDemo("互联互通"));
-
         JMenuBar bar = new JMenuBar();
-        bar.add(isp);
         bar.add(hw);
         return bar;
     }

@@ -1,4 +1,4 @@
-package wjl.client.ctrl;
+package wjl.client.topo;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -16,9 +16,9 @@ import wjl.util.ErrorType;
  */
 class ConfigDeviceAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
-    private final ClientControlCenter ccc;
+    private final TopoControlCenter ccc;
     
-    public ConfigDeviceAction(ClientControlCenter ccc) {
+    public ConfigDeviceAction(TopoControlCenter ccc) {
         super("打开配置终端");
         this.ccc = ccc;
     }

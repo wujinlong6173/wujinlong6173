@@ -1,4 +1,4 @@
-package wjl.client.dialog;
+package wjl.client.topo;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,7 +25,7 @@ import wjl.util.YamlLoader;
 /**
  * 部署设备或链路时，选择供应商，输入供应商需要的参数
  */
-public class InputDeployParamDialog extends JDialog {
+class InputDeployParamDialog extends JDialog {
     private static final long serialVersionUID = 1L;
 
     // 用户输入的文本

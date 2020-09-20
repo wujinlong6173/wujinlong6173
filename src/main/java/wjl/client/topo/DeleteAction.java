@@ -1,4 +1,4 @@
-package wjl.client.ctrl;
+package wjl.client.topo;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -18,10 +18,10 @@ import wjl.net.NetworkException;
 class DeleteAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
     
-    private final ClientControlCenter ccc;
+    private final TopoControlCenter ccc;
     private final List<Object> removedCells = new ArrayList<>();
     
-    public DeleteAction(ClientControlCenter ccc) {
+    public DeleteAction(TopoControlCenter ccc) {
         super("删除");
         this.ccc = ccc;
     }

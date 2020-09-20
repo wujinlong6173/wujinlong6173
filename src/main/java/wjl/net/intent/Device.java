@@ -15,8 +15,8 @@ public class Device {
     /**
      * 设备在拓扑图上的坐标，单位为DIP，设备无关像素。
      */
-    private int dipX;
-    private int dipY;
+    private double dipX;
+    private double dipY;
     
     /**
      * 设备内的所有端口，以端口名称为索引。
@@ -72,19 +72,19 @@ public class Device {
         this.deploy = deploy;
     }
 
-    public int getDipX() {
+    public double getDipX() {
         return dipX;
     }
 
-    public void setDipX(int dipX) {
+    public void setDipX(double dipX) {
         this.dipX = dipX;
     }
 
-    public int getDipY() {
+    public double getDipY() {
         return dipY;
     }
 
-    public void setDipY(int dipY) {
+    public void setDipY(double dipY) {
         this.dipY = dipY;
     }
 }

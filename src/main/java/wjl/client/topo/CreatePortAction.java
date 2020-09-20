@@ -1,4 +1,4 @@
-package wjl.client.ctrl;
+package wjl.client.topo;
 
 import java.awt.event.ActionEvent;
 
@@ -18,9 +18,9 @@ import wjl.util.ErrorType;
 class CreatePortAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 
-    private final ClientControlCenter ccc;
+    private final TopoControlCenter ccc;
     
-    public CreatePortAction(ClientControlCenter ccc) {
+    public CreatePortAction(TopoControlCenter ccc) {
         super("创建端口");
         this.ccc = ccc;
     }

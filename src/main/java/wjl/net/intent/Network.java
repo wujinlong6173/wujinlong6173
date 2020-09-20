@@ -2,6 +2,7 @@ package wjl.net.intent;
 
 import wjl.net.NetworkSummary;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,18 @@ public class Network {
      * 网络中的所有链路。
      */
     private Map<String, Link> links = new HashMap<>();
+
+    public Collection<Device> getAllDevices() {
+        return devices.values();
+    }
+
+    public Collection<Port> getAllPorts() {
+        return ports.values();
+    }
+
+    public Collection<Link> getAllLinks() {
+        return links.values();
+    }
     
     public void addDevice(Device dev) {
         devices.put(dev.getId(), dev);
