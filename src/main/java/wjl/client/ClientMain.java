@@ -11,6 +11,8 @@ import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import wjl.client.ctrl.HuaWeiAdminAction;
+import wjl.demo.CrossIspMgrDemo;
+import wjl.demo.SingleIspMgrDemo;
 import wjl.telnets.MySshServer;
 import wjl.util.Config;
 
@@ -37,7 +39,7 @@ public class ClientMain {
         mxConstants.W3C_SHADOWCOLOR = "#D3D3D3";
 
         JMenuBar menuBar = createMainMenu();
-        
+
         mxGraph graph = new mxGraph();
         JComponent tools = createToolsPane();
         JComponent detail = createDetailPane();
@@ -64,7 +66,7 @@ public class ClientMain {
         mainPane.setDividerLocation(200);
         mainPane.setDividerSize(6);
         mainPane.setBorder(null);
-        
+
         // 主窗口
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -131,7 +133,13 @@ public class ClientMain {
         JMenu hw = new JMenu("华为");
         hw.add(new HuaWeiAdminAction());
 
+        JMenu isp = new JMenu("运营商");
+        isp.add(new SingleIspMgrDemo("移动"));
+        isp.add(new SingleIspMgrDemo("电信"));
+        isp.add(new CrossIspMgrDemo("互联互通"));
+
         JMenuBar bar = new JMenuBar();
+        bar.add(isp);
         bar.add(hw);
         return bar;
     }
