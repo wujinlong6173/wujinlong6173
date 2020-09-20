@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import wjl.client.mxgraph.mxCellDevice;
 import wjl.util.Config;
 import wjl.util.ErrorType;
 

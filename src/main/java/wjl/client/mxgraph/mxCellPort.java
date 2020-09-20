@@ -1,4 +1,4 @@
-package wjl.client.ctrl;
+package wjl.client.mxgraph;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;

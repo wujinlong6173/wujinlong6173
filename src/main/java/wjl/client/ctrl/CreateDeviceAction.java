@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import com.mxgraph.model.mxCell;
+import wjl.client.mxgraph.mxCellDevice;
 
 /**
  * 创建设备

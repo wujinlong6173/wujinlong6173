@@ -5,6 +5,8 @@ import javax.swing.JPopupMenu;
 
 import com.mxgraph.view.mxGraph;
 
+import wjl.client.mxgraph.mxCellDevice;
+import wjl.client.mxgraph.mxCellLink;
 import wjl.net.NetworkApi;
 
 public class ClientControlCenter {

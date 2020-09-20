@@ -6,6 +6,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import wjl.client.dialog.InputDeployParamDialog;
+import wjl.client.mxgraph.mxCellDevice;
+import wjl.client.mxgraph.mxCellLink;
 import wjl.net.NetworkException;
 import wjl.provider.ProviderException;
 import wjl.provider.ProviderLoader;

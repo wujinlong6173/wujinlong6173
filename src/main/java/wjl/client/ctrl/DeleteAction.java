@@ -7,6 +7,9 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
+import wjl.client.mxgraph.mxCellDevice;
+import wjl.client.mxgraph.mxCellLink;
+import wjl.client.mxgraph.mxCellPort;
 import wjl.net.NetworkException;
 
 /**
