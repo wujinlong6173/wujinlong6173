@@ -3,6 +3,7 @@ package com.huawei.cli;
 import com.huawei.common.CLI;
 import com.huawei.inventory.PhyRouter;
 import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.vrf.BgpPeerGroupImpl;
 import com.huawei.vrf.VpnRes;
 import com.huawei.vrf.Vrf;
 import com.huawei.vrf.VrfMgr;
@@ -104,5 +105,43 @@ public class VirBgpView implements CommandView {
         }
 
         return other.getRtForBgpPeer();
+    }
+
+    /*
+        L3VPN通过import/export RT控制VRF之间是否互通，其作用和传统BGP Peer是一样的。
+        前面已经用import/export RT实现了点到点BGP Peer，但是，VRF数量很多时需要执行
+        大量BGP Peer命令，非常麻烦。传统BGP提出了路由反射器等多种方案，解决BGP Peer
+        数量过多的问题。根据import/export RT技术的特点，抽象出BGP Peer Group模型，
+        体现为两条配置命令，peer group {name} hub 和 peer group {name} spoke，将
+        虚拟路由器以hub或spoke角色加入BGP Peer Group。
+        为每个BGP Peer Group分配两个RT值，分别称为hubRT和spokeRT；VRF以hub角色加入
+        Group时，export hubRT，import hubRT & spokeRT；VRF以spoke角色加入Group时，
+        export SpokeRT，import HubRT。
+     */
+    @Command(command="peer group {name} hub")
+    public void joinPeerGroupAsHub(String name) {
+        vrf.addConfig(CLI.BGP);
+        vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.HUB);
+
+        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
+        pr.addConfig(CLI.BGP, pr.getAsNumber());
+        pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.EXPORT);
+        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT);
+        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getSpokeRT(), CLI.IMPORT);
+    }
+
+    @Command(command="peer group {name} spoke")
+    public void joinPeerGroupAsSpoke(String name) {
+        vrf.addConfig(CLI.BGP);
+        vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.SPOKE);
+
+        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
+        pr.addConfig(CLI.BGP, pr.getAsNumber());
+        pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getSpokeRT(), CLI.EXPORT);
+        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT);
     }
 }
