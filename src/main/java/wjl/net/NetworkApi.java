@@ -244,6 +244,11 @@ public class NetworkApi {
                     error.getErrors().toString());
         }
 
+        // 自动填写设备名称，省去界面填写的麻烦
+        if (!inputs.containsKey("name")) {
+            inputs.put("name", dev.getName());
+        }
+
         String outerId = dp.create(devId, inputs);
         DeviceImpl mapper = new DeviceImpl(devId, outerId, provider, inputs);
         impl.addDeviceImpl(mapper);
