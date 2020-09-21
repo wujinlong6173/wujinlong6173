@@ -16,7 +16,6 @@ public class TopoControlCenter {
     private final mxGraph graph;
     private final mxGraphComponent component;
 
-    private final MyMouseListener mouse;
     private double mouseX;
     private double mouseY;
 
@@ -55,7 +54,7 @@ public class TopoControlCenter {
         undeployMenu = popupMenu.add(new DeployAction(this, false));
         configMenu = popupMenu.add(new ConfigDeviceAction(this));
 
-        mouse = new MyMouseListener(component, this);
+        final MyMouseListener mouse = new MyMouseListener(component, this);
         // 通过Ctrl+鼠标滚轮控制缩放
         component.addMouseWheelListener(mouse);
         // 监听鼠标动作，显示右键菜单
