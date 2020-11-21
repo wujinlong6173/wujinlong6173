@@ -4,6 +4,7 @@ import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import wjl.client.TabbedToolsPane;
 import wjl.client.topo.TopoControlCenter;
+import wjl.provider.ProviderMgr;
 import wjl.util.Config;
 
 import javax.swing.*;
@@ -34,12 +35,16 @@ public class AllAsOneClient {
     }
 
     static JMenuBar createMainMenu() {
-        TenantNetMgrDemo ta = new TenantNetMgrDemo("租户A");
-        TenantNetMgrDemo tb = new TenantNetMgrDemo("租户B");
-        TenantNetMgrDemo tc = new TenantNetMgrDemo("租户C");
+        ProviderMgr forTenant = new ProviderMgr();
+        TenantNetMgrDemo ta = new TenantNetMgrDemo("租户A", forTenant);
+        TenantNetMgrDemo tb = new TenantNetMgrDemo("租户B", forTenant);
+        TenantNetMgrDemo tc = new TenantNetMgrDemo("租户C", forTenant);
 
-        SingleIspMgrDemo ia = new SingleIspMgrDemo("移动");
-        SingleIspMgrDemo ib = new SingleIspMgrDemo("电信");
+        ProviderMgr forMobile = new ProviderMgr();
+        SingleIspMgrDemo ia = new SingleIspMgrDemo("移动", forMobile);
+
+        ProviderMgr forTel = new ProviderMgr();
+        SingleIspMgrDemo ib = new SingleIspMgrDemo("电信", forTel);
 
         JMenu isp = new JMenu("运营商");
         isp.add(new ShowFrameAction(ia.getIspName(), ia));
@@ -60,7 +65,7 @@ public class AllAsOneClient {
     static JPanel createMainPanel() {
         JComponent tools = createToolsPane();
         JComponent detail = createDetailPane();
-        TopoControlCenter ccc = new TopoControlCenter(null);
+        TopoControlCenter ccc = new TopoControlCenter(null, null);
 
         // 左边的面板
         JSplitPane leftPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tools, detail);

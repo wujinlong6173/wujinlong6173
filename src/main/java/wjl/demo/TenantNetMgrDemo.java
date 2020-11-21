@@ -2,6 +2,7 @@ package wjl.demo;
 
 import wjl.client.topo.TopoControlCenter;
 import wjl.net.NetworkApi;
+import wjl.provider.ProviderMgr;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,12 +18,13 @@ public class TenantNetMgrDemo extends JFrame {
     /**
      *
      * @param tenantName 租户名称，唯一标识
+     * @param providerMgr 本网络选中的供应商集合
      */
-    public TenantNetMgrDemo(String tenantName) {
+    public TenantNetMgrDemo(String tenantName, ProviderMgr providerMgr) {
         super("L3NMS " + tenantName);
         this.tenantName = tenantName;
-        this.network = new NetworkApi();
-        this.ccc = new TopoControlCenter(network);
+        this.network = new NetworkApi(providerMgr);
+        this.ccc = new TopoControlCenter(network, providerMgr);
 
         // 初始化窗口
         JPanel mainPanel = new JPanel();

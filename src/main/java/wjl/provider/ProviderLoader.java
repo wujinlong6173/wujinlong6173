@@ -15,10 +15,10 @@ public class ProviderLoader {
         registerDeviceProviders = new HashMap<>();
         registerLinkProviders = new HashMap<>();
         for (DeviceProvider dev : deviceProviders) {
-            registerDeviceProviders.put(dev.getName(), dev);
+            registerDeviceProviders.put(dev.getClass().getName(), dev);
         }
         for (LinkProvider link : linkProviders) {
-            registerLinkProviders.put(link.getName(), link);
+            registerLinkProviders.put(link.getClass().getName(), link);
         }
     }
 
@@ -27,18 +27,18 @@ public class ProviderLoader {
     }
 
     /**
-     * 获取所有设备供应商的名称
+     * 获取所有设备供应商的类名
      *
-     * @return 名称集合
+     * @return 类名集合
      */
     public static Set<String> listDeviceProviders() {
         return LazyProviderLoader.INSTANCE.registerDeviceProviders.keySet();
     }
 
     /**
-     * 获取所有链路供应商的名称
+     * 获取所有链路供应商的类名
      *
-     * @return 名称集合
+     * @return 类名集合
      */
     public static Set<String> listLinkProviders() {
         return LazyProviderLoader.INSTANCE.registerLinkProviders.keySet();

@@ -27,11 +27,6 @@ public class VLanLinkProvider implements LinkProvider {
     }
 
     @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
-
-    @Override
     public ObjectSchema getCreateSchema() {
         return createSchema;
     }

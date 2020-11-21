@@ -6,13 +6,6 @@ import java.util.Map;
 
 public interface LinkProvider {
     /**
-     * 提供者的名称，不得重复
-     *
-     * @return 唯一名称
-     */
-    String getName();
-
-    /**
      * 创建链路的参数字典
      *
      * @return 参数字典

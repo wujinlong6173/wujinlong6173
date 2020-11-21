@@ -6,13 +6,6 @@ import java.util.Map;
 
 public interface DeviceProvider {
     /**
-     * 提供者的名称，不得重复
-     *
-     * @return 唯一名称
-     */
-    String getName();
-
-    /**
      * 创建设备的参数字典
      *
      * @return 参数字典

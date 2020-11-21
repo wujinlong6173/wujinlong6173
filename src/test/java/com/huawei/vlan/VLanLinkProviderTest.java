@@ -48,8 +48,8 @@ public class VLanLinkProviderTest {
         // 创建链路
         inputs.clear();
         String lk = provider.create("---", 
-                r1, "Eth1", vrfProvider.getName(),
-                r2, "Eth2", vrfProvider.getName(),
+                r1, "Eth1", "VRF",
+                r2, "Eth2", "VRF",
                 inputs);
         
         Vrf vrf1 = VrfMgr.getVrf(r1);

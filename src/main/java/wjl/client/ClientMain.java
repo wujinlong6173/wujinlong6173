@@ -6,10 +6,13 @@ import java.awt.Color;
 import javax.swing.*;
 
 import com.huawei.inventory.HuaWeiInventory;
+import com.huawei.vlan.VLanLinkProvider;
+import com.huawei.vrf.VrfDeviceProvider;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import wjl.client.ctrl.HuaWeiAdminAction;
 import wjl.client.topo.TopoControlCenter;
+import wjl.provider.ProviderMgr;
 import wjl.telnets.MySshServer;
 import wjl.util.Config;
 
@@ -90,7 +93,10 @@ public class ClientMain {
     }
     
     static JComponent createTopoPane() {
-        TopoControlCenter ccc = new TopoControlCenter(null);
+        ProviderMgr providerMgr = new ProviderMgr();
+        providerMgr.addDeviceProvider("VRF", new VrfDeviceProvider());
+        providerMgr.addLinkProvider("VLan", new VLanLinkProvider());
+        TopoControlCenter ccc = new TopoControlCenter(null, providerMgr);
         return ccc.getComponent();
     }
 

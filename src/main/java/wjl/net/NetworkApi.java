@@ -9,10 +9,7 @@ import wjl.net.intent.Device;
 import wjl.net.intent.Link;
 import wjl.net.intent.Network;
 import wjl.net.intent.Port;
-import wjl.provider.DeviceProvider;
-import wjl.provider.LinkProvider;
-import wjl.provider.ProviderException;
-import wjl.provider.ProviderLoader;
+import wjl.provider.*;
 import wjl.datamodel.validator.CreateValidator;
 import wjl.util.ErrorCollector;
 import wjl.util.ErrorType;
@@ -23,10 +20,20 @@ import wjl.util.ErrorType;
 public class NetworkApi {
     private final Network intent;
     private final NetworkImpl impl;
-    
-    public NetworkApi() {
+    private final ProviderMgr providerMgr;
+
+    /**
+     *
+     * @param providerMgr 本网络选中的供应商集合
+     */
+    public NetworkApi(ProviderMgr providerMgr) {
         intent = new Network();
         impl = new NetworkImpl();
+        this.providerMgr = providerMgr;
+    }
+
+    public ProviderMgr getProviderMgr() {
+        return providerMgr;
     }
 
     /**
@@ -243,7 +250,7 @@ public class NetworkApi {
                     String.format("device %s is already deployed.", devId));
         }
 
-        DeviceProvider dp = ProviderLoader.getDeviceProvider(provider);
+        DeviceProvider dp = providerMgr.getDeviceProvider(provider);
         if (dp == null) {
             throw new NetworkException(ErrorType.INPUT_ERROR,
                     String.format("%s is not a device provider.", provider));
@@ -297,7 +304,7 @@ public class NetworkApi {
             }
         }
 
-        DeviceProvider dp = ProviderLoader.getDeviceProvider(devImpl.getProvider());
+        DeviceProvider dp = providerMgr.getDeviceProvider(devImpl.getProvider());
         if (dp == null) {
             throw new NetworkException(ErrorType.SYSTEM_ERROR,
                     String.format("missing device provider %s.", devImpl.getProvider()));
@@ -334,7 +341,7 @@ public class NetworkApi {
         }
         
 
-        LinkProvider dp = ProviderLoader.getLinkProvider(provider);
+        LinkProvider dp = providerMgr.getLinkProvider(provider);
         if (dp == null) {
             throw new NetworkException(ErrorType.INPUT_ERROR,
                     String.format("%s is not a link provider.", provider));
@@ -375,7 +382,6 @@ public class NetworkApi {
      * @throws ProviderException 透传供应商的错误
      */
     public void undeployLink(String linkId) throws NetworkException, ProviderException {
-        
         Link lk = intent.getLink(linkId);
         if (lk == null) {
             return;
@@ -386,9 +392,8 @@ public class NetworkApi {
             lk.setDeploy(false);
             return;
         }
-        
 
-        LinkProvider dp = ProviderLoader.getLinkProvider(lkImpl.getProvider());
+        LinkProvider dp = providerMgr.getLinkProvider(lkImpl.getProvider());
         if (dp == null) {
             throw new NetworkException(ErrorType.INPUT_ERROR,
                     String.format("missing link provider %s.", lkImpl.getProvider()));

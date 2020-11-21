@@ -9,7 +9,6 @@ import wjl.client.mxgraph.mxCellDevice;
 import wjl.client.mxgraph.mxCellLink;
 import wjl.net.NetworkException;
 import wjl.provider.ProviderException;
-import wjl.provider.ProviderLoader;
 import wjl.util.ErrorType;
 
 /**
@@ -29,10 +28,10 @@ class DeployAction extends AbstractAction {
 
         deviceDlg = new InputDeployParamDialog();
         linkDlg = new InputDeployParamDialog();
-        deviceDlg.setProviders(ProviderLoader.listDeviceProviders());
-        linkDlg.setProviders(ProviderLoader.listLinkProviders());
+        deviceDlg.setProviders(ccc.getProviderMgr().listDeviceProviders());
+        linkDlg.setProviders(ccc.getProviderMgr().listLinkProviders());
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         mxCellDevice dev = ccc.getSelectedDevice();

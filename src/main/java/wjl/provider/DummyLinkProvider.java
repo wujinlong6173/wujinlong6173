@@ -9,12 +9,6 @@ import java.util.UUID;
  * 虚无的链路供应商
  */
 public class DummyLinkProvider implements LinkProvider {
-
-    @Override
-    public String getName() {
-        return DummyLinkProvider.class.getName();
-    }
-
     @Override
     public ObjectSchema getCreateSchema() {
         return null;

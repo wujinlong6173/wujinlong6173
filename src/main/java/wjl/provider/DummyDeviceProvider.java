@@ -9,12 +9,6 @@ import java.util.UUID;
  * 虚无的设备供应商
  */
 public class DummyDeviceProvider implements DeviceProvider {
-
-    @Override
-    public String getName() {
-        return DummyDeviceProvider.class.getName();
-    }
-
     @Override
     public ObjectSchema getCreateSchema() {
         return null;

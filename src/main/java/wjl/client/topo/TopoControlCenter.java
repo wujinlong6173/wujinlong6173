@@ -7,6 +7,7 @@ import wjl.client.mxgraph.mxCellDevice;
 import wjl.client.mxgraph.mxCellLink;
 import wjl.client.mxgraph.mxGraphBuilder;
 import wjl.net.NetworkApi;
+import wjl.provider.ProviderMgr;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,7 @@ public class TopoControlCenter {
     private final NetworkApi net;
     private final mxGraph graph;
     private final mxGraphComponent component;
+    private final ProviderMgr providerMgr;
 
     private double mouseX;
     private double mouseY;
@@ -32,14 +34,16 @@ public class TopoControlCenter {
      *
      * @param net 如果为空则自动创建一个
      */
-    public TopoControlCenter(NetworkApi net) {
+    public TopoControlCenter(NetworkApi net, ProviderMgr providerMgr) {
         // 初始化mxGraph组件
         if (net == null) {
-            this.net = new NetworkApi();
+            this.net = new NetworkApi(providerMgr);
             this.graph = new mxGraph();
+            this.providerMgr = providerMgr;
         } else {
             this.net = net;
             this.graph = mxGraphBuilder.build(net);
+            this.providerMgr = net.getProviderMgr();
         }
         component = new mxGraphComponent(graph);
         initGraphStyle();
@@ -86,6 +90,10 @@ public class TopoControlCenter {
         component.setKeepSelectionVisibleOnZoom(true);
         component.setAutoExtend(true);
         component.setWheelScrollingEnabled(true);
+    }
+
+    public ProviderMgr getProviderMgr() {
+        return providerMgr;
     }
 
     public mxGraph getGraph() {

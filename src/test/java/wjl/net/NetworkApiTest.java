@@ -8,7 +8,7 @@ public class NetworkApiTest {
 
     @Test
     public void testNetworkIntent() throws NetworkException {
-        NetworkApi api = new NetworkApi();
+        NetworkApi api = new NetworkApi(null);
         String r1 = api.createDevice("Router1");
         String r2 = api.createDevice("Router2");
         String p1 = api.createPort(r1, "Eth1", null);
