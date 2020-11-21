@@ -25,14 +25,18 @@ public class MySshServer {
     }
 
     public static void start(int port) {
+        HuaWeiSystem hw = new HuaWeiSystem();
+        MySshShellFactory shellFactory = new MySshShellFactory();
+        shellFactory.addCommandViewFactory(hw);
+
         try {
             SshServer ss = SshServer.setUpDefaultServer();
             ss.setHost("127.0.0.1");
             ss.setPort(port);
-            ss.setPasswordAuthenticator(new HuaWeiSystem());
+            ss.setPasswordAuthenticator(hw);
             ss.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
             //ss.setShellFactory(winShellFactory());
-            ss.setShellFactory(new MySshShellFactory());
+            ss.setShellFactory(shellFactory);
             ss.start(); // 本函数会立即返回
         } catch (IOException e) {
             e.printStackTrace();

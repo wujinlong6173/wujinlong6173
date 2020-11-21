@@ -7,8 +7,9 @@ import org.apache.sshd.server.auth.password.PasswordAuthenticator;
 import org.apache.sshd.server.auth.password.PasswordChangeRequiredException;
 import org.apache.sshd.server.session.ServerSession;
 import wjl.cli.CommandView;
+import wjl.cli.CommandViewFactory;
 
-public class HuaWeiSystem implements PasswordAuthenticator {
+public class HuaWeiSystem implements PasswordAuthenticator, CommandViewFactory {
     // 这是演示用的程序，没有任何危害
     private static final String ADMIN_NAME = "admin";
     private static final String ADMIN_PASSWORD = "123456";
@@ -27,16 +28,17 @@ public class HuaWeiSystem implements PasswordAuthenticator {
     /**
      * 获取某个路由器的命令行视图
      *
-     * @param username 虚拟路由器在网络意图中的标识
+     * @param name 虚拟路由器在网络意图中的标识
      * @return 命令行视图
      */
-    public static CommandView getCommandView(String username) {
-        if (ADMIN_NAME.equals(username)) {
+    @Override
+    public CommandView build(String name) {
+        if (ADMIN_NAME.equals(name)) {
             return new AdminView();
         }
 
         // 鉴权时已经确保VRF存在
-        Vrf vrf = VrfMgr.getVrfByNmsId(username);
+        Vrf vrf = VrfMgr.getVrfByNmsId(name);
         if (vrf == null) {
             return null;
         }
