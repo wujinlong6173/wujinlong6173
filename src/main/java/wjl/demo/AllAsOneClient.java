@@ -1,6 +1,8 @@
 package wjl.demo;
 
 import com.huawei.inventory.HuaWeiInventory;
+import com.huawei.inventory.PhyLinkProvider;
+import com.huawei.inventory.PhyRouterProvider;
 import com.huawei.vlan.VLanLinkProvider;
 import com.huawei.vrf.VrfDeviceProvider;
 import com.mxgraph.swing.util.mxSwingConstants;
@@ -40,7 +42,6 @@ public class AllAsOneClient implements ActionListener {
 
         Config.load();
 
-        HuaWeiInventory.loadFromFile("/huawei/inventory.yaml");
         MySshServer.start(22);
         new AllAsOneClient().start();
     }
@@ -71,10 +72,14 @@ public class AllAsOneClient implements ActionListener {
 
     JMenuBar createMainMenu() {
         ProviderMgr forMobile = new ProviderMgr();
-        SingleIspMgrDemo ia = new SingleIspMgrDemo("移动", forMobile);
+        forMobile.addDeviceProvider("物理路由器", new PhyRouterProvider());
+        forMobile.addLinkProvider("物理链路", new PhyLinkProvider());
+        SingleIspMgrDemo ia = new SingleIspMgrDemo("移动", "YD", forMobile);
 
         ProviderMgr forTel = new ProviderMgr();
-        SingleIspMgrDemo ib = new SingleIspMgrDemo("电信", forTel);
+        forTel.addDeviceProvider("物理路由器", new PhyRouterProvider());
+        forTel.addLinkProvider("物理链路", new PhyLinkProvider());
+        SingleIspMgrDemo ib = new SingleIspMgrDemo("电信", "DX", forTel);
 
         JMenu isp = new JMenu("运营商");
         isp.add(new ShowFrameAction(ia.getIspName(), ia));

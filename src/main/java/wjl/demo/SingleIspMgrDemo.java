@@ -24,15 +24,16 @@ public class SingleIspMgrDemo extends JFrame {
     /**
      *
      * @param ispName 运营商的名称
+     * @param namePrefix 自动给设备命名的前缀
      * @param providerMgr 本网络选中的供应商集合
      */
-    public SingleIspMgrDemo(String ispName, ProviderMgr providerMgr) {
+    public SingleIspMgrDemo(String ispName, String namePrefix, ProviderMgr providerMgr) {
         super("L3NMS " + ispName);
         this.ispName = ispName;
         this.cfg = loadConfig(String.format(Locale.ENGLISH, "/demo/%s.properties", ispName));
         this.network = new NetworkApi(providerMgr);
         this.ccc = new TopoControlCenter(network, providerMgr);
-        this.ccc.setDeviceNamePrefix(ispName);
+        this.ccc.setDeviceNamePrefix(namePrefix);
 
         // 初始化窗口
         JPanel mainPanel = new JPanel();

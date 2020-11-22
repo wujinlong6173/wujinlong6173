@@ -7,6 +7,10 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PhyLink {
     private String id;
+
+    /**
+     * 两端设备的名称，不是UUID，因为创建VRF时输入的是物理设备的名称。
+     */
     private String srcDevice;
     private String dstDevice;
     private String srcPort;

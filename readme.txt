@@ -13,3 +13,4 @@
 中文乱码的问题：
 1. Putty客户端中文乱码的解决办法，打开Putty Configuration > Window > Translation，将Remote character set修改为Use font encoding。再切换到Session，将设置保存为Default Settings。
 2. 拓扑界面中文乱码的解决办法，启动本程序时，设置JVM参数 -Dfile.encoding=gbk。
+3. 未解决问题，物理路由器不能使用中文名称，否则无法打开配置终端。因为，Putty传给服务端的字符串不是UTF-8编码。

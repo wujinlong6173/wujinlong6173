@@ -19,6 +19,10 @@ public class PhyLinkMgr {
         LINKS.putIfAbsent(link.getId(), link);
     }
 
+    public static void delLink(String id) {
+        LINKS.remove(id);
+    }
+
     /**
      * 在两台设备之间寻找链路，假设所有链路都是双向的
      *
