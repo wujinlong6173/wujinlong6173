@@ -1,5 +1,6 @@
 package wjl.demo;
 
+import com.huawei.cli.HuaWeiSystem;
 import com.huawei.physical.PhyLinkProvider;
 import com.huawei.physical.PhyRouterProvider;
 import com.huawei.vlan.VLanLinkProvider;
@@ -42,7 +43,8 @@ public class AllAsOneClient implements ActionListener {
 
         Config.load();
 
-        MySshServer.start(22);
+        HuaWeiSystem hws = new HuaWeiSystem();
+        MySshServer.start(22, hws, hws);
         new AllAsOneClient().start();
     }
 

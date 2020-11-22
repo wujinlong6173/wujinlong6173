@@ -1,5 +1,6 @@
 package com.huawei.physical;
 
+import com.huawei.common.CLI;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 
@@ -25,5 +26,6 @@ public class PhyRouterView implements CommandView {
     @Command(command="bgp {asNumber}")
     public void makeBgp(String asNumber) {
         phyRouter.setAsNumber(asNumber);
+        phyRouter.addConfig(CLI.BGP, asNumber);
     }
 }

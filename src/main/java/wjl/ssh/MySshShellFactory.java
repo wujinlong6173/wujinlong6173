@@ -19,7 +19,9 @@ public class MySshShellFactory implements ShellFactory {
     private final List<CommandViewFactory> viewFactoryList = new ArrayList<>();
 
     public void addCommandViewFactory(CommandViewFactory factory) {
-        viewFactoryList.add(factory);
+        if (factory != null) {
+            viewFactoryList.add(factory);
+        }
     }
 
     @Override

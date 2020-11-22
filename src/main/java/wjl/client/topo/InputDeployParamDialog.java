@@ -8,6 +8,7 @@ import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.apache.commons.lang3.StringUtils;
 import wjl.util.ErrorType;
 import wjl.util.YamlLoader;
 
@@ -107,7 +109,9 @@ class InputDeployParamDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 try {
                     String raw = textInput.getText();
-                    inputs = (Map<String,Object>)YamlLoader.str2obj(raw, Map.class);
+                    inputs = StringUtils.isEmpty(raw)
+                            ? new HashMap<>()
+                            : (Map<String,Object>)YamlLoader.str2obj(raw, Map.class);
                     confirm = true;
                     InputDeployParamDialog.this.dispose();
                 } catch (IOException e1) {
@@ -116,7 +120,6 @@ class InputDeployParamDialog extends JDialog {
                 }
             }
         });
-
         
         cancel.addActionListener(new ActionListener() {
             @Override
