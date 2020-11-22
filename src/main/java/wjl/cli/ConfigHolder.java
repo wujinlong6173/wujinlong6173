@@ -1,7 +1,6 @@
 package wjl.cli;
 
 import com.huawei.common.CLI;
-import com.huawei.inventory.InvalidRouterCfg;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -38,10 +37,10 @@ public class ConfigHolder {
             return;
         } else if (invalidLastLine()) {
             // 没法定位上次配置的视图
-            throw new InvalidRouterCfg(cfg);
+            throw new InvalidCommandLine(cfg);
         } else if (cfgLevel > lastLevel + 1) {
             // 必须逐级进入下级视图，不能跳级
-            throw new InvalidRouterCfg(cfg);
+            throw new InvalidCommandLine(cfg);
         }
 
         while (cfgLevel <= lastLevel) {
@@ -122,10 +121,10 @@ public class ConfigHolder {
             return;
         } else if (invalidLastLine()) {
             // 没法定位上次配置的视图
-            throw new InvalidRouterCfg(cfg);
+            throw new InvalidCommandLine(cfg);
         } else if (cfgLevel > lastLevel + 1) {
             // 必须逐级进入下级视图，不能跳级
-            throw new InvalidRouterCfg(cfg);
+            throw new InvalidCommandLine(cfg);
         }
 
         while (cfgLevel <= lastLevel) {
