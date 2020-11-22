@@ -2,10 +2,12 @@ package com.huawei.vlan;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-import com.huawei.inventory.HuaWeiInventory;
-import com.huawei.inventory.PhyLinkMgr;
-import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.physical.PhyLinkMgr;
+import com.huawei.physical.PhyLinkProvider;
+import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyRouterProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +22,16 @@ import static org.junit.Assert.*;
 
 public class VLanLinkProviderTest {
     @Before
-    public void init() {
-        HuaWeiInventory.loadFromFile("/huawei/inventory.yaml");
+    public void init() throws ProviderException {
+        PhyRouterProvider routerProvider = new PhyRouterProvider();
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put("name", "VLanTest1");
+        String r1 = routerProvider.create(UUID.randomUUID().toString(), inputs);
+        inputs.put("name", "VLanTest2");
+        String r2 = routerProvider.create(UUID.randomUUID().toString(), inputs);
+
+        PhyLinkProvider linkProvider = new PhyLinkProvider();
+        linkProvider.create(UUID.randomUUID().toString(), r1, "GE0", null, r2, "GE1", null, inputs);
     }
 
     @After
@@ -36,10 +46,10 @@ public class VLanLinkProviderTest {
         
         // 准备数据
         VrfDeviceProvider vrfProvider = new VrfDeviceProvider();
-        inputs.put("host", "AG01");
+        inputs.put("host", "VLanTest1");
         inputs.put("name", "4g.vpn");
         String r1 = vrfProvider.create("---", inputs);
-        inputs.put("host", "AG02");
+        inputs.put("host", "VLanTest2");
         inputs.put("name", "4g.vpn");
         String r2 = vrfProvider.create("---", inputs);
         

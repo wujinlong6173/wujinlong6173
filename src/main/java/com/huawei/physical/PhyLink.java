@@ -1,4 +1,4 @@
-package com.huawei.inventory;
+package com.huawei.physical;
 
 import org.apache.commons.lang3.StringUtils;
 

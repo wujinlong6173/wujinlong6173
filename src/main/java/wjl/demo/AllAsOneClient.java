@@ -1,15 +1,14 @@
 package wjl.demo;
 
-import com.huawei.inventory.HuaWeiInventory;
-import com.huawei.inventory.PhyLinkProvider;
-import com.huawei.inventory.PhyRouterProvider;
+import com.huawei.physical.PhyLinkProvider;
+import com.huawei.physical.PhyRouterProvider;
 import com.huawei.vlan.VLanLinkProvider;
 import com.huawei.vrf.VrfDeviceProvider;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import wjl.client.topo.TopoControlCenter;
 import wjl.provider.ProviderMgr;
-import wjl.telnets.MySshServer;
+import wjl.ssh.MySshServer;
 import wjl.util.Config;
 
 import javax.swing.*;
@@ -21,6 +20,7 @@ import java.util.Map;
 
 /**
  * 所有东西放在一个进程中运行，提供一个界面。
+ * JVM参数：-Dfile.encoding=gbk
  */
 public class AllAsOneClient implements ActionListener {
     private static final String CMD_SWITCH_TENANT = "cmd_switch_tenant";

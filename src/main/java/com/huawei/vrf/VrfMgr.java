@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.huawei.common.CLI;
 import com.huawei.common.Interface;
-import com.huawei.inventory.PhyRouter;
-import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.physical.PhyRouter;
+import com.huawei.physical.PhyRouterMgr;
 
 /**
  * 管理所有的VRF

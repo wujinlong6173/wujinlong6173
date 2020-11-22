@@ -1,10 +1,10 @@
 package com.huawei.cli;
 
 import com.huawei.common.CLI;
-import com.huawei.inventory.HuaWeiInventory;
-import com.huawei.inventory.PhyLinkMgr;
-import com.huawei.inventory.PhyRouter;
-import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.physical.PhyLinkMgr;
+import com.huawei.physical.PhyRouter;
+import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyRouterProvider;
 import com.huawei.vrf.*;
 import org.junit.After;
 import org.junit.Before;
@@ -13,13 +13,19 @@ import wjl.provider.ProviderException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.Assert.assertTrue;
 
 public class VirBgpViewTest {
     @Before
-    public void init() {
-        HuaWeiInventory.loadFromFile("/huawei/inventory.yaml");
+    public void init() throws ProviderException {
+        PhyRouterProvider routerProvider = new PhyRouterProvider();
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put("name", "BgpTest1");
+        routerProvider.create(UUID.randomUUID().toString(), inputs);
+        inputs.put("name", "BgpTest2");
+        routerProvider.create(UUID.randomUUID().toString(), inputs);
     }
 
     @After
@@ -33,13 +39,13 @@ public class VirBgpViewTest {
         VrfDeviceProvider provider = new VrfDeviceProvider();
         Map<String, Object> inputs = new HashMap<>();
         inputs.put("name", "test");
-        inputs.put("host", "AG01");
+        inputs.put("host", "BgpTest1");
         String id1 = provider.create("1", inputs);
-        inputs.put("host", "AG02");
+        inputs.put("host", "BgpTest2");
         String id2 = provider.create("2", inputs);
 
-        PhyRouter ag01 = PhyRouterMgr.getRouter("AG01");
-        PhyRouter ag02 = PhyRouterMgr.getRouter("AG02");
+        PhyRouter ag01 = PhyRouterMgr.getRouter("BgpTest1");
+        PhyRouter ag02 = PhyRouterMgr.getRouter("BgpTest2");
         Vrf vrf1 = VrfMgr.getVrf(id1);
         Vrf vrf2 = VrfMgr.getVrf(id2);
 
@@ -69,13 +75,13 @@ public class VirBgpViewTest {
         VrfDeviceProvider provider = new VrfDeviceProvider();
         Map<String, Object> inputs = new HashMap<>();
         inputs.put("name", "test");
-        inputs.put("host", "AG01");
+        inputs.put("host", "BgpTest1");
         String id3 = provider.create("3", inputs);
-        inputs.put("host", "AG02");
+        inputs.put("host", "BgpTest2");
         String id4 = provider.create("4", inputs);
 
-        PhyRouter ag01 = PhyRouterMgr.getRouter("AG01");
-        PhyRouter ag02 = PhyRouterMgr.getRouter("AG02");
+        PhyRouter ag01 = PhyRouterMgr.getRouter("BgpTest1");
+        PhyRouter ag02 = PhyRouterMgr.getRouter("BgpTest2");
 
         VirRouterView view3 = new VirRouterView(VrfMgr.getVrf(id3));
         VirRouterView view4 = new VirRouterView(VrfMgr.getVrf(id4));

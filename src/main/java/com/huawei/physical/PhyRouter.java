@@ -1,4 +1,4 @@
-package com.huawei.inventory;
+package com.huawei.physical;
 
 import wjl.cli.ConfigHolder;
 
@@ -8,6 +8,7 @@ import wjl.cli.ConfigHolder;
 public class PhyRouter extends ConfigHolder {
     private String idInNms;
     private String name;
+    private String asNumber = "100";
 
     public String getIdInNms() {
         return idInNms;
@@ -26,6 +27,10 @@ public class PhyRouter extends ConfigHolder {
     }
 
     public String getAsNumber() {
-        return "100";
+        return asNumber;
+    }
+
+    public void setAsNumber(String asNumber) {
+        this.asNumber = asNumber;
     }
 }

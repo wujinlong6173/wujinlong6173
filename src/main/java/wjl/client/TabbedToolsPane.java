@@ -15,6 +15,9 @@ import com.mxgraph.model.mxCell;
 
 import wjl.util.YamlLoader;
 
+/**
+ * 支持往拓扑图拖拽的工具栏
+ */
 public class TabbedToolsPane extends JTabbedPane {
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +60,7 @@ public class TabbedToolsPane extends JTabbedPane {
                 Map<String,Object> mapNode = (Map<String,Object>)node;
                 String name = (String)mapNode.get("name");
                 String icon = (String)mapNode.get("icon");
-                URL iconUrl = ClientMain.class.getResource(icon);
+                URL iconUrl = TabbedToolsPane.class.getResource(icon);
                 if (iconUrl == null) {
                     continue;
                 }
@@ -79,7 +82,7 @@ public class TabbedToolsPane extends JTabbedPane {
                 Map<String,Object> mapEdge = (Map<String,Object>)edge;
                 String name = (String)mapEdge.get("name");
                 String icon = (String)mapEdge.get("icon");
-                URL iconUrl = ClientMain.class.getResource(icon);
+                URL iconUrl = TabbedToolsPane.class.getResource(icon);
                 if (iconUrl == null) {
                     continue;
                 }

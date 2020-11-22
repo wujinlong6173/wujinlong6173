@@ -1,4 +1,4 @@
-package com.huawei.inventory;
+package com.huawei.physical;
 
 import wjl.datamodel.SchemaParser;
 import wjl.datamodel.schema.ObjectSchema;

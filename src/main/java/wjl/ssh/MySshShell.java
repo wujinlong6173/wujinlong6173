@@ -1,4 +1,4 @@
-package wjl.telnets;
+package wjl.ssh;
 
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;

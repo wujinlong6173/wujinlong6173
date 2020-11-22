@@ -2,10 +2,10 @@ package com.huawei.vlan;
 
 import com.huawei.common.CLI;
 import com.huawei.common.InterfaceMgr;
-import com.huawei.inventory.PhyLink;
-import com.huawei.inventory.PhyLinkMgr;
-import com.huawei.inventory.PhyRouter;
-import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.physical.PhyLink;
+import com.huawei.physical.PhyLinkMgr;
+import com.huawei.physical.PhyRouter;
+import com.huawei.physical.PhyRouterMgr;
 import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 

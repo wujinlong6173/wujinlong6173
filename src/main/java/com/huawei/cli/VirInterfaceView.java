@@ -2,8 +2,8 @@ package com.huawei.cli;
 
 import com.huawei.common.CLI;
 import com.huawei.common.Interface;
-import com.huawei.inventory.PhyRouter;
-import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.physical.PhyRouter;
+import com.huawei.physical.PhyRouterMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 

@@ -1,4 +1,4 @@
-package com.huawei.inventory;
+package com.huawei.physical;
 
 import org.junit.Test;
 

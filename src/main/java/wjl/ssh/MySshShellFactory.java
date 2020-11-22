@@ -1,6 +1,5 @@
-package wjl.telnets;
+package wjl.ssh;
 
-import com.huawei.cli.HuaWeiSystem;
 import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.command.Command;
 import org.apache.sshd.server.shell.ShellFactory;

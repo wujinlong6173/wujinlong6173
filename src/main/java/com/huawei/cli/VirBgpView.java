@@ -1,8 +1,8 @@
 package com.huawei.cli;
 
 import com.huawei.common.CLI;
-import com.huawei.inventory.PhyRouter;
-import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.physical.PhyRouter;
+import com.huawei.physical.PhyRouterMgr;
 import com.huawei.vrf.BgpPeerGroupImpl;
 import com.huawei.vrf.VpnRes;
 import com.huawei.vrf.Vrf;

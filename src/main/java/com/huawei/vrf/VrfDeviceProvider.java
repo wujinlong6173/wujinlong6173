@@ -1,8 +1,8 @@
 package com.huawei.vrf;
 
 import com.huawei.common.CLI;
-import com.huawei.inventory.PhyRouter;
-import com.huawei.inventory.PhyRouterMgr;
+import com.huawei.physical.PhyRouter;
+import com.huawei.physical.PhyRouterMgr;
 import wjl.datamodel.SchemaParser;
 import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderException;
