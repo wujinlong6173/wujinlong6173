@@ -11,12 +11,16 @@ import wjl.provider.ProviderMgr;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 public class TopoControlCenter {
     private final NetworkApi net;
     private final mxGraph graph;
     private final mxGraphComponent component;
     private final ProviderMgr providerMgr;
+    private String deviceNamePrefix = "Router";
+    private int nextId;
 
     private double mouseX;
     private double mouseY;
@@ -106,6 +110,19 @@ public class TopoControlCenter {
 
     public JComponent getComponent() {
         return component;
+    }
+
+    public void setDeviceNamePrefix(String prefix) {
+        this.deviceNamePrefix = prefix;
+    }
+
+    /**
+     * 添加设备时自动生成设备名称
+     *
+     * @return 新生成的设备名称
+     */
+    public String nextDeviceName() {
+        return String.format(Locale.ENGLISH, "%s-%d", deviceNamePrefix, ++nextId);
     }
 
     void setMousePosition(mxPoint loc) {

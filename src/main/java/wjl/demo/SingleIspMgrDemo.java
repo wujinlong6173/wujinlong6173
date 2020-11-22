@@ -32,6 +32,7 @@ public class SingleIspMgrDemo extends JFrame {
         this.cfg = loadConfig(String.format(Locale.ENGLISH, "/demo/%s.properties", ispName));
         this.network = new NetworkApi(providerMgr);
         this.ccc = new TopoControlCenter(network, providerMgr);
+        this.ccc.setDeviceNamePrefix(ispName);
 
         // 初始化窗口
         JPanel mainPanel = new JPanel();

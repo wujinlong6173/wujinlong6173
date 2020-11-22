@@ -54,13 +54,14 @@ public class AllAsOneClient implements ActionListener {
         mainFrame = createMainFrame(menuBar, mainPanel);
         mainFrame.setTitle("L3NMS");
         mainFrame.setVisible(true);
-        switchTenant("租户A");
+        switchTenant("TenantA");
     }
 
     private void switchTenant(String tenantName) {
         TopoControlCenter tcc = allTenants.get(tenantName);
         if (tcc == null) {
             tcc = new TopoControlCenter(null, forTenant);
+            tcc.setDeviceNamePrefix(tenantName);
             allTenants.put(tenantName, tcc);
         }
 
@@ -81,10 +82,10 @@ public class AllAsOneClient implements ActionListener {
         isp.add(new CrossIspMgrDemo("互联互通"));
 
         JMenu tenant = new JMenu("租户");
-        tenant.add(tenantMenuItem("租户A"));
-        tenant.add(tenantMenuItem("租户B"));
-        tenant.add(tenantMenuItem("租户C"));
-        tenant.add(tenantMenuItem("租户D"));
+        tenant.add(tenantMenuItem("TenantA"));
+        tenant.add(tenantMenuItem("TenantB"));
+        tenant.add(tenantMenuItem("TenantC"));
+        tenant.add(tenantMenuItem("TenantD"));
 
         JMenuBar bar = new JMenuBar();
         bar.add(isp);
