@@ -54,8 +54,9 @@ public class VLanLinkProvider implements LinkProvider {
         
         int vLanId = phyLink.allocVLanId();
 
-        VLanSubIf srcIf = createVLanSubIf(srcHost, phyLink.getPortOfLink(srcHost), vLanId);
-        VLanSubIf dstIf = createVLanSubIf(dstHost, phyLink.getPortOfLink(dstHost), vLanId);
+        // 将逻辑端口的名称记在实际端口的备注上
+        VLanSubIf srcIf = createVLanSubIf(srcPortName, srcHost, phyLink.getPortOfLink(srcHost), vLanId);
+        VLanSubIf dstIf = createVLanSubIf(dstPortName, dstHost, phyLink.getPortOfLink(dstHost), vLanId);
 
         VrfMgr.bindInterface(srcVrfId, srcPortName, srcIf);
         VrfMgr.bindInterface(dstVrfId, dstPortName, dstIf);
@@ -68,7 +69,7 @@ public class VLanLinkProvider implements LinkProvider {
         return lk.getId();
     }
 
-    private VLanSubIf createVLanSubIf(String host, String port, int vLanId) {
+    private VLanSubIf createVLanSubIf(String desc, String host, String port, int vLanId) {
         VLanSubIf inf = new VLanSubIf();
         inf.setId(UUID.randomUUID().toString());
         inf.setHost(host);
@@ -79,6 +80,7 @@ public class VLanLinkProvider implements LinkProvider {
         PhyRouter pr = PhyRouterMgr.getRouter(host);
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
+            pr.addConfig(CLI.__, "description", desc);
             pr.addConfig(CLI.__, "encapsulation", "dot1q", String.valueOf(vLanId));
         }
 
