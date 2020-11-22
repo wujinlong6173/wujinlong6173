@@ -1,5 +1,8 @@
 package wjl.datamodel.schema;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class DataSchema {
     private boolean required;
     private String name;
@@ -37,5 +40,16 @@ public abstract class DataSchema {
 
     public void setFlag(int flag) {
         this.flag = flag;
+    }
+
+    public Map<String, Object> serialize() {
+        Map<String, Object> ret = new HashMap<>();
+        if (required) {
+            ret.put(SchemaKeywords.REQUIRED, Boolean.TRUE);
+        }
+        if (defaultValue != null) {
+            ret.put(SchemaKeywords.DEFAULT, defaultValue);
+        }
+        return ret;
     }
 }

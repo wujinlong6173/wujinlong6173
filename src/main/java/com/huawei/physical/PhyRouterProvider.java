@@ -17,7 +17,7 @@ public class PhyRouterProvider implements DeviceProvider {
     public PhyRouterProvider() {
         SchemaParser parser = new SchemaParser();
         createSchema = parser.parse("PhysicalRouter", "properties:\n" +
-                "name: {type: string, required: true, flag: CR}\n");
+                "  name: {type: string, required: true, flag: CR}\n");
         configSchema = null;
     }
 

@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -34,7 +33,9 @@ class InputDeployParamDialog extends JDialog {
     private JTextArea textInput;
     // 让用户选择供应商名称
     private JComboBox<String> providerList;
-    
+    private final JTextArea textSchema;
+
+    private Map<String,String> providers;
     private boolean confirm;
     private Map<String,Object> inputs;
 
@@ -65,21 +66,29 @@ class InputDeployParamDialog extends JDialog {
         
         setLayout(new BorderLayout(10,5)); // 数字表示水平间距和垂直间距
         
-        
+        // 选择供应商的下拉列表
         JPanel panelProvider = new JPanel(new FlowLayout());
         panelProvider.add(new Label("供应商"));
         providerList = new JComboBox<>();
+        providerList.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selected = (String)providerList.getSelectedItem();
+                if (selected != null && providers != null) {
+                    String schema = providers.get(selected);
+                    textSchema.setText(schema);
+                }
+            }
+        });
         panelProvider.add(providerList);
         this.add(panelProvider, BorderLayout.NORTH);
         
         
         JPanel panelSchema = new JPanel(new BorderLayout());
         panelSchema.add(new Label("参数格式"), BorderLayout.NORTH);
-        JTextArea textSchema = new JTextArea();
+        textSchema = new JTextArea();
         textSchema.setEditable(false);
         textSchema.setBackground(Color.LIGHT_GRAY);
-        textSchema.setText("name: {type: string, required: true, flag: CR}\n" +
-                "host: {type: string, required: true, flag: CR}\n");
         JScrollPane scrollSchema = new JScrollPane(textSchema);
         scrollSchema.setPreferredSize(new Dimension(300, 200));
         panelSchema.add(scrollSchema, BorderLayout.CENTER);
@@ -129,9 +138,20 @@ class InputDeployParamDialog extends JDialog {
         });
     }
 
-    public void setProviders(Set<String> listProviders) {
-        for (String providerName : listProviders) {
+    /**
+     *
+     * @param providers 键值为供应商的名称，值为供应商特有参数的说明
+     */
+    public void setProviders(Map<String, String> providers) {
+        this.providers = providers;
+        for (String providerName : providers.keySet()) {
             providerList.addItem(providerName);
+        }
+
+        String selected = (String)providerList.getSelectedItem();
+        if (selected != null) {
+            String schema = providers.get(selected);
+            textSchema.setText(schema);
         }
     }
 }

@@ -19,8 +19,8 @@ public class VrfDeviceProvider implements DeviceProvider {
     public VrfDeviceProvider() {
         SchemaParser parser = new SchemaParser();
         createSchema = parser.parse("HW.VRF", "properties:\n" +
-                "name: {type: string, required: true, flag: CR}\n" +
-                "host: {type: string, required: true, flag: CR}\n");
+                "  name: {type: string, required: true, flag: CR}\n" +
+                "  host: {type: string, required: true, flag: CR}\n");
         configSchema = null;
     }
 
