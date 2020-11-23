@@ -44,7 +44,7 @@ public class ProviderMgr {
 
     public Map<String, String> listLinkProviders() {
         Map<String, String> nameToSchema = new HashMap<>();
-        for (Map.Entry<String, DeviceProvider> entry : deviceProviders.entrySet()) {
+        for (Map.Entry<String, LinkProvider> entry : linkProviders.entrySet()) {
             nameToSchema.put(entry.getKey(), strObjectSchema(entry.getValue().getCreateSchema()));
         }
         return nameToSchema;

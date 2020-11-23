@@ -61,8 +61,15 @@ public class MySshShell extends Thread implements Command {
     @Override
     public void run() {
         try {
+            // 修改客户端标题
+            String title = String.format("\033];2%s\007", handlers.getPrompt());
+            out.write(title.getBytes());
+            out.flush();
+
             while (!channel.isClosed()) {
-                // 输出命令提示符
+                // 输出命令提示符，字体为绿色
+                final String green = "\033[32m";
+                out.write(green.getBytes());
                 out.write(handlers.getPrompt().getBytes());
                 out.flush();
 
@@ -128,6 +135,9 @@ public class MySshShell extends Thread implements Command {
     private void handleCommand(String cmd) throws IOException {
         List<String> msg = handlers.handle(cmd);
         if (msg != null) {
+            // 输出执行结果，字体为白色
+            final String white = "\033[37m";
+            out.write(white.getBytes());
             for (String eachLine : msg) {
                 out.write(eachLine.getBytes());
                 out.write(CR_LF);
