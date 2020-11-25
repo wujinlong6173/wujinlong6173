@@ -2,7 +2,7 @@ package com.huawei.cli;
 
 import com.huawei.common.CLI;
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import com.huawei.vrf.BgpPeerGroupImpl;
 import com.huawei.vrf.VpnRes;
 import com.huawei.vrf.Vrf;
@@ -29,7 +29,7 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.IMPORT_ROUTE, witch);
 
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         pr.addConfig(CLI.__, CLI.__, CLI.IMPORT_ROUTE, witch);
@@ -49,7 +49,7 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.ROUTER_ID, ip);
 
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         pr.addConfig(CLI.__, CLI.__, CLI.ROUTER_ID, ip);
@@ -63,7 +63,7 @@ public class VirBgpView implements CommandView {
         */
     @Command(command="peer {peer} as-number {as}")
     public String addPeer(String peer, String as) {
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         if (pr.getAsNumber().equals(as)) {
             Vrf other = VrfMgr.getVrfByBgpRouterId(peer);
             if (other == null) {
@@ -91,7 +91,7 @@ public class VirBgpView implements CommandView {
     }
 
     private String cfgRtForBgpPeer(Vrf other) {
-        PhyRouter pr = PhyRouterMgr.getRouter(other.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(other.getHost());
 
         // 给对端VRF分配并导出RT
         if (other.getRtForBgpPeer() == null) {
@@ -123,7 +123,7 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.HUB);
 
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
@@ -137,7 +137,7 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.SPOKE);
 
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());

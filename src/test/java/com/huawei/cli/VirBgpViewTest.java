@@ -3,7 +3,7 @@ package com.huawei.cli;
 import com.huawei.common.CLI;
 import com.huawei.physical.PhyLinkMgr;
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import com.huawei.physical.PhyRouterProvider;
 import com.huawei.vrf.*;
 import org.junit.After;
@@ -30,7 +30,7 @@ public class VirBgpViewTest {
 
     @After
     public void fini() {
-        PhyRouterMgr.clear();
+        PhyDeviceMgr.clear();
         PhyLinkMgr.clear();
     }
 
@@ -44,8 +44,8 @@ public class VirBgpViewTest {
         inputs.put("host", "BgpTest2");
         String id2 = provider.create("2", inputs);
 
-        PhyRouter ag01 = PhyRouterMgr.getRouter("BgpTest1");
-        PhyRouter ag02 = PhyRouterMgr.getRouter("BgpTest2");
+        PhyRouter ag01 = PhyDeviceMgr.getRouter("BgpTest1");
+        PhyRouter ag02 = PhyDeviceMgr.getRouter("BgpTest2");
         Vrf vrf1 = VrfMgr.getVrf(id1);
         Vrf vrf2 = VrfMgr.getVrf(id2);
 
@@ -80,8 +80,8 @@ public class VirBgpViewTest {
         inputs.put("host", "BgpTest2");
         String id4 = provider.create("4", inputs);
 
-        PhyRouter ag01 = PhyRouterMgr.getRouter("BgpTest1");
-        PhyRouter ag02 = PhyRouterMgr.getRouter("BgpTest2");
+        PhyRouter ag01 = PhyDeviceMgr.getRouter("BgpTest1");
+        PhyRouter ag02 = PhyDeviceMgr.getRouter("BgpTest2");
 
         VirRouterView view3 = new VirRouterView(VrfMgr.getVrf(id3));
         VirRouterView view4 = new VirRouterView(VrfMgr.getVrf(id4));

@@ -2,7 +2,7 @@ package com.huawei.vrf;
 
 import com.huawei.common.CLI;
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import wjl.datamodel.SchemaParser;
 import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderException;
@@ -38,7 +38,7 @@ public class VrfDeviceProvider implements DeviceProvider {
     public String create(String idInNms, Map<String, Object> inputs) throws ProviderException {
         String host = (String)inputs.get("host");
         String name = (String)inputs.get("name");
-        PhyRouter pr = PhyRouterMgr.getRouter(host);
+        PhyRouter pr = PhyDeviceMgr.getRouter(host);
         if (pr == null) {
             throw new ProviderException(ErrorType.INPUT_ERROR,
                     String.format("host %s does not exist.", host));
@@ -63,7 +63,7 @@ public class VrfDeviceProvider implements DeviceProvider {
             return;
         }
 
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         pr.undoConfig(CLI.IP, CLI.VPN_INSTANCE, vrf.getName());
 
         VrfMgr.deleteVrf(idInProvider);

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.huawei.physical.PhyLinkMgr;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import com.huawei.physical.PhyRouterProvider;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class VrfDeviceProviderTest {
 
     @After
     public void fini() {
-        PhyRouterMgr.clear();
+        PhyDeviceMgr.clear();
         PhyLinkMgr.clear();
     }
 

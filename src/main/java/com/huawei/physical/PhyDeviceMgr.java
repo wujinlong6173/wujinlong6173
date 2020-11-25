@@ -3,18 +3,23 @@ package com.huawei.physical;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PhyRouterMgr {
+/**
+ * 管理所有的物理路由器、物理交换机。
+ */
+public class PhyDeviceMgr {
     // 键值为物理路由器的名称
     private static final Map<String, PhyRouter> ROUTERS = new ConcurrentHashMap<>();
+    // 键值为物理交换机的名称
+    private static final Map<String, PhySwitch> SWITCHES = new ConcurrentHashMap<>();
 
     /**
      * 单元测试
      */
     public static void clear() {
         ROUTERS.clear();
+        SWITCHES.clear();
     }
 
     public static PhyRouter getRouter(String name) {
@@ -27,6 +32,22 @@ public class PhyRouterMgr {
 
     public static void delRouter(String name) {
         ROUTERS.remove(name);
+    }
+
+    public static void addSwitch(PhySwitch sw) {
+        SWITCHES.put(sw.getName(), sw);
+    }
+
+    public static void delSwitch(String name) {
+        SWITCHES.remove(name);
+    }
+
+    public static PhyDevice getDevice(String name) {
+        PhyDevice dev = ROUTERS.get(name);
+        if (dev == null) {
+            dev = SWITCHES.get(name);
+        }
+        return dev;
     }
 
     /**
@@ -43,21 +64,4 @@ public class PhyRouterMgr {
         return null;
     }
 
-    /**
-     * 判断某设备是否存在
-     *
-     * @param name 物理路由器的名称
-     * @return
-     */
-    public static boolean isDeviceExist(String name) {
-        return ROUTERS.containsKey(name);
-    }
-
-    /**
-     *
-     * @return 物理路由器的名称列表
-     */
-    public static Set<String> getDevices() {
-        return ROUTERS.keySet();
-    }
 }

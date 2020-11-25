@@ -3,7 +3,7 @@ package com.huawei.cli;
 import com.huawei.common.CLI;
 import com.huawei.common.Interface;
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import com.huawei.vrf.Vrf;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
@@ -63,7 +63,7 @@ public class VirRouterView implements CommandView {
 
         vrf.addConfig(CLI.IP, CLI.STATIC_ROUTE, dst, CLI.OUT, port, CLI.NEXT_HOP, nextIp);
 
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.IP, CLI.STATIC_ROUTE, CLI.VPN_INSTANCE, vrf.getName(), dst,
                 CLI.OUT, inf.getInterfaceName(), CLI.NEXT_HOP, nextIp);
         return null;
@@ -73,7 +73,7 @@ public class VirRouterView implements CommandView {
     public Object cfgBgp() {
         vrf.addConfig(CLI.BGP);
 
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         return new VirBgpView(vrf);

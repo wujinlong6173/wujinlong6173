@@ -3,6 +3,7 @@ package wjl.demo;
 import com.huawei.cli.HuaWeiSystem;
 import com.huawei.physical.PhyLinkProvider;
 import com.huawei.physical.PhyRouterProvider;
+import com.huawei.physical.PhySwitchProvider;
 import com.huawei.vlan.VLanLinkProvider;
 import com.huawei.vrf.VrfDeviceProvider;
 import com.mxgraph.swing.util.mxSwingConstants;
@@ -75,11 +76,13 @@ public class AllAsOneClient implements ActionListener {
     JMenuBar createMainMenu() {
         ProviderMgr forMobile = new ProviderMgr();
         forMobile.addDeviceProvider("物理路由器", new PhyRouterProvider());
+        forMobile.addDeviceProvider("物理交换机", new PhySwitchProvider());
         forMobile.addLinkProvider("物理链路", new PhyLinkProvider());
         SingleIspMgrDemo ia = new SingleIspMgrDemo("移动", "YD", forMobile);
 
         ProviderMgr forTel = new ProviderMgr();
         forTel.addDeviceProvider("物理路由器", new PhyRouterProvider());
+        forTel.addDeviceProvider("物理交换机", new PhySwitchProvider());
         forTel.addLinkProvider("物理链路", new PhyLinkProvider());
         SingleIspMgrDemo ib = new SingleIspMgrDemo("电信", "DX", forTel);
 

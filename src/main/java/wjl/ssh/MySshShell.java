@@ -62,7 +62,7 @@ public class MySshShell extends Thread implements Command {
     public void run() {
         try {
             // 修改客户端标题
-            String title = String.format("\033];2%s\007", handlers.getPrompt());
+            String title = String.format("\033]2;%s\007", handlers.getPrompt());
             out.write(title.getBytes());
             out.flush();
 

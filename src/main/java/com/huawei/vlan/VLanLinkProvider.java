@@ -5,7 +5,7 @@ import com.huawei.common.InterfaceMgr;
 import com.huawei.physical.PhyLink;
 import com.huawei.physical.PhyLinkMgr;
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
@@ -77,7 +77,7 @@ public class VLanLinkProvider implements LinkProvider {
         inf.setVlanId(vLanId);
 
         InterfaceMgr.addInterface(inf);
-        PhyRouter pr = PhyRouterMgr.getRouter(host);
+        PhyRouter pr = PhyDeviceMgr.getRouter(host);
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
             pr.addConfig(CLI.__, "description", desc);
@@ -107,7 +107,7 @@ public class VLanLinkProvider implements LinkProvider {
     private void deleteVLanSubIf(VLanSubIf inf) {
         InterfaceMgr.delInterface(inf.getId());
 
-        PhyRouter pr = PhyRouterMgr.getRouter(inf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(inf.getHost());
         if (pr != null) {
             pr.undoConfig(CLI.INTERFACE, inf.getInterfaceName());
         }

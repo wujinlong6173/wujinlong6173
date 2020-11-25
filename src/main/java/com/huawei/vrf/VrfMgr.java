@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.huawei.common.CLI;
 import com.huawei.common.Interface;
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 
 /**
  * 管理所有的VRF
@@ -60,7 +60,7 @@ public final class VrfMgr {
         }
 
         vrf.bindInterface(portName, inf);
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
             pr.addConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
@@ -82,7 +82,7 @@ public final class VrfMgr {
         }
 
         vrf.unBindInterface(inf);
-        PhyRouter pr = PhyRouterMgr.getRouter(vrf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
             pr.undoConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());

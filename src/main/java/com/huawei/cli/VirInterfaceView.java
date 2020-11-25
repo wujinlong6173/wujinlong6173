@@ -3,7 +3,7 @@ package com.huawei.cli;
 import com.huawei.common.CLI;
 import com.huawei.common.Interface;
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
 
@@ -38,7 +38,7 @@ public class VirInterfaceView implements CommandView {
     public String setIpAddress(String ip) {
         inf.addConfig(CLI.IP, CLI.ADDRESS, ip);
 
-        PhyRouter pr = PhyRouterMgr.getRouter(inf.getHost());
+        PhyRouter pr = PhyDeviceMgr.getRouter(inf.getHost());
         pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
         pr.addConfig(CLI.__, CLI.IP, CLI.ADDRESS, ip);
         return null;

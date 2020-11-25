@@ -32,18 +32,18 @@ public class PhyRouterProvider implements DeviceProvider {
     }
 
     @Override
-    public String create(String idInNms, Map<String, Object> inputs) throws ProviderException {
+    public String create(String idInNms, Map<String, Object> inputs) {
         // 物理路由器的名称也是唯一的
         String name = (String)inputs.get("name");
         PhyRouter pr = new PhyRouter();
         pr.setIdInNms(idInNms);
         pr.setName(name);
-        PhyRouterMgr.addRouter(pr);
+        PhyDeviceMgr.addRouter(pr);
         return name;
     }
 
     @Override
-    public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
-        PhyRouterMgr.delRouter(idInProvider);
+    public void delete(String idInProvider, Map<String, Object> inputs) {
+        PhyDeviceMgr.delRouter(idInProvider);
     }
 }

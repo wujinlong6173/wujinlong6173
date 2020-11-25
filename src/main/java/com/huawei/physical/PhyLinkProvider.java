@@ -10,7 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * 模拟物理链路的供应商。
+ * 模拟物理链路的供应商，物理路由器和交换机可以互联。
  */
 public class PhyLinkProvider implements LinkProvider {
     private final ObjectSchema createSchema;
@@ -27,30 +27,30 @@ public class PhyLinkProvider implements LinkProvider {
 
     @Override
     public String create(String idInNms,
-            String srcRouterId, String srcPortName, String srcProvider,
-            String dstRouterId, String dstPortName, String dstProvider,
+            String srcDeviceId, String srcPortName, String srcProvider,
+            String dstDeviceId, String dstPortName, String dstProvider,
             Map<String, Object> inputs) throws ProviderException {
-        PhyRouter srcRouter = PhyRouterMgr.getRouter(srcRouterId);
-        PhyRouter dstRouter = PhyRouterMgr.getRouter(dstRouterId);
-        if (srcRouter == null || dstRouter == null) {
+        PhyDevice srcDev = PhyDeviceMgr.getDevice(srcDeviceId);
+        PhyDevice dstDev = PhyDeviceMgr.getDevice(dstDeviceId);
+        if (srcDev == null || dstDev == null) {
             throw new ProviderException(ErrorType.INPUT_ERROR,
                     String.format(Locale.ENGLISH, "physical router %s or %s don't exist.",
-                            srcRouterId, dstRouterId));
+                            srcDeviceId, dstDeviceId));
         }
 
         // 简化设计，让idInNms等于idInProvider
         PhyLink pl = new PhyLink();
         pl.setId(idInNms);
-        pl.setSrcDevice(srcRouter.getName());
+        pl.setSrcDevice(srcDev.getName());
         pl.setSrcPort(srcPortName);
-        pl.setDstDevice(dstRouter.getName());
+        pl.setDstDevice(dstDev.getName());
         pl.setDstPort(dstPortName);
         PhyLinkMgr.addLink(pl);
         return idInNms;
     }
 
     @Override
-    public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
+    public void delete(String idInProvider, Map<String, Object> inputs) {
         PhyLinkMgr.delLink(idInProvider);
     }
 }

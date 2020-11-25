@@ -1,7 +1,7 @@
 package com.huawei.cli;
 
 import com.huawei.physical.PhyRouter;
-import com.huawei.physical.PhyRouterMgr;
+import com.huawei.physical.PhyDeviceMgr;
 import com.huawei.physical.PhyRouterView;
 import com.huawei.vrf.Vrf;
 import com.huawei.vrf.VrfMgr;
@@ -23,7 +23,7 @@ public class HuaWeiSystem implements PasswordAuthenticator, CommandViewFactory {
             return username.equals(vrf.getIdInNms());
         }
 
-        PhyRouter pr = PhyRouterMgr.getRouter(idInProvider);
+        PhyRouter pr = PhyDeviceMgr.getRouter(idInProvider);
         return pr != null;
     }
 
@@ -41,7 +41,7 @@ public class HuaWeiSystem implements PasswordAuthenticator, CommandViewFactory {
             return new VirRouterView(vrf);
         }
 
-        PhyRouter pr = PhyRouterMgr.getRouterByNmsId(viewName);
+        PhyRouter pr = PhyDeviceMgr.getRouterByNmsId(viewName);
         if (pr != null) {
             return new PhyRouterView(pr);
         }
