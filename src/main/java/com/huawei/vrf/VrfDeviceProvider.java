@@ -35,6 +35,11 @@ public class VrfDeviceProvider implements DeviceProvider {
     }
 
     @Override
+    public String getIcon() {
+        return "/images/router-deploy.png;";
+    }
+
+    @Override
     public String create(String idInNms, Map<String, Object> inputs) throws ProviderException {
         String host = (String)inputs.get("host");
         String name = (String)inputs.get("name");

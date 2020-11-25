@@ -3,7 +3,6 @@ package com.huawei.physical;
 import wjl.datamodel.SchemaParser;
 import wjl.datamodel.schema.ObjectSchema;
 import wjl.provider.DeviceProvider;
-import wjl.provider.ProviderException;
 
 import java.util.Map;
 
@@ -29,6 +28,11 @@ public class PhyRouterProvider implements DeviceProvider {
     @Override
     public ObjectSchema getConfigSchema() {
         return configSchema;
+    }
+
+    @Override
+    public String getIcon() {
+        return "/images/router-deploy.png;";
     }
 
     @Override

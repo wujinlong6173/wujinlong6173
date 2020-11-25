@@ -2,7 +2,6 @@ package com.huawei.physical;
 
 import wjl.datamodel.schema.ObjectSchema;
 import wjl.provider.DeviceProvider;
-import wjl.provider.ProviderException;
 
 import java.util.Map;
 
@@ -18,6 +17,11 @@ public class PhySwitchProvider implements DeviceProvider {
     @Override
     public ObjectSchema getConfigSchema() {
         return null;
+    }
+
+    @Override
+    public String getIcon() {
+        return "/images/network_alt.png;";
     }
 
     @Override

@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import wjl.client.mxgraph.mxCellDevice;
 import wjl.client.mxgraph.mxCellLink;
 import wjl.net.NetworkException;
+import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderException;
 import wjl.util.ErrorType;
 
@@ -58,8 +59,10 @@ class DeployAction extends AbstractAction {
         }
         
         try {
-            ccc.getNet().deployDevice(dev.getId(), deviceDlg.getSelectedProvider(), deviceDlg.getInputs());
-            dev.changeDeployState(deploy);
+            String providerName = deviceDlg.getSelectedProvider();
+            DeviceProvider provider = ccc.getProviderMgr().getDeviceProvider(providerName);
+            ccc.getNet().deployDevice(dev.getId(), providerName, deviceDlg.getInputs());
+            dev.changeDeployState(deploy, provider.getIcon());
             ccc.getGraph().refresh();
         } catch (NetworkException e1) {
             JOptionPane.showMessageDialog(null, e1.getMessage(), 
@@ -73,7 +76,7 @@ class DeployAction extends AbstractAction {
     private void undeployDevice(mxCellDevice dev) {
         try {
             ccc.getNet().undeployDevice(dev.getId());
-            dev.changeDeployState(deploy);
+            dev.changeDeployState(deploy, null);
             ccc.getGraph().refresh();
         } catch (NetworkException e1) {
             JOptionPane.showMessageDialog(null, e1.getMessage(), 

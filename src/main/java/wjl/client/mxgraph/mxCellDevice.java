@@ -17,7 +17,7 @@ public class mxCellDevice extends mxCell {
             "verticalLabelPosition=bottom;verticalAlign=top;";
     
     private static final String STYLE_DEPLOY = 
-            "shape=image;image=/images/router-deploy.png;" +
+            "shape=image;image=%s;" +
             "verticalLabelPosition=bottom;verticalAlign=top;";
 
     // 界面显示的限制，一个设备最多支持八个端口
@@ -61,8 +61,12 @@ public class mxCellDevice extends mxCell {
         return geometry.getCenterY();
     }
 
-    public void changeDeployState(boolean deploy) {
-        setStyle(deploy ? STYLE_DEPLOY : STYLE_UNDEPLOY);
+    public void changeDeployState(boolean deploy, String icon) {
+        if (icon == null) {
+            setStyle(STYLE_UNDEPLOY);
+        } else{
+            setStyle(String.format(STYLE_DEPLOY, icon));
+        }
     }
 
     public int emptyPosition(int start) {

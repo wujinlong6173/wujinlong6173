@@ -20,6 +20,11 @@ public class DummyDeviceProvider implements DeviceProvider {
     }
 
     @Override
+    public String getIcon() {
+        return "/images/router-deploy.png";
+    }
+
+    @Override
     public String create(String idInNms, Map<String, Object> inputs) {
         return UUID.randomUUID().toString();
     }

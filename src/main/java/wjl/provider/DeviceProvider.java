@@ -20,6 +20,13 @@ public interface DeviceProvider {
     ObjectSchema getConfigSchema();
 
     /**
+     * 部署后显示的图标
+     *
+     * @return 图标文件的路径
+     */
+    String getIcon();
+
+    /**
      * 创建设备
      *
      * @param idInNms L3NMS内部使用的标识，提供者可以忽略
