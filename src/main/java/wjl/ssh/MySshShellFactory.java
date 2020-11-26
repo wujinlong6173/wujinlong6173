@@ -29,9 +29,10 @@ public class MySshShellFactory implements ShellFactory {
         final String user = channel.getSession().getUsername();
         for (CommandViewFactory factory : viewFactoryList) {
             CommandView cmdView = factory.build(user);
-            CommandHandlers handlers = new CommandHandlers(
-                    CommandHandler.build(cmdView));
-            return new MySshShell(channel, handlers);
+            if (cmdView != null) {
+                CommandHandlers handlers = new CommandHandlers(CommandHandler.build(cmdView));
+                return new MySshShell(channel, handlers);
+            }
         }
         return null;
     }

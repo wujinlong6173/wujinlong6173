@@ -11,19 +11,22 @@ import org.apache.sshd.server.auth.password.PasswordChangeRequiredException;
 import org.apache.sshd.server.session.ServerSession;
 import wjl.cli.CommandView;
 import wjl.cli.CommandViewFactory;
+import wjl.docker.AbstractMember;
 
-public class HuaWeiSystem implements PasswordAuthenticator, CommandViewFactory {
+public class HuaWeiSystem extends AbstractMember implements PasswordAuthenticator, CommandViewFactory {
     @Override
     public boolean authenticate(String username, String password, ServerSession session)
             throws PasswordChangeRequiredException, AsyncAuthException {
         // password是VRF在供应商侧的标识，或物理路由器的名称
         String idInProvider = password;
-        Vrf vrf = VrfMgr.getVrf(idInProvider);
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        Vrf vrf = vrfMgr.getVrf(idInProvider);
         if (vrf != null) {
             return username.equals(vrf.getIdInNms());
         }
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(idInProvider);
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(idInProvider);
         return pr != null;
     }
 
@@ -36,12 +39,16 @@ public class HuaWeiSystem implements PasswordAuthenticator, CommandViewFactory {
     @Override
     public CommandView build(String viewName) {
         // 鉴权时已经确保VRF存在
-        Vrf vrf = VrfMgr.getVrfByNmsId(viewName);
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        Vrf vrf = vrfMgr.getVrfByNmsId(viewName);
         if (vrf != null) {
-            return new VirRouterView(vrf);
+            VirRouterView view = new VirRouterView(vrf);
+            view.setContainer(this);
+            return view;
         }
 
-        PhyRouter pr = PhyDeviceMgr.getRouterByNmsId(viewName);
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouterByNmsId(viewName);
         if (pr != null) {
             return new PhyRouterView(pr);
         }

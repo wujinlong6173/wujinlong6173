@@ -1,6 +1,7 @@
 package com.huawei.physical;
 
 import org.apache.commons.lang3.StringUtils;
+import wjl.docker.AbstractMember;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,44 +9,36 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 管理所有的物理路由器、物理交换机。
  */
-public class PhyDeviceMgr {
+public class PhyDeviceMgr extends AbstractMember {
     // 键值为物理路由器的名称
-    private static final Map<String, PhyRouter> ROUTERS = new ConcurrentHashMap<>();
+    private final Map<String, PhyRouter> routers = new ConcurrentHashMap<>();
     // 键值为物理交换机的名称
-    private static final Map<String, PhySwitch> SWITCHES = new ConcurrentHashMap<>();
+    private final Map<String, PhySwitch> switches = new ConcurrentHashMap<>();
 
-    /**
-     * 单元测试
-     */
-    public static void clear() {
-        ROUTERS.clear();
-        SWITCHES.clear();
+    public PhyRouter getRouter(String name) {
+        return routers.get(name);
     }
 
-    public static PhyRouter getRouter(String name) {
-        return ROUTERS.get(name);
+    public void addRouter(PhyRouter router) {
+        routers.putIfAbsent(router.getName(), router);
     }
 
-    public static void addRouter(PhyRouter router) {
-        ROUTERS.putIfAbsent(router.getName(), router);
+    public void delRouter(String name) {
+        routers.remove(name);
     }
 
-    public static void delRouter(String name) {
-        ROUTERS.remove(name);
+    public void addSwitch(PhySwitch sw) {
+        switches.put(sw.getName(), sw);
     }
 
-    public static void addSwitch(PhySwitch sw) {
-        SWITCHES.put(sw.getName(), sw);
+    public void delSwitch(String name) {
+        switches.remove(name);
     }
 
-    public static void delSwitch(String name) {
-        SWITCHES.remove(name);
-    }
-
-    public static PhyDevice getDevice(String name) {
-        PhyDevice dev = ROUTERS.get(name);
+    public PhyDevice getDevice(String name) {
+        PhyDevice dev = routers.get(name);
         if (dev == null) {
-            dev = SWITCHES.get(name);
+            dev = switches.get(name);
         }
         return dev;
     }
@@ -55,8 +48,8 @@ public class PhyDeviceMgr {
      * @param idInNms 物理路由器在网络意图中的标识
      * @return
      */
-    public static PhyRouter getRouterByNmsId(String idInNms) {
-        for (PhyRouter pr : ROUTERS.values()) {
+    public PhyRouter getRouterByNmsId(String idInNms) {
+        for (PhyRouter pr : routers.values()) {
             if (StringUtils.equals(idInNms, pr.getIdInNms())) {
                 return pr;
             }

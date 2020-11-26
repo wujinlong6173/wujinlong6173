@@ -2,6 +2,7 @@ package com.huawei.physical;
 
 import wjl.datamodel.SchemaParser;
 import wjl.datamodel.schema.ObjectSchema;
+import wjl.docker.AbstractMember;
 import wjl.provider.DeviceProvider;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * 模拟物理路由器的供应商。
  */
-public class PhyRouterProvider implements DeviceProvider {
+public class PhyRouterProvider extends AbstractMember implements DeviceProvider {
     private final ObjectSchema createSchema;
     private final ObjectSchema configSchema;
 
@@ -42,12 +43,14 @@ public class PhyRouterProvider implements DeviceProvider {
         PhyRouter pr = new PhyRouter();
         pr.setIdInNms(idInNms);
         pr.setName(name);
-        PhyDeviceMgr.addRouter(pr);
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        deviceMgr.addRouter(pr);
         return name;
     }
 
     @Override
     public void delete(String idInProvider, Map<String, Object> inputs) {
-        PhyDeviceMgr.delRouter(idInProvider);
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        deviceMgr.delRouter(idInProvider);
     }
 }

@@ -7,19 +7,20 @@ import com.huawei.common.CLI;
 import com.huawei.common.Interface;
 import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
+import wjl.docker.AbstractMember;
 
 /**
  * 管理所有的VRF
  */
-public final class VrfMgr {
-    private static final Map<String, Vrf> allVrf = new ConcurrentHashMap<>();
+public final class VrfMgr extends AbstractMember {
+    private final Map<String, Vrf> allVrf = new ConcurrentHashMap<>();
     
     /**
      * 新建一个VRF
      * 
      * @param vrf 待创建的VRF
      */
-    public static void createVrf(Vrf vrf) {
+    public void createVrf(Vrf vrf) {
         if (vrf == null || vrf.getId() == null) {
             return;
         }
@@ -27,7 +28,7 @@ public final class VrfMgr {
         allVrf.put(vrf.getId(), vrf);
     }
     
-    public static Vrf getVrf(String id) {
+    public Vrf getVrf(String id) {
         return allVrf.get(id);
     }
     
@@ -37,7 +38,7 @@ public final class VrfMgr {
      * @param vrfId
      * @return
      */
-    public static String getHostOfVrf(String vrfId) {
+    public String getHostOfVrf(String vrfId) {
         Vrf vrf = allVrf.get(vrfId);
         if (vrf != null) {
             return vrf.getHost();
@@ -53,14 +54,15 @@ public final class VrfMgr {
      * @param portName 接口在虚拟路由器中的名称
      * @param inf 被绑定的接口
      */
-    public static void bindInterface(String vrfId, String portName, Interface inf) {
+    public void bindInterface(String vrfId, String portName, Interface inf) {
         Vrf vrf = allVrf.get(vrfId);
         if (vrf == null) {
             return;
         }
 
         vrf.bindInterface(portName, inf);
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
             pr.addConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
@@ -72,7 +74,7 @@ public final class VrfMgr {
      *
      * @param inf 接口
      */
-    public static void unBindInterface(Interface inf) {
+    public void unBindInterface(Interface inf) {
         if (inf == null || inf.getBindService() == null) {
             return;
         }
@@ -82,18 +84,19 @@ public final class VrfMgr {
         }
 
         vrf.unBindInterface(inf);
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
             pr.undoConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
         }
     }
 
-    public static void deleteVrf(String vrfId) {
+    public void deleteVrf(String vrfId) {
         allVrf.remove(vrfId);        
     }
 
-    public static Vrf getVrfByNmsId(String idInNms) {
+    public Vrf getVrfByNmsId(String idInNms) {
         for (Vrf vrf : allVrf.values()) {
             if (idInNms.equals(vrf.getIdInNms())) {
                 return vrf;
@@ -102,7 +105,7 @@ public final class VrfMgr {
         return null;
     }
 
-    public static Vrf getVrfByBgpRouterId(String ip) {
+    public Vrf getVrfByBgpRouterId(String ip) {
         for (Vrf vrf : allVrf.values()) {
             if (ip.equals(vrf.getBgpRouterId())) {
                 return vrf;

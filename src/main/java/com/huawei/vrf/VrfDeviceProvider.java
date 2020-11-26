@@ -4,6 +4,7 @@ import com.huawei.common.CLI;
 import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
 import wjl.datamodel.SchemaParser;
+import wjl.docker.AbstractMember;
 import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderException;
 import wjl.datamodel.schema.ObjectSchema;
@@ -12,7 +13,7 @@ import wjl.util.ErrorType;
 import java.util.Map;
 import java.util.UUID;
 
-public class VrfDeviceProvider implements DeviceProvider {
+public class VrfDeviceProvider extends AbstractMember implements DeviceProvider {
     private final ObjectSchema createSchema;
     private final ObjectSchema configSchema;
 
@@ -43,7 +44,8 @@ public class VrfDeviceProvider implements DeviceProvider {
     public String create(String idInNms, Map<String, Object> inputs) throws ProviderException {
         String host = (String)inputs.get("host");
         String name = (String)inputs.get("name");
-        PhyRouter pr = PhyDeviceMgr.getRouter(host);
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(host);
         if (pr == null) {
             throw new ProviderException(ErrorType.INPUT_ERROR,
                     String.format("host %s does not exist.", host));
@@ -57,20 +59,23 @@ public class VrfDeviceProvider implements DeviceProvider {
         vrf.setIdInNms(idInNms);
         vrf.setHost(host);
         vrf.setName(name);
-        VrfMgr.createVrf(vrf);
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        vrfMgr.createVrf(vrf);
         return vrf.getId();
     }
 
     @Override
-    public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
-        Vrf vrf = VrfMgr.getVrf(idInProvider);
+    public void delete(String idInProvider, Map<String, Object> inputs) {
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        Vrf vrf = vrfMgr.getVrf(idInProvider);
         if (vrf == null) {
             return;
         }
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         pr.undoConfig(CLI.IP, CLI.VPN_INSTANCE, vrf.getName());
 
-        VrfMgr.deleteVrf(idInProvider);
+        vrfMgr.deleteVrf(idInProvider);
     }
 }

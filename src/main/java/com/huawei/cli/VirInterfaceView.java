@@ -6,13 +6,14 @@ import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
+import wjl.docker.AbstractMember;
 
 import java.util.List;
 
 /**
  * 配置虚拟路由器的接口
  */
-public class VirInterfaceView implements CommandView {
+public class VirInterfaceView extends AbstractMember implements CommandView {
     // 接口的内部标识
     private final Interface inf;
 
@@ -38,7 +39,8 @@ public class VirInterfaceView implements CommandView {
     public String setIpAddress(String ip) {
         inf.addConfig(CLI.IP, CLI.ADDRESS, ip);
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(inf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(inf.getHost());
         pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
         pr.addConfig(CLI.__, CLI.IP, CLI.ADDRESS, ip);
         return null;

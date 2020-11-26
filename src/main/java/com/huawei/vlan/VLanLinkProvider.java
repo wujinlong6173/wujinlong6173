@@ -9,6 +9,7 @@ import com.huawei.physical.PhyDeviceMgr;
 import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
+import wjl.docker.AbstractMember;
 import wjl.provider.LinkProvider;
 import wjl.provider.ProviderException;
 import wjl.datamodel.schema.ObjectSchema;
@@ -18,7 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-public class VLanLinkProvider implements LinkProvider {
+public class VLanLinkProvider extends AbstractMember implements LinkProvider {
     private final ObjectSchema createSchema;
 
     public VLanLinkProvider() {
@@ -36,16 +37,18 @@ public class VLanLinkProvider implements LinkProvider {
             String srcVrfId, String srcPortName, String srcProvider,  
             String dstVrfId, String dstPortName, String dstProvider, 
             Map<String, Object> inputs) throws ProviderException {
-        
-        String srcHost = VrfMgr.getHostOfVrf(srcVrfId);
-        String dstHost = VrfMgr.getHostOfVrf(dstVrfId);
+
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        String srcHost = vrfMgr.getHostOfVrf(srcVrfId);
+        String dstHost = vrfMgr.getHostOfVrf(dstVrfId);
         if (srcHost == null || dstHost == null) {
             throw new ProviderException(ErrorType.INPUT_ERROR, 
                     String.format(Locale.ENGLISH, "virtual router %s or %s don't exist.",
                             srcVrfId, dstVrfId));
         }
-        
-        PhyLink phyLink = PhyLinkMgr.findLinkBetweenDevice(srcHost, dstHost);
+
+        PhyLinkMgr linkMgr = getInstance(PhyLinkMgr.class);
+        PhyLink phyLink = linkMgr.findLinkBetweenDevice(srcHost, dstHost);
         if (phyLink == null) {
             throw new ProviderException(ErrorType.NO_USABLE_RESOURCE,
                     String.format(Locale.ENGLISH, "no usable link between %s and %s.",
@@ -58,8 +61,8 @@ public class VLanLinkProvider implements LinkProvider {
         VLanSubIf srcIf = createVLanSubIf(srcPortName, srcHost, phyLink.getPortOfLink(srcHost), vLanId);
         VLanSubIf dstIf = createVLanSubIf(dstPortName, dstHost, phyLink.getPortOfLink(dstHost), vLanId);
 
-        VrfMgr.bindInterface(srcVrfId, srcPortName, srcIf);
-        VrfMgr.bindInterface(dstVrfId, dstPortName, dstIf);
+        vrfMgr.bindInterface(srcVrfId, srcPortName, srcIf);
+        vrfMgr.bindInterface(dstVrfId, dstPortName, dstIf);
 
         VLanLink lk = new VLanLink();
         lk.setId(UUID.randomUUID().toString());
@@ -77,7 +80,8 @@ public class VLanLinkProvider implements LinkProvider {
         inf.setVlanId(vLanId);
 
         InterfaceMgr.addInterface(inf);
-        PhyRouter pr = PhyDeviceMgr.getRouter(host);
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(host);
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
             pr.addConfig(CLI.__, "description", desc);
@@ -96,8 +100,9 @@ public class VLanLinkProvider implements LinkProvider {
 
         VLanSubIf srcIf = (VLanSubIf)InterfaceMgr.getInterface(lk.getSrcSubIf());
         VLanSubIf dstIf = (VLanSubIf)InterfaceMgr.getInterface(lk.getDstSubIf());
-        VrfMgr.unBindInterface(srcIf);
-        VrfMgr.unBindInterface(dstIf);
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        vrfMgr.unBindInterface(srcIf);
+        vrfMgr.unBindInterface(dstIf);
 
         VLanDao.delVLanLink(idInProvider);
         deleteVLanSubIf(srcIf);
@@ -107,7 +112,8 @@ public class VLanLinkProvider implements LinkProvider {
     private void deleteVLanSubIf(VLanSubIf inf) {
         InterfaceMgr.delInterface(inf.getId());
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(inf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(inf.getHost());
         if (pr != null) {
             pr.undoConfig(CLI.INTERFACE, inf.getInterfaceName());
         }

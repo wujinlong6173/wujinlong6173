@@ -1,9 +1,6 @@
 package wjl.demo;
 
 import com.huawei.cli.HuaWeiSystem;
-import com.huawei.physical.PhyLinkProvider;
-import com.huawei.physical.PhyRouterProvider;
-import com.huawei.physical.PhySwitchProvider;
 import com.huawei.vlan.VLanLinkProvider;
 import com.huawei.vrf.VrfDeviceProvider;
 import com.mxgraph.swing.util.mxSwingConstants;
@@ -44,15 +41,10 @@ public class AllAsOneClient implements ActionListener {
 
         Config.load();
 
-        HuaWeiSystem hws = new HuaWeiSystem();
-        MySshServer.start(22, hws, hws);
         new AllAsOneClient().start();
     }
 
     void start() {
-        forTenant.addDeviceProvider("VRF", new VrfDeviceProvider());
-        forTenant.addLinkProvider("VLan", new VLanLinkProvider());
-
         JMenuBar menuBar = createMainMenu();
         JPanel mainPanel = createMainPanel();
         mainFrame = createMainFrame(menuBar, mainPanel);
@@ -74,17 +66,32 @@ public class AllAsOneClient implements ActionListener {
     }
 
     JMenuBar createMainMenu() {
-        ProviderMgr forMobile = new ProviderMgr();
-        forMobile.addDeviceProvider("物理路由器", new PhyRouterProvider());
-        forMobile.addDeviceProvider("物理交换机", new PhySwitchProvider());
-        forMobile.addLinkProvider("物理链路", new PhyLinkProvider());
-        SingleIspMgrDemo ia = new SingleIspMgrDemo("移动", "YD", forMobile);
+        SingleIspMgrDemo ia = new SingleIspMgrDemo("移动", "YD");
+        SingleIspMgrDemo ib = new SingleIspMgrDemo("电信", "DX");
 
-        ProviderMgr forTel = new ProviderMgr();
-        forTel.addDeviceProvider("物理路由器", new PhyRouterProvider());
-        forTel.addDeviceProvider("物理交换机", new PhySwitchProvider());
-        forTel.addLinkProvider("物理链路", new PhyLinkProvider());
-        SingleIspMgrDemo ib = new SingleIspMgrDemo("电信", "DX", forTel);
+        HuaWeiSystem ydHws = new HuaWeiSystem();
+        ydHws.setContainer(ia.getContainer());
+        MySshServer.start(22, ydHws, ydHws);
+
+        HuaWeiSystem dxHws = new HuaWeiSystem();
+        dxHws.setContainer(ib.getContainer());
+        MySshServer.start(22, dxHws, dxHws);
+
+        VrfDeviceProvider ydVrf = new VrfDeviceProvider();
+        ydVrf.setContainer(ia.getContainer());
+        forTenant.addDeviceProvider("移动VRF", ydVrf);
+
+        VrfDeviceProvider dxVrf = new VrfDeviceProvider();
+        dxVrf.setContainer(ib.getContainer());
+        forTenant.addDeviceProvider("电信VRF", dxVrf);
+
+        VLanLinkProvider ydVLan = new VLanLinkProvider();
+        ydVLan.setContainer(ia.getContainer());
+        forTenant.addLinkProvider("移动VLan", ydVLan);
+
+        VLanLinkProvider dxVLan = new VLanLinkProvider();
+        dxVLan.setContainer(ib.getContainer());
+        forTenant.addLinkProvider("电信VLan", dxVLan);
 
         JMenu isp = new JMenu("运营商");
         isp.add(new ShowFrameAction(ia.getIspName(), ia));

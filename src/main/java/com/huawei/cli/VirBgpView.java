@@ -9,10 +9,11 @@ import com.huawei.vrf.Vrf;
 import com.huawei.vrf.VrfMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
+import wjl.docker.AbstractMember;
 
 import java.util.Locale;
 
-public class VirBgpView implements CommandView {
+public class VirBgpView extends AbstractMember implements CommandView {
     private final Vrf vrf;
 
     VirBgpView(Vrf vrf) {
@@ -29,7 +30,8 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.IMPORT_ROUTE, witch);
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         pr.addConfig(CLI.__, CLI.__, CLI.IMPORT_ROUTE, witch);
@@ -40,7 +42,8 @@ public class VirBgpView implements CommandView {
         */
     @Command(command="router-id {ip}")
     public String setRouterId(String ip) {
-        Vrf conflict = VrfMgr.getVrfByBgpRouterId(ip);
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        Vrf conflict = vrfMgr.getVrfByBgpRouterId(ip);
         if (conflict != null) {
             return ip + " is used by other router.";
         }
@@ -49,7 +52,8 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.ROUTER_ID, ip);
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         pr.addConfig(CLI.__, CLI.__, CLI.ROUTER_ID, ip);
@@ -63,9 +67,11 @@ public class VirBgpView implements CommandView {
         */
     @Command(command="peer {peer} as-number {as}")
     public String addPeer(String peer, String as) {
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         if (pr.getAsNumber().equals(as)) {
-            Vrf other = VrfMgr.getVrfByBgpRouterId(peer);
+            VrfMgr vrfMgr = getInstance(VrfMgr.class);
+            Vrf other = vrfMgr.getVrfByBgpRouterId(peer);
             if (other == null) {
                 return String.format(Locale.ENGLISH, "peer %s does not exist.", peer);
             }
@@ -91,7 +97,8 @@ public class VirBgpView implements CommandView {
     }
 
     private String cfgRtForBgpPeer(Vrf other) {
-        PhyRouter pr = PhyDeviceMgr.getRouter(other.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(other.getHost());
 
         // 给对端VRF分配并导出RT
         if (other.getRtForBgpPeer() == null) {
@@ -123,7 +130,8 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.HUB);
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
@@ -137,7 +145,8 @@ public class VirBgpView implements CommandView {
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.SPOKE);
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());

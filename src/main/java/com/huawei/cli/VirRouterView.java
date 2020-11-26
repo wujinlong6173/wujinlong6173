@@ -7,13 +7,14 @@ import com.huawei.physical.PhyDeviceMgr;
 import com.huawei.vrf.Vrf;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
+import wjl.docker.AbstractMember;
 
 import java.util.*;
 
 /**
  * 配置虚拟路由器
  */
-public class VirRouterView implements CommandView {
+public class VirRouterView extends AbstractMember implements CommandView {
     private final Vrf vrf;
 
     @Override
@@ -51,7 +52,9 @@ public class VirRouterView implements CommandView {
             return "Error : please create interface before config.";
         }
 
-        return new VirInterfaceView(inf, portName);
+        VirInterfaceView view = new VirInterfaceView(inf, portName);
+        view.setContainer(this);
+        return view;
     }
 
     @Command(command="ip static-route {dst} out {port} next-hop {nextIp}")
@@ -63,7 +66,8 @@ public class VirRouterView implements CommandView {
 
         vrf.addConfig(CLI.IP, CLI.STATIC_ROUTE, dst, CLI.OUT, port, CLI.NEXT_HOP, nextIp);
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.IP, CLI.STATIC_ROUTE, CLI.VPN_INSTANCE, vrf.getName(), dst,
                 CLI.OUT, inf.getInterfaceName(), CLI.NEXT_HOP, nextIp);
         return null;
@@ -73,9 +77,12 @@ public class VirRouterView implements CommandView {
     public Object cfgBgp() {
         vrf.addConfig(CLI.BGP);
 
-        PhyRouter pr = PhyDeviceMgr.getRouter(vrf.getHost());
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
-        return new VirBgpView(vrf);
+        VirBgpView view = new VirBgpView(vrf);
+        view.setContainer(this);
+        return view;
     }
 }

@@ -47,6 +47,7 @@ public class MySshServer {
                 ss.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
                 ss.setShellFactory(myServer.sshShellFactory);
                 ss.start(); // 本函数会立即返回
+                SERVERS.put(port, myServer);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;

@@ -1,26 +1,20 @@
 package com.huawei.physical;
 
 import org.apache.commons.lang3.StringUtils;
+import wjl.docker.AbstractMember;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PhyLinkMgr {
-    private static final Map<String, PhyLink> LINKS = new ConcurrentHashMap<>();
+public class PhyLinkMgr extends AbstractMember {
+    private final Map<String, PhyLink> links = new ConcurrentHashMap<>();
 
-    /**
-     * 单元测试
-     */
-    public static void clear() {
-        LINKS.clear();
+    public void addLink(PhyLink link) {
+        links.putIfAbsent(link.getId(), link);
     }
 
-    public static void addLink(PhyLink link) {
-        LINKS.putIfAbsent(link.getId(), link);
-    }
-
-    public static void delLink(String id) {
-        LINKS.remove(id);
+    public void delLink(String id) {
+        links.remove(id);
     }
 
     /**
@@ -30,8 +24,8 @@ public class PhyLinkMgr {
      * @param dst 另一端的物理网元名称
      * @return 物理链路
      */
-    public static PhyLink findLinkBetweenDevice(String src, String dst) {
-        for (PhyLink lk : LINKS.values()) {
+    public PhyLink findLinkBetweenDevice(String src, String dst) {
+        for (PhyLink lk : links.values()) {
             if (StringUtils.equals(src, lk.getSrcDevice())) {
                 if (StringUtils.equals(dst,  lk.getDstDevice())) {
                     return lk;
