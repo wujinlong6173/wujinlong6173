@@ -1,14 +1,16 @@
 package wjl.datamodel.schema;
 
+import wjl.util.ErrorCollector;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class DataSchema {
-    private boolean required;
-    private String name;
-    private Object defaultValue;
+    protected boolean required;
+    protected String name;
+    protected Object defaultValue;
     // 按位使用的标记
-    private int flag;
+    protected int flag;
 
     public boolean isRequired() {
         return required;
@@ -52,4 +54,6 @@ public abstract class DataSchema {
         }
         return ret;
     }
+
+    public abstract void validate(Object input, ErrorCollector error);
 }

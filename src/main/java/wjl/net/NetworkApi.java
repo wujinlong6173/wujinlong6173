@@ -10,7 +10,7 @@ import wjl.net.intent.Link;
 import wjl.net.intent.Network;
 import wjl.net.intent.Port;
 import wjl.provider.*;
-import wjl.datamodel.validator.CreateValidator;
+import wjl.datamodel.SchemaValidator;
 import wjl.util.ErrorCollector;
 import wjl.util.ErrorType;
 
@@ -255,17 +255,15 @@ public class NetworkApi {
             throw new NetworkException(ErrorType.INPUT_ERROR,
                     String.format("%s is not a device provider.", provider));
         }
-        
-        ErrorCollector error = new ErrorCollector();
-        CreateValidator.checkObject(dp.getCreateSchema(), inputs, error);
-        if (error.getErrors() != null) {
-            throw new NetworkException(ErrorType.INPUT_ERROR,
-                    error.getErrors().toString());
-        }
 
         // 自动填写设备名称，省去界面填写的麻烦
         if (!inputs.containsKey("name")) {
             inputs.put("name", dev.getName());
+        }
+
+        Object errors = SchemaValidator.checkObject(dp.getCreateSchema(), inputs);
+        if (errors != null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR, errors.toString());
         }
 
         String outerId = dp.create(devId, inputs);
@@ -346,12 +344,10 @@ public class NetworkApi {
             throw new NetworkException(ErrorType.INPUT_ERROR,
                     String.format("%s is not a link provider.", provider));
         }
-        
-        ErrorCollector error = new ErrorCollector();
-        CreateValidator.checkObject(dp.getCreateSchema(), inputs, error);
-        if (error.getErrors() != null) {
-            throw new NetworkException(ErrorType.INPUT_ERROR,
-                    error.getErrors().toString());
+
+        Object errors = SchemaValidator.checkObject(dp.getCreateSchema(), inputs);
+        if (errors != null) {
+            throw new NetworkException(ErrorType.INPUT_ERROR, errors.toString());
         }
         
         // 到目前为止，肯定是两个端口

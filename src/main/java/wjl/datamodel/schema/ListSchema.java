@@ -1,5 +1,7 @@
 package wjl.datamodel.schema;
 
+import wjl.util.ErrorCollector;
+
 import java.util.List;
 import java.util.Map;
 
@@ -38,5 +40,10 @@ public class ListSchema extends DataSchema {
             ret.put(SchemaKeywords.ENTRY_SCHEMA, entrySchema.serialize());
         }
         return ret;
+    }
+
+    @Override
+    public void validate(Object input, ErrorCollector error) {
+
     }
 }

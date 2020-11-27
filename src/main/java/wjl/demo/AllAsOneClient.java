@@ -1,11 +1,13 @@
 package wjl.demo;
 
 import com.huawei.cli.HuaWeiSystem;
+import com.huawei.physical.RefRouterProvider;
 import com.huawei.vlan.VLanLinkProvider;
 import com.huawei.vrf.VrfDeviceProvider;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import wjl.client.topo.TopoControlCenter;
+import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderMgr;
 import wjl.ssh.MySshServer;
 import wjl.util.Config;
@@ -66,8 +68,20 @@ public class AllAsOneClient implements ActionListener {
     }
 
     JMenuBar createMainMenu() {
-        SingleIspMgrDemo ia = new SingleIspMgrDemo("移动", "YD");
-        SingleIspMgrDemo ib = new SingleIspMgrDemo("电信", "DX");
+        // 初始化运营商
+        AbstractIspMgr ia = new SingleIspMgrDemo("移动").init(null);
+        AbstractIspMgr ib = new SingleIspMgrDemo("电信").init(null);
+
+        // 初始化互联互通
+        Map<String, DeviceProvider> crossProviders = new HashMap<>();
+        crossProviders.put("移动网关", buildDeviceProvider(ia));
+        crossProviders.put("电信网关", buildDeviceProvider(ib));
+        AbstractIspMgr cross = new CrossIspMgrDemo("互联互通").init(crossProviders);
+
+        JMenu isp = new JMenu("运营商");
+        isp.add(new ShowFrameAction(ia.getIspName(), ia));
+        isp.add(new ShowFrameAction(ib.getIspName(), ib));
+        isp.add(new ShowFrameAction(cross.getIspName(), cross));
 
         HuaWeiSystem ydHws = new HuaWeiSystem();
         ydHws.setContainer(ia.getContainer());
@@ -76,6 +90,8 @@ public class AllAsOneClient implements ActionListener {
         HuaWeiSystem dxHws = new HuaWeiSystem();
         dxHws.setContainer(ib.getContainer());
         MySshServer.start(22, dxHws, dxHws);
+
+        // 初始化租户
 
         VrfDeviceProvider ydVrf = new VrfDeviceProvider();
         ydVrf.setContainer(ia.getContainer());
@@ -93,11 +109,6 @@ public class AllAsOneClient implements ActionListener {
         dxVLan.setContainer(ib.getContainer());
         forTenant.addLinkProvider("电信VLan", dxVLan);
 
-        JMenu isp = new JMenu("运营商");
-        isp.add(new ShowFrameAction(ia.getIspName(), ia));
-        isp.add(new ShowFrameAction(ib.getIspName(), ib));
-        isp.add(new CrossIspMgrDemo("互联互通"));
-
         JMenu tenant = new JMenu("租户");
         tenant.add(tenantMenuItem("TenantA"));
         tenant.add(tenantMenuItem("TenantB"));
@@ -108,6 +119,12 @@ public class AllAsOneClient implements ActionListener {
         bar.add(isp);
         bar.add(tenant);
         return bar;
+    }
+
+    private DeviceProvider buildDeviceProvider(AbstractIspMgr ispMgr) {
+        RefRouterProvider provider = new RefRouterProvider();
+        provider.setContainer(ispMgr.getContainer());
+        return provider;
     }
 
     private JMenuItem tenantMenuItem(String tenantName) {
