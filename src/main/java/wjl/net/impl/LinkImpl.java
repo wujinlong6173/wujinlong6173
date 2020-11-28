@@ -8,14 +8,17 @@ import java.util.Map;
 public class LinkImpl {
     private final String linkId;
     private final String outerId;
-    private final String provider;
     private final Map<String,Object> inputs;
+    private final String provider;
+    private final String product;
 
-    public LinkImpl(String linkId, String outerId, String provider, Map<String,Object> inputs) {
+    public LinkImpl(String linkId, String outerId, Map<String,Object> inputs,
+                    String provider, String product) {
         this.linkId = linkId;
         this.outerId = outerId;
-        this.provider = provider;
         this.inputs = inputs;
+        this.provider = provider;
+        this.product = product;
     }
 
     public String getLinkId() {
@@ -28,6 +31,10 @@ public class LinkImpl {
 
     public String getProvider() {
         return provider;
+    }
+
+    public String getProduct() {
+        return product;
     }
 
     public Map<String, Object> getInputs() {

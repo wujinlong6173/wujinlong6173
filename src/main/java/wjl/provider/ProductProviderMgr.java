@@ -16,21 +16,31 @@ public class ProductProviderMgr {
     private final Map<String, LinkProvider> linkProviders = new HashMap<>();
 
     public void addDeviceProvider(DeviceProvider provider) {
-        String name = String.format("%s-%s", provider.getProviderName(), provider.getProductName());
-        deviceProviders.put(name, provider);
+        String key = String.format("%s-%s", provider.getProviderName(), provider.getProductName());
+        deviceProviders.put(key, provider);
     }
 
-    public DeviceProvider getDeviceProvider(String productName) {
-        return deviceProviders.get(productName);
+    public DeviceProvider getDeviceProvider(String key) {
+        return deviceProviders.get(key);
+    }
+
+    public DeviceProvider getDeviceProvider(String provider, String product) {
+        String key = String.format("%s-%s", provider, product);
+        return deviceProviders.get(key);
     }
 
     public void addLinkProvider(LinkProvider provider) {
-        String name = String.format("%s-%s", provider.getProviderName(), provider.getProductName());
-        linkProviders.put(name, provider);
+        String key = String.format("%s-%s", provider.getProviderName(), provider.getProductName());
+        linkProviders.put(key, provider);
     }
 
-    public LinkProvider getLinkProvider(String productName) {
-        return linkProviders.get(productName);
+    public LinkProvider getLinkProvider(String key) {
+        return linkProviders.get(key);
+    }
+
+    public LinkProvider getLinkProvider(String provider, String product) {
+        String key = String.format("%s-%s", provider, product);
+        return linkProviders.get(key);
     }
 
     /**

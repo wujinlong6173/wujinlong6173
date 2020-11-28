@@ -8,14 +8,17 @@ import java.util.Map;
 public class DeviceImpl {
     private final String devId;
     private final String outerId;
-    private final String provider;
     private final Map<String,Object> inputs;
+    private final String provider;
+    private final String product;
 
-    public DeviceImpl(String devId, String outerId, String provider, Map<String,Object> inputs) {
+    public DeviceImpl(String devId, String outerId, Map<String,Object> inputs,
+                      String provider, String product) {
         this.devId = devId;
         this.outerId = outerId;
-        this.provider = provider;
         this.inputs = inputs;
+        this.product = product;
+        this.provider = provider;
     }
 
     public String getDevId() {
@@ -28,6 +31,10 @@ public class DeviceImpl {
 
     public String getProvider() {
         return provider;
+    }
+
+    public String getProduct() {
+        return product;
     }
 
     public Map<String, Object> getInputs() {

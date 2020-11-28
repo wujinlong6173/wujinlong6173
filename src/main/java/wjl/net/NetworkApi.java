@@ -228,12 +228,12 @@ public class NetworkApi {
      * 部署一台设备
      * 
      * @param devId 设备唯一标示
-     * @param provider 设备供应商的名称
+     * @param providerProduct 设备供应商的名称加产品的名称
      * @param inputs 供应商需要的参数
      * @throws NetworkException 设备不存在或已部署，供应商名称错误，输入参数错误
      * @throws ProviderException 透传供应商的错误
      */
-    public void deployDevice(String devId, String provider, Map<String,Object> inputs)
+    public void deployDevice(String devId, String providerProduct, Map<String,Object> inputs)
             throws NetworkException, ProviderException {
         
         Device dev = intent.getDevice(devId); 
@@ -249,10 +249,10 @@ public class NetworkApi {
                     String.format("device %s is already deployed.", devId));
         }
 
-        DeviceProvider dp = productMgr.getDeviceProvider(provider);
+        DeviceProvider dp = productMgr.getDeviceProvider(providerProduct);
         if (dp == null) {
             throw new NetworkException(ErrorType.INPUT_ERROR,
-                    String.format("%s is not a device provider.", provider));
+                    String.format("%s is not a device provider.", providerProduct));
         }
 
         // 自动填写设备名称，省去界面填写的麻烦
@@ -266,7 +266,7 @@ public class NetworkApi {
         }
 
         String outerId = dp.create(devId, inputs);
-        DeviceImpl mapper = new DeviceImpl(devId, outerId, provider, inputs);
+        DeviceImpl mapper = new DeviceImpl(devId, outerId, inputs, dp.getProviderName(), dp.getProductName());
         impl.addDeviceImpl(mapper);
         dev.setDeploy(true);
     }
@@ -301,7 +301,7 @@ public class NetworkApi {
             }
         }
 
-        DeviceProvider dp = productMgr.getDeviceProvider(devImpl.getProvider());
+        DeviceProvider dp = productMgr.getDeviceProvider(devImpl.getProvider(), devImpl.getProduct());
         if (dp == null) {
             throw new NetworkException(ErrorType.SYSTEM_ERROR,
                     String.format("missing device provider %s.", devImpl.getProvider()));
@@ -316,12 +316,12 @@ public class NetworkApi {
      * 部署一条链路
      * 
      * @param linkId 链路唯一标识
-     * @param provider 链路供应商的名称
+     * @param providerProduct 链路供应商的名称加产品的名称
      * @param inputs 供应商需要的参数
      * @throws NetworkException 链路不存在或已部署，供应商名称错误，输入参数错误
      * @throws ProviderException
      */
-    public void deployLink(String linkId, String provider, Map<String,Object> inputs)
+    public void deployLink(String linkId, String providerProduct, Map<String,Object> inputs)
             throws NetworkException, ProviderException {
         
         Link lk = intent.getLink(linkId);
@@ -338,10 +338,10 @@ public class NetworkApi {
         }
         
 
-        LinkProvider dp = productMgr.getLinkProvider(provider);
+        LinkProvider dp = productMgr.getLinkProvider(providerProduct);
         if (dp == null) {
             throw new NetworkException(ErrorType.INPUT_ERROR,
-                    String.format("%s is not a link provider.", provider));
+                    String.format("%s is not a link provider.", providerProduct));
         }
 
         Object errors = SchemaValidator.checkObject(dp.getCreateSchema(), inputs);
@@ -364,7 +364,7 @@ public class NetworkApi {
                 srcDevImpl.getOuterId(), src.getName(), srcDevImpl.getProvider(),
                 dstDevImpl.getOuterId(), dst.getName(), dstDevImpl.getProvider(), 
                 inputs);
-        LinkImpl mapper = new LinkImpl(linkId, outerId, provider, inputs);
+        LinkImpl mapper = new LinkImpl(linkId, outerId, inputs, dp.getProviderName(), dp.getProductName());
         impl.addLinkImpl(mapper);
         lk.setDeploy(true);
     }
@@ -388,7 +388,7 @@ public class NetworkApi {
             return;
         }
 
-        LinkProvider dp = productMgr.getLinkProvider(lkImpl.getProvider());
+        LinkProvider dp = productMgr.getLinkProvider(lkImpl.getProvider(), lkImpl.getProduct());
         if (dp == null) {
             throw new NetworkException(ErrorType.INPUT_ERROR,
                     String.format("missing link provider %s.", lkImpl.getProvider()));
