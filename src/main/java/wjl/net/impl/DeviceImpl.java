@@ -1,7 +1,6 @@
 package wjl.net.impl;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 设备意图背后的实现，映射到供应商的设备对象。

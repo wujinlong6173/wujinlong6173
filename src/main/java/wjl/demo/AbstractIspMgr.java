@@ -4,14 +4,13 @@ import wjl.client.topo.TopoControlCenter;
 import wjl.docker.VirtualContainer;
 import wjl.net.NetworkApi;
 import wjl.provider.DeviceProvider;
-import wjl.provider.ProviderMgr;
+import wjl.provider.ProductProviderMgr;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 
 public abstract class AbstractIspMgr extends JFrame {
@@ -45,16 +44,14 @@ public abstract class AbstractIspMgr extends JFrame {
         return cfg;
     }
 
-    public AbstractIspMgr init(Map<String, DeviceProvider> deviceProviderMap) {
-        ProviderMgr providerMgr = createProviders();
-        if (deviceProviderMap != null) {
-            for (Map.Entry<String, DeviceProvider> deviceProvider : deviceProviderMap.entrySet()) {
-                providerMgr.addDeviceProvider(deviceProvider.getKey(), deviceProvider.getValue());
-            }
+    public AbstractIspMgr init(DeviceProvider... deviceProviders) {
+        ProductProviderMgr productMgr = createProviders();
+        for (DeviceProvider provider : deviceProviders) {
+            productMgr.addDeviceProvider(provider);
         }
 
-        NetworkApi network = new NetworkApi(providerMgr);
-        TopoControlCenter ccc = new TopoControlCenter(network, providerMgr);
+        NetworkApi network = new NetworkApi(productMgr);
+        TopoControlCenter ccc = new TopoControlCenter(network, productMgr);
         ccc.setDeviceNamePrefix(this.cfg.getProperty("name_prefix"));
 
         // 初始化窗口
@@ -68,5 +65,5 @@ public abstract class AbstractIspMgr extends JFrame {
         return this;
     }
 
-    protected abstract ProviderMgr createProviders();
+    protected abstract ProductProviderMgr createProviders();
 }

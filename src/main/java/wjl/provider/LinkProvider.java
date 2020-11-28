@@ -1,17 +1,8 @@
 package wjl.provider;
 
-import wjl.datamodel.schema.ObjectSchema;
-
 import java.util.Map;
 
-public interface LinkProvider {
-    /**
-     * 创建链路的参数字典
-     *
-     * @return 参数字典
-     */
-    ObjectSchema getCreateSchema();
-
+public interface LinkProvider extends ProductProvider {
     /**
      * 创建链路
      *

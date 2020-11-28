@@ -9,7 +9,7 @@ import com.huawei.physical.PhyDeviceMgr;
 import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
-import wjl.docker.AbstractMember;
+import wjl.provider.AbsProductProvider;
 import wjl.provider.LinkProvider;
 import wjl.provider.ProviderException;
 import wjl.datamodel.schema.ObjectSchema;
@@ -19,10 +19,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-public class VLanLinkProvider extends AbstractMember implements LinkProvider {
+public class VLanLinkProvider extends AbsProductProvider implements LinkProvider {
     private final ObjectSchema createSchema;
 
-    public VLanLinkProvider() {
+    public VLanLinkProvider(String providerName, String productName) {
+        super(providerName, productName);
         SchemaParser parser = new SchemaParser();
         createSchema = parser.parse("HW.VLan", "properties: {}");
     }

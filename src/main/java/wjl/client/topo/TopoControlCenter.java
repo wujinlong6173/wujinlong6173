@@ -7,18 +7,17 @@ import wjl.client.mxgraph.mxCellDevice;
 import wjl.client.mxgraph.mxCellLink;
 import wjl.client.mxgraph.mxGraphBuilder;
 import wjl.net.NetworkApi;
-import wjl.provider.ProviderMgr;
+import wjl.provider.ProductProviderMgr;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
 public class TopoControlCenter {
     private final NetworkApi net;
     private final mxGraph graph;
     private final mxGraphComponent component;
-    private final ProviderMgr providerMgr;
+    private final ProductProviderMgr productMgr;
     private String deviceNamePrefix = "Router";
     private int nextId;
 
@@ -38,16 +37,16 @@ public class TopoControlCenter {
      *
      * @param net 如果为空则自动创建一个
      */
-    public TopoControlCenter(NetworkApi net, ProviderMgr providerMgr) {
+    public TopoControlCenter(NetworkApi net, ProductProviderMgr productMgr) {
         // 初始化mxGraph组件
         if (net == null) {
-            this.net = new NetworkApi(providerMgr);
+            this.net = new NetworkApi(productMgr);
             this.graph = new mxGraph();
-            this.providerMgr = providerMgr;
+            this.productMgr = productMgr;
         } else {
             this.net = net;
             this.graph = mxGraphBuilder.build(net);
-            this.providerMgr = net.getProviderMgr();
+            this.productMgr = net.getProductMgr();
         }
         component = new mxGraphComponent(graph);
         initGraphStyle();
@@ -96,8 +95,8 @@ public class TopoControlCenter {
         component.setWheelScrollingEnabled(true);
     }
 
-    public ProviderMgr getProviderMgr() {
-        return providerMgr;
+    public ProductProviderMgr getProductMgr() {
+        return productMgr;
     }
 
     public mxGraph getGraph() {

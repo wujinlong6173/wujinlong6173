@@ -2,7 +2,7 @@ package com.huawei.physical;
 
 import wjl.datamodel.SchemaParser;
 import wjl.datamodel.schema.ObjectSchema;
-import wjl.docker.AbstractMember;
+import wjl.provider.AbsProductProvider;
 import wjl.provider.LinkProvider;
 import wjl.provider.ProviderException;
 import wjl.util.ErrorType;
@@ -13,11 +13,11 @@ import java.util.Map;
 /**
  * 模拟物理链路的供应商，物理路由器和交换机可以互联。
  */
-public class PhyLinkProvider extends AbstractMember implements LinkProvider {
+public class PhyLinkProvider extends AbsProductProvider implements LinkProvider {
     private final ObjectSchema createSchema;
 
-    public PhyLinkProvider() {
-        super();
+    public PhyLinkProvider(String providerName, String productName) {
+        super(providerName, productName);
         SchemaParser parser = new SchemaParser();
         createSchema = parser.parse("PhysicalLink", "properties: {}");
     }

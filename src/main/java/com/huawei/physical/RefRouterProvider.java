@@ -2,7 +2,7 @@ package com.huawei.physical;
 
 import wjl.datamodel.SchemaParser;
 import wjl.datamodel.schema.ObjectSchema;
-import wjl.docker.AbstractMember;
+import wjl.provider.AbsProductProvider;
 import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderException;
 import wjl.util.ErrorType;
@@ -14,10 +14,11 @@ import java.util.Map;
  * 互联网络有自己的网络意图，先创建设备意图，然后引用运营商的物理设备。
  * 通过执行部署操作，调用本接口，建立引用关系。
  */
-public class RefRouterProvider extends AbstractMember implements DeviceProvider {
+public class RefRouterProvider extends AbsProductProvider implements DeviceProvider {
     private final ObjectSchema createSchema;
 
-    public RefRouterProvider() {
+    public RefRouterProvider(String providerName, String productName) {
+        super(providerName, productName);
         SchemaParser parser = new SchemaParser();
         createSchema = parser.parse("ReferenceRouter",
            "required: true\n" +

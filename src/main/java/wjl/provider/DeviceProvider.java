@@ -4,14 +4,7 @@ import wjl.datamodel.schema.ObjectSchema;
 
 import java.util.Map;
 
-public interface DeviceProvider {
-    /**
-     * 创建设备的参数字典
-     *
-     * @return 参数字典
-     */
-    ObjectSchema getCreateSchema();
-
+public interface DeviceProvider extends ProductProvider {
     /**
      * 创建设备后，设备内业务配置的字典
      *

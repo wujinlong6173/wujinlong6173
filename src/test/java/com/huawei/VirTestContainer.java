@@ -18,7 +18,7 @@ public class VirTestContainer extends PhyTestContainer {
         vrfMgr = new VrfMgr();
         container.setInstance(vrfMgr);
 
-        vrfProvider = new VrfDeviceProvider();
+        vrfProvider = new VrfDeviceProvider(null, null);
         vrfProvider.setContainer(container);
     }
 }

@@ -26,7 +26,7 @@ public class NetworkImpl {
 
     /**
      * 删除设备意图的实现
-     * @param devId
+     * @param intentId
      */
     public void delDeviceImpl(String intentId) {
         implDevices.remove(intentId);

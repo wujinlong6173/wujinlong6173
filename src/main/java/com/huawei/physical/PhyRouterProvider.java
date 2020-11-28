@@ -2,7 +2,7 @@ package com.huawei.physical;
 
 import wjl.datamodel.SchemaParser;
 import wjl.datamodel.schema.ObjectSchema;
-import wjl.docker.AbstractMember;
+import wjl.provider.AbsProductProvider;
 import wjl.provider.DeviceProvider;
 
 import java.util.Map;
@@ -10,11 +10,12 @@ import java.util.Map;
 /**
  * 模拟物理路由器的供应商。
  */
-public class PhyRouterProvider extends AbstractMember implements DeviceProvider {
+public class PhyRouterProvider extends AbsProductProvider implements DeviceProvider {
     private final ObjectSchema createSchema;
     private final ObjectSchema configSchema;
 
-    public PhyRouterProvider() {
+    public PhyRouterProvider(String providerName, String productName) {
+        super(providerName, productName);
         SchemaParser parser = new SchemaParser();
         createSchema = parser.parse("PhysicalRouter", "properties:\n" +
                 "  name: {type: string, required: true, flag: CR}\n");

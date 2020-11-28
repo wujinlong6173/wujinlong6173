@@ -29,8 +29,8 @@ class DeployAction extends AbstractAction {
 
         deviceDlg = new InputDeployParamDialog();
         linkDlg = new InputDeployParamDialog();
-        deviceDlg.setProviders(ccc.getProviderMgr().listDeviceProviders());
-        linkDlg.setProviders(ccc.getProviderMgr().listLinkProviders());
+        deviceDlg.setProviders(ccc.getProductMgr().listDeviceProviders());
+        linkDlg.setProviders(ccc.getProductMgr().listLinkProviders());
     }
 
     @Override
@@ -60,7 +60,7 @@ class DeployAction extends AbstractAction {
         
         try {
             String providerName = deviceDlg.getSelectedProvider();
-            DeviceProvider provider = ccc.getProviderMgr().getDeviceProvider(providerName);
+            DeviceProvider provider = ccc.getProductMgr().getDeviceProvider(providerName);
             ccc.getNet().deployDevice(dev.getId(), providerName, deviceDlg.getInputs());
             dev.changeDeployState(deploy, provider.getIcon());
             ccc.getGraph().refresh();

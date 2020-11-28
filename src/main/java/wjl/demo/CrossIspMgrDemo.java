@@ -2,7 +2,7 @@ package wjl.demo;
 
 import com.huawei.physical.*;
 import wjl.docker.VirtualContainer;
-import wjl.provider.ProviderMgr;
+import wjl.provider.ProductProviderMgr;
 
 /**
  * 模拟多个运营商互联互通，可以理解为一个新的运营商，它自己没有路由器，
@@ -14,17 +14,17 @@ public class CrossIspMgrDemo extends AbstractIspMgr {
     }
 
     @Override
-    protected ProviderMgr createProviders() {
+    protected ProductProviderMgr createProviders() {
         VirtualContainer container = getContainer();
-        ProviderMgr providerMgr = new ProviderMgr();
+        ProductProviderMgr productMgr = new ProductProviderMgr();
 
         PhyLinkMgr linkMgr = new PhyLinkMgr();
         container.setInstance(linkMgr);
 
-        CrossLinkProvider linkProvider = new CrossLinkProvider();
+        CrossLinkProvider linkProvider = new CrossLinkProvider("互联", "物理链路");
         linkProvider.setContainer(container);
-        providerMgr.addLinkProvider("互联链路", linkProvider);
+        productMgr.addLinkProvider(linkProvider);
 
-        return providerMgr;
+        return productMgr;
     }
 }

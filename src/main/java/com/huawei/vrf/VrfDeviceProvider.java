@@ -4,7 +4,7 @@ import com.huawei.common.CLI;
 import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
 import wjl.datamodel.SchemaParser;
-import wjl.docker.AbstractMember;
+import wjl.provider.AbsProductProvider;
 import wjl.provider.DeviceProvider;
 import wjl.provider.ProviderException;
 import wjl.datamodel.schema.ObjectSchema;
@@ -13,11 +13,12 @@ import wjl.util.ErrorType;
 import java.util.Map;
 import java.util.UUID;
 
-public class VrfDeviceProvider extends AbstractMember implements DeviceProvider {
+public class VrfDeviceProvider extends AbsProductProvider implements DeviceProvider {
     private final ObjectSchema createSchema;
     private final ObjectSchema configSchema;
 
-    public VrfDeviceProvider() {
+    public VrfDeviceProvider(String providerName, String productName) {
+        super(providerName, productName);
         SchemaParser parser = new SchemaParser();
         createSchema = parser.parse("HW.VRF", "properties:\n" +
                 "  name: {type: string, required: true, flag: CR}\n" +

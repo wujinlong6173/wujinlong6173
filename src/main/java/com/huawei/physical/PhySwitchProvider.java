@@ -1,7 +1,7 @@
 package com.huawei.physical;
 
 import wjl.datamodel.schema.ObjectSchema;
-import wjl.docker.AbstractMember;
+import wjl.provider.AbsProductProvider;
 import wjl.provider.DeviceProvider;
 
 import java.util.Map;
@@ -9,7 +9,11 @@ import java.util.Map;
 /**
  * 模拟物理交换机的供应商，交换机用于CE和PE之间，更贴近真实网络。
  */
-public class PhySwitchProvider extends AbstractMember implements DeviceProvider {
+public class PhySwitchProvider extends AbsProductProvider implements DeviceProvider {
+    public PhySwitchProvider(String providerName, String productName) {
+        super(providerName, productName);
+    }
+
     @Override
     public ObjectSchema getCreateSchema() {
         return null;

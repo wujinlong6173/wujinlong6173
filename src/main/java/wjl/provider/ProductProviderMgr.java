@@ -10,24 +10,27 @@ import java.util.Map;
 /**
  * 管理一张网络选中的所有供应商，本对象可以被多张网络共享。
  */
-public class ProviderMgr {
+public class ProductProviderMgr {
+    // 键值是供应商的名称加产品的名称
     private final Map<String, DeviceProvider> deviceProviders = new HashMap<>();
     private final Map<String, LinkProvider> linkProviders = new HashMap<>();
 
-    public void addDeviceProvider(String name, DeviceProvider provider) {
+    public void addDeviceProvider(DeviceProvider provider) {
+        String name = String.format("%s-%s", provider.getProviderName(), provider.getProductName());
         deviceProviders.put(name, provider);
     }
 
-    public DeviceProvider getDeviceProvider(String name) {
-        return deviceProviders.get(name);
+    public DeviceProvider getDeviceProvider(String productName) {
+        return deviceProviders.get(productName);
     }
 
-    public void addLinkProvider(String name, LinkProvider provider) {
+    public void addLinkProvider(LinkProvider provider) {
+        String name = String.format("%s-%s", provider.getProviderName(), provider.getProductName());
         linkProviders.put(name, provider);
     }
 
-    public LinkProvider getLinkProvider(String name) {
-        return linkProviders.get(name);
+    public LinkProvider getLinkProvider(String productName) {
+        return linkProviders.get(productName);
     }
 
     /**

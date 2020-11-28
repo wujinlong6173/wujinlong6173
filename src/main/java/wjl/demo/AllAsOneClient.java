@@ -8,7 +8,7 @@ import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import wjl.client.topo.TopoControlCenter;
 import wjl.provider.DeviceProvider;
-import wjl.provider.ProviderMgr;
+import wjl.provider.ProductProviderMgr;
 import wjl.ssh.MySshServer;
 import wjl.util.Config;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class AllAsOneClient implements ActionListener {
     private static final String CMD_SWITCH_TENANT = "cmd_switch_tenant";
-    private final ProviderMgr forTenant = new ProviderMgr();
+    private final ProductProviderMgr forTenant = new ProductProviderMgr();
     private final Map<String, TopoControlCenter> allTenants = new HashMap<>();
     private JFrame mainFrame; // 主窗口，方便修改标题
     private JSplitPane mainPane; // 主界面，方便切换租户拓扑
@@ -69,13 +69,13 @@ public class AllAsOneClient implements ActionListener {
 
     JMenuBar createMainMenu() {
         // 初始化运营商
-        AbstractIspMgr ia = new SingleIspMgrDemo("移动").init(null);
-        AbstractIspMgr ib = new SingleIspMgrDemo("电信").init(null);
+        AbstractIspMgr ia = new SingleIspMgrDemo("移动").init();
+        AbstractIspMgr ib = new SingleIspMgrDemo("电信").init();
 
         // 初始化互联互通
-        Map<String, DeviceProvider> crossProviders = new HashMap<>();
-        crossProviders.put("移动网关", buildDeviceProvider(ia));
-        crossProviders.put("电信网关", buildDeviceProvider(ib));
+        DeviceProvider[] crossProviders = new DeviceProvider[] {
+            buildDeviceProvider(ia),
+            buildDeviceProvider(ib)};
         AbstractIspMgr cross = new CrossIspMgrDemo("互联互通").init(crossProviders);
 
         JMenu isp = new JMenu("运营商");
@@ -93,21 +93,21 @@ public class AllAsOneClient implements ActionListener {
 
         // 初始化租户
 
-        VrfDeviceProvider ydVrf = new VrfDeviceProvider();
+        VrfDeviceProvider ydVrf = new VrfDeviceProvider("移动", "VRF");
         ydVrf.setContainer(ia.getContainer());
-        forTenant.addDeviceProvider("移动VRF", ydVrf);
+        forTenant.addDeviceProvider(ydVrf);
 
-        VrfDeviceProvider dxVrf = new VrfDeviceProvider();
+        VrfDeviceProvider dxVrf = new VrfDeviceProvider("电信", "VRF");
         dxVrf.setContainer(ib.getContainer());
-        forTenant.addDeviceProvider("电信VRF", dxVrf);
+        forTenant.addDeviceProvider(dxVrf);
 
-        VLanLinkProvider ydVLan = new VLanLinkProvider();
+        VLanLinkProvider ydVLan = new VLanLinkProvider("移动", "VLan");
         ydVLan.setContainer(ia.getContainer());
-        forTenant.addLinkProvider("移动VLan", ydVLan);
+        forTenant.addLinkProvider(ydVLan);
 
-        VLanLinkProvider dxVLan = new VLanLinkProvider();
+        VLanLinkProvider dxVLan = new VLanLinkProvider("电信", "VLan");
         dxVLan.setContainer(ib.getContainer());
-        forTenant.addLinkProvider("电信VLan", dxVLan);
+        forTenant.addLinkProvider(dxVLan);
 
         JMenu tenant = new JMenu("租户");
         tenant.add(tenantMenuItem("TenantA"));
@@ -122,7 +122,7 @@ public class AllAsOneClient implements ActionListener {
     }
 
     private DeviceProvider buildDeviceProvider(AbstractIspMgr ispMgr) {
-        RefRouterProvider provider = new RefRouterProvider();
+        RefRouterProvider provider = new RefRouterProvider(ispMgr.getIspName(), "网关");
         provider.setContainer(ispMgr.getContainer());
         return provider;
     }

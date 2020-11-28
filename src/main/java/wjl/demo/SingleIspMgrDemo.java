@@ -3,7 +3,7 @@ package wjl.demo;
 import com.huawei.physical.*;
 import com.huawei.vrf.VrfMgr;
 import wjl.docker.VirtualContainer;
-import wjl.provider.ProviderMgr;
+import wjl.provider.ProductProviderMgr;
 
 /**
  * 模拟一个运营商，每个对象实例代表一个运营商，管理一张网络。
@@ -19,9 +19,9 @@ public class SingleIspMgrDemo extends AbstractIspMgr {
     }
 
     @Override
-    protected ProviderMgr createProviders() {
+    protected ProductProviderMgr createProviders() {
         VirtualContainer container = getContainer();
-        ProviderMgr providerMgr = new ProviderMgr();
+        ProductProviderMgr productMgr = new ProductProviderMgr();
 
         PhyLinkMgr linkMgr = new PhyLinkMgr();
         PhyDeviceMgr deviceMgr = new PhyDeviceMgr();
@@ -30,18 +30,18 @@ public class SingleIspMgrDemo extends AbstractIspMgr {
         container.setInstance(deviceMgr);
         container.setInstance(vrfMgr);
 
-        PhyRouterProvider routerProvider = new PhyRouterProvider();
+        PhyRouterProvider routerProvider = new PhyRouterProvider("", "物理路由器");
         routerProvider.setContainer(container);
-        providerMgr.addDeviceProvider("物理路由器", routerProvider);
+        productMgr.addDeviceProvider(routerProvider);
 
-        PhySwitchProvider switchProvider = new PhySwitchProvider();
+        PhySwitchProvider switchProvider = new PhySwitchProvider("", "物理交换机");
         switchProvider.setContainer(container);
-        providerMgr.addDeviceProvider("物理交换机", switchProvider);
+        productMgr.addDeviceProvider(switchProvider);
 
-        PhyLinkProvider linkProvider = new PhyLinkProvider();
+        PhyLinkProvider linkProvider = new PhyLinkProvider("", "物理链路");
         linkProvider.setContainer(container);
-        providerMgr.addLinkProvider("物理链路", linkProvider);
+        productMgr.addLinkProvider(linkProvider);
 
-        return providerMgr;
+        return productMgr;
     }
 }

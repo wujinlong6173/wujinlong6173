@@ -19,14 +19,14 @@ public class PhyTestContainer {
 
         linkMgr = new PhyLinkMgr();
         container.setInstance(linkMgr);
-        linkProvider = new PhyLinkProvider();
+        linkProvider = new PhyLinkProvider(null, null);
         linkProvider.setContainer(container);
 
         deviceMgr = new PhyDeviceMgr();
         container.setInstance(deviceMgr);
-        routerProvider = new PhyRouterProvider();
+        routerProvider = new PhyRouterProvider(null, null);
         routerProvider.setContainer(container);
-        switchProvider = new PhySwitchProvider();
+        switchProvider = new PhySwitchProvider(null, null);
         switchProvider.setContainer(container);
     }
 }

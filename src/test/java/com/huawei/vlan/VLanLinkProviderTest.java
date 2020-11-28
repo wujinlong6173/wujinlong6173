@@ -35,7 +35,7 @@ public class VLanLinkProviderTest extends VirTestContainer {
         inputs.put("name", "4g.vpn");
         String r2 = vrfProvider.create("---", inputs);
         
-        VLanLinkProvider provider = new VLanLinkProvider();
+        VLanLinkProvider provider = new VLanLinkProvider(null, null);
         provider.setContainer(container);
 
         // 创建链路
