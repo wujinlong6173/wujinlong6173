@@ -32,6 +32,7 @@ public class PhyLinkProvider extends AbsProductProvider implements LinkProvider 
             String srcDeviceId, String srcPortName, String srcProvider,
             String dstDeviceId, String dstPortName, String dstProvider,
             Map<String, Object> inputs) throws ProviderException {
+        // srcDeviceId和dstDeviceId是PhyRouterProvider.create的返回值
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyDevice srcDev = deviceMgr.getDevice(srcDeviceId);
         PhyDevice dstDev = deviceMgr.getDevice(dstDeviceId);

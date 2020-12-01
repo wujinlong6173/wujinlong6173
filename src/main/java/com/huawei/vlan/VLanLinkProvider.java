@@ -38,7 +38,7 @@ public class VLanLinkProvider extends AbsProductProvider implements LinkProvider
             String srcVrfId, String srcPortName, String srcProvider,  
             String dstVrfId, String dstPortName, String dstProvider, 
             Map<String, Object> inputs) throws ProviderException {
-
+        // srcVrfId和dstVrfId是VrfDeviceProvider.create的返回值
         VrfMgr vrfMgr = getInstance(VrfMgr.class);
         PhyLinkMgr linkMgr = getInstance(PhyLinkMgr.class);
         VLanDao vLanDao = getInstance(VLanDao.class);
