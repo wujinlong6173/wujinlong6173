@@ -1,24 +1,22 @@
 package com.huawei.common;
 
+import wjl.docker.AbstractMember;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class InterfaceMgr {
-    private static Map<String, Interface> ifs;
+public class InterfaceMgr extends AbstractMember {
+    private final Map<String, Interface> ifs = new ConcurrentHashMap<>();
 
-    static {
-        ifs = new ConcurrentHashMap<>();
-    }
-
-    public static void addInterface(Interface inf) {
+    public void addInterface(Interface inf) {
         ifs.put(inf.getId(), inf);
     }
 
-    public static Interface getInterface(String id) {
+    public Interface getInterface(String id) {
         return ifs.get(id);
     }
 
-    public static Interface delInterface(String id) {
+    public Interface delInterface(String id) {
         return ifs.remove(id);
     }
 }

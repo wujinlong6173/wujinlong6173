@@ -1,6 +1,7 @@
 package wjl.demo;
 
 import com.huawei.physical.*;
+import com.huawei.vlan.VLanDao;
 import wjl.docker.VirtualContainer;
 import wjl.provider.ProductProviderMgr;
 
@@ -19,7 +20,9 @@ public class CrossIspMgrDemo extends AbstractIspMgr {
         ProductProviderMgr productMgr = new ProductProviderMgr();
 
         PhyLinkMgr linkMgr = new PhyLinkMgr();
+        VLanDao vLanDao = new VLanDao();
         container.setInstance(linkMgr);
+        container.setInstance(vLanDao);
 
         CrossLinkProvider linkProvider = new CrossLinkProvider("互联", "物理链路");
         linkProvider.setContainer(container);

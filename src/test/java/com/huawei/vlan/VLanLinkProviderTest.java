@@ -52,7 +52,7 @@ public class VLanLinkProviderTest extends VirTestContainer {
 
         // 删除链路
         provider.delete(lk, inputs);
-        assertNull(VLanDao.getVLanLink(lk));
+        assertNull(vLanDao.getVLanLink(lk));
         assertTrue(vrf1.getBindInterfaces().isEmpty());
         assertTrue(vrf2.getBindInterfaces().isEmpty());
     }

@@ -98,11 +98,12 @@ public class VirBgpView extends AbstractMember implements CommandView {
 
     private String cfgRtForBgpPeer(Vrf other) {
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        VpnRes vpnRes = getInstance(VpnRes.class);
         PhyRouter pr = deviceMgr.getRouter(other.getHost());
 
         // 给对端VRF分配并导出RT
         if (other.getRtForBgpPeer() == null) {
-            int newRt = VpnRes.allocRT();
+            int newRt = vpnRes.allocRT();
             String fullRt = String.format("%s:%d", pr.getAsNumber(), newRt);
             other.setRtForBgpPeer(fullRt);
 
@@ -127,12 +128,14 @@ public class VirBgpView extends AbstractMember implements CommandView {
      */
     @Command(command="peer group {name} hub")
     public void joinPeerGroupAsHub(String name) {
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        VpnRes vpnRes = getInstance(VpnRes.class);
+
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.HUB);
 
-        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
-        BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
+        BgpPeerGroupImpl group = vpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.EXPORT);
@@ -142,12 +145,14 @@ public class VirBgpView extends AbstractMember implements CommandView {
 
     @Command(command="peer group {name} spoke")
     public void joinPeerGroupAsSpoke(String name) {
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        VpnRes vpnRes = getInstance(VpnRes.class);
+
         vrf.addConfig(CLI.BGP);
         vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.SPOKE);
 
-        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
-        BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
+        BgpPeerGroupImpl group = vpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
         pr.addConfig(CLI.BGP, pr.getAsNumber());
         pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getSpokeRT(), CLI.EXPORT);

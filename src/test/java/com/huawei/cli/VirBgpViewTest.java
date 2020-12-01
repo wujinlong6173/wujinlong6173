@@ -83,7 +83,7 @@ public class VirBgpViewTest extends VirTestContainer {
         VirBgpView bgp4 = (VirBgpView)view4.cfgBgp();
         bgp3.joinPeerGroupAsHub("group1");
         bgp4.joinPeerGroupAsSpoke("group1");
-        BgpPeerGroupImpl group = VpnRes.getOrCreatePeerGroup(ag01.getAsNumber(), "group1");
+        BgpPeerGroupImpl group = vpnRes.getOrCreatePeerGroup(ag01.getAsNumber(), "group1");
 
         assertTrue(ag01.checkConfig(CLI.BGP, ag01.getAsNumber()));
         assertTrue(ag01.checkConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test"));

@@ -1,6 +1,9 @@
 package wjl.demo;
 
+import com.huawei.common.InterfaceMgr;
 import com.huawei.physical.*;
+import com.huawei.vlan.VLanDao;
+import com.huawei.vrf.VpnRes;
 import com.huawei.vrf.VrfMgr;
 import wjl.docker.VirtualContainer;
 import wjl.provider.ProductProviderMgr;
@@ -26,9 +29,15 @@ public class SingleIspMgrDemo extends AbstractIspMgr {
         PhyLinkMgr linkMgr = new PhyLinkMgr();
         PhyDeviceMgr deviceMgr = new PhyDeviceMgr();
         VrfMgr vrfMgr = new VrfMgr();
+        VLanDao vLanDao = new VLanDao();
+        InterfaceMgr ifMgr = new InterfaceMgr();
+        VpnRes vpnRes = new VpnRes();
         container.setInstance(linkMgr);
         container.setInstance(deviceMgr);
         container.setInstance(vrfMgr);
+        container.setInstance(vLanDao);
+        container.setInstance(ifMgr);
+        container.setInstance(vpnRes);
 
         PhyRouterProvider routerProvider = new PhyRouterProvider("", "物理路由器");
         routerProvider.setContainer(container);

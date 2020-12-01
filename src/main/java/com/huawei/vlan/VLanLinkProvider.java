@@ -40,6 +40,9 @@ public class VLanLinkProvider extends AbsProductProvider implements LinkProvider
             Map<String, Object> inputs) throws ProviderException {
 
         VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        PhyLinkMgr linkMgr = getInstance(PhyLinkMgr.class);
+        VLanDao vLanDao = getInstance(VLanDao.class);
+
         String srcHost = vrfMgr.getHostOfVrf(srcVrfId);
         String dstHost = vrfMgr.getHostOfVrf(dstVrfId);
         if (srcHost == null || dstHost == null) {
@@ -48,7 +51,6 @@ public class VLanLinkProvider extends AbsProductProvider implements LinkProvider
                             srcVrfId, dstVrfId));
         }
 
-        PhyLinkMgr linkMgr = getInstance(PhyLinkMgr.class);
         PhyLink phyLink = linkMgr.findLinkBetweenDevice(srcHost, dstHost);
         if (phyLink == null) {
             throw new ProviderException(ErrorType.NO_USABLE_RESOURCE,
@@ -69,19 +71,22 @@ public class VLanLinkProvider extends AbsProductProvider implements LinkProvider
         lk.setId(UUID.randomUUID().toString());
         lk.setSrcSubIf(srcIf.getId());
         lk.setDstSubIf(dstIf.getId());
-        VLanDao.addVLanLink(lk);
+        vLanDao.addVLanLink(lk);
         return lk.getId();
     }
 
     private VLanSubIf createVLanSubIf(String desc, String host, String port, int vLanId) {
+        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        InterfaceMgr ifMgr = getInstance(InterfaceMgr.class);
+
         VLanSubIf inf = new VLanSubIf();
         inf.setId(UUID.randomUUID().toString());
         inf.setHost(host);
         inf.setPort(port);
         inf.setVlanId(vLanId);
 
-        InterfaceMgr.addInterface(inf);
-        PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        ifMgr.addInterface(inf);
+
         PhyRouter pr = deviceMgr.getRouter(host);
         if (pr != null) {
             pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
@@ -94,26 +99,31 @@ public class VLanLinkProvider extends AbsProductProvider implements LinkProvider
 
     @Override
     public void delete(String idInProvider, Map<String, Object> inputs) throws ProviderException {
-        VLanLink lk = VLanDao.getVLanLink(idInProvider);
+        VLanDao vLanDao = getInstance(VLanDao.class);
+        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        InterfaceMgr ifMgr = getInstance(InterfaceMgr.class);
+
+        VLanLink lk = vLanDao.getVLanLink(idInProvider);
         if (lk == null) {
             return;
         }
 
-        VLanSubIf srcIf = (VLanSubIf)InterfaceMgr.getInterface(lk.getSrcSubIf());
-        VLanSubIf dstIf = (VLanSubIf)InterfaceMgr.getInterface(lk.getDstSubIf());
-        VrfMgr vrfMgr = getInstance(VrfMgr.class);
+        VLanSubIf srcIf = (VLanSubIf)ifMgr.getInterface(lk.getSrcSubIf());
+        VLanSubIf dstIf = (VLanSubIf)ifMgr.getInterface(lk.getDstSubIf());
+
         vrfMgr.unBindInterface(srcIf);
         vrfMgr.unBindInterface(dstIf);
 
-        VLanDao.delVLanLink(idInProvider);
+        vLanDao.delVLanLink(idInProvider);
         deleteVLanSubIf(srcIf);
         deleteVLanSubIf(dstIf);
     }
 
     private void deleteVLanSubIf(VLanSubIf inf) {
-        InterfaceMgr.delInterface(inf.getId());
-
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
+        InterfaceMgr ifMgr = getInstance(InterfaceMgr.class);
+
+        ifMgr.delInterface(inf.getId());
         PhyRouter pr = deviceMgr.getRouter(inf.getHost());
         if (pr != null) {
             pr.undoConfig(CLI.INTERFACE, inf.getInterfaceName());
