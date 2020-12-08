@@ -10,8 +10,8 @@ import wjl.util.ErrorType;
 import java.util.Map;
 
 /**
- * 不同运营商互联场景，运营商将部分路由器开放给互联网络。
- * 互联网络有自己的网络意图，先创建设备意图，然后引用运营商的物理设备。
+ * 不同运营商互联场景，运营商将部分路由器开放给互联公司。
+ * 互联公司在界面看到的是自己给设备、端口取得名称，实际引用运营商的物理设备和端口。
  * 通过执行部署操作，调用本接口，建立引用关系。
  */
 public class RefRouterProvider extends AbsProductProvider implements DeviceProvider {

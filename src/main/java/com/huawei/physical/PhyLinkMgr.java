@@ -39,4 +39,25 @@ public class PhyLinkMgr extends AbstractMember {
 
         return null;
     }
+
+    /**
+     * 查找某个端口上有没有链路
+     *
+     * @param device 设备标识
+     * @param port 端口名称
+     * @return 端口上的链路或空
+     */
+    public PhyLink findLinkOnPort(String device, String port) {
+        for (PhyLink lk : links.values()) {
+            if (StringUtils.equals(device, lk.getSrcDevice())
+                && StringUtils.equals(port, lk.getSrcPort())) {
+                return lk;
+            } else if (StringUtils.equals(device,  lk.getDstDevice())
+                && StringUtils.equals(port, lk.getDstPort())) {
+                return lk;
+            }
+        }
+
+        return null;
+    }
 }
