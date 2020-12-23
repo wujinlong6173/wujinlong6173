@@ -6,6 +6,7 @@ import com.mxgraph.view.mxGraph;
 import wjl.client.mxgraph.mxCellDevice;
 import wjl.client.mxgraph.mxCellLink;
 import wjl.client.mxgraph.mxGraphBuilder;
+import wjl.client.mxgraph.mxModifyNameListener;
 import wjl.net.NetworkApi;
 import wjl.provider.ProductProviderMgr;
 
@@ -66,6 +67,9 @@ public class TopoControlCenter {
         component.addMouseWheelListener(mouse);
         // 监听鼠标动作，显示右键菜单
         component.getGraphControl().addMouseListener(mouse);
+
+        final mxModifyNameListener ml = new mxModifyNameListener(this.net);
+        graph.getModel().addListener("execute", ml);
     }
 
     private void initGraphStyle() {

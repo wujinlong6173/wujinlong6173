@@ -77,6 +77,24 @@ public class NetworkApi {
     }
 
     /**
+     * 修改设备的名称，不允许修改已部署的设备。
+     *
+     * @param devId 设备唯一标识
+     * @param newName 新的名称
+     * @return 是否允许修改
+     */
+    public boolean modifyDeviceName(String devId, String newName) {
+        Device dev = intent.getDevice(devId);
+        if (dev != null) {
+            if (dev.isDeploy()) {
+                return false;
+            }
+            dev.setName(newName);
+        }
+        return true;
+    }
+
+    /**
      * 创建一个端口意图
      * 
      * @param devId 设备唯一标识
@@ -108,7 +126,26 @@ public class NetworkApi {
         dev.addPort(pt);
         return pt.getId();
     }
-    
+
+    /**
+     * 修改端口的名称，不允许修改已部署的端口。
+     *
+     * @param portId 端口唯一标识
+     * @param newName 新名称
+     * @return 是否允许修改
+     */
+    public boolean modifyPortName(String portId, String newName) {
+        Port pt = intent.getPort(portId);
+        if (pt != null) {
+            Link lk = intent.getLink(pt.getLinkId());
+            if (lk != null && lk.isDeploy()) {
+                return false;
+            }
+            pt.setName(newName);
+        }
+        return true;
+    }
+
     /**
      * 创建一条链路意图
      * 
@@ -148,7 +185,25 @@ public class NetworkApi {
         intent.addLink(lk);
         return linkId;
     }
-    
+
+    /**
+     * 修改链路的名称，不允许修改已部署的链路。
+     *
+     * @param linkId 链路唯一标识
+     * @param newName 新名称
+     * @return 是否允许修改
+     */
+    public boolean modifyLinkName(String linkId, String newName) {
+        Link lk = intent.getLink(linkId);
+        if (lk != null) {
+            if (lk.isDeploy()) {
+                return false;
+            }
+            lk.setName(newName);
+        }
+        return true;
+    }
+
     /**
      * 删除一条链路意图，支持重复删除
      * 
