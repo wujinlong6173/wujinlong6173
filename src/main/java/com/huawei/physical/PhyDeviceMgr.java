@@ -1,6 +1,5 @@
 package com.huawei.physical;
 
-import org.apache.commons.lang3.StringUtils;
 import wjl.docker.AbstractMember;
 
 import java.util.Map;
@@ -42,19 +41,4 @@ public class PhyDeviceMgr extends AbstractMember {
         }
         return dev;
     }
-
-    /**
-     *
-     * @param idInNms 物理路由器在网络意图中的标识
-     * @return
-     */
-    public PhyRouter getRouterByNmsId(String idInNms) {
-        for (PhyRouter pr : routers.values()) {
-            if (StringUtils.equals(idInNms, pr.getIdInNms())) {
-                return pr;
-            }
-        }
-        return null;
-    }
-
 }

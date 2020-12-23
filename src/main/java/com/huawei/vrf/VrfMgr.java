@@ -96,15 +96,6 @@ public final class VrfMgr extends AbstractMember {
         allVrf.remove(vrfId);        
     }
 
-    public Vrf getVrfByNmsId(String idInNms) {
-        for (Vrf vrf : allVrf.values()) {
-            if (idInNms.equals(vrf.getIdInNms())) {
-                return vrf;
-            }
-        }
-        return null;
-    }
-
     public Vrf getVrfByBgpRouterId(String ip) {
         for (Vrf vrf : allVrf.values()) {
             if (ip.equals(vrf.getBgpRouterId())) {

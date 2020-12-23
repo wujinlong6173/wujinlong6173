@@ -34,7 +34,6 @@ public class PhySwitchProvider extends AbsProductProvider implements DeviceProvi
         // 物理交换机的名称也是唯一的
         String name = (String)inputs.get("name");
         PhySwitch sw = new PhySwitch();
-        sw.setIdInNms(idInNms);
         sw.setName(name);
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         deviceMgr.addSwitch(sw);

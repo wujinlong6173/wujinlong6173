@@ -42,7 +42,6 @@ public class PhyRouterProvider extends AbsProductProvider implements DeviceProvi
         // 物理路由器的名称也是唯一的
         String name = (String)inputs.get("name");
         PhyRouter pr = new PhyRouter();
-        pr.setIdInNms(idInNms);
         pr.setName(name);
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         deviceMgr.addRouter(pr);

@@ -21,10 +21,7 @@ public class PhySwitchProviderTest extends PhyTestContainer {
         String s2 = psp.create("id-s2", inputs);
 
         PhyDevice ps1 = deviceMgr.getDevice(s1);
-        PhyDevice ps2 = deviceMgr.getDevice(s2);
         assertTrue(ps1 instanceof PhySwitch);
-        assertEquals("id-s1", ps1.getIdInNms());
-        assertEquals("id-s2", ps2.getIdInNms());
 
         psp.delete(s2, inputs);
         assertNull(deviceMgr.getDevice(s2));

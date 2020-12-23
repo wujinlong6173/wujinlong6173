@@ -15,7 +15,6 @@ public class RefPortProviderTest extends PhyTestContainer {
     @Test
     public void createPort() throws ProviderException {
         PhyRouter pr = new PhyRouter();
-        pr.setIdInNms("router-1");
         pr.setName("NE91");
         deviceMgr.addRouter(pr);
 
@@ -41,7 +40,6 @@ public class RefPortProviderTest extends PhyTestContainer {
     @Test
     public void createPort_config() {
         PhyRouter pr = new PhyRouter();
-        pr.setIdInNms("router-1");
         pr.setName("NE93");
         deviceMgr.addRouter(pr);
 

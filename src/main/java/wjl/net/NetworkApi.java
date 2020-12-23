@@ -411,9 +411,11 @@ public class NetworkApi {
             return null;
         }
 
-        // 与供应商的约定：设备意图的标识作为用户名，供应商的标识作为密码
+        // 与供应商的约定：
+        // 对于物理设备，将物理路由器的名称作为用户名，网络意图中的标识作为密码
+        // 对于虚拟设备，以供应商的标识作为用户名，网络意图中的标识作为密码
         return String.format(Locale.ENGLISH, "-ssh -l %s -pw %s %s %s",
-                devId, devImpl.getOuterId(), "127.0.0.1", "22");
+                devImpl.getOuterId(), devId, "127.0.0.1", "22");
     }
 
     /**
