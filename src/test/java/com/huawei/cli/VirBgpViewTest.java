@@ -6,6 +6,7 @@ import com.huawei.physical.PhyRouter;
 import com.huawei.vrf.*;
 import org.junit.Before;
 import org.junit.Test;
+import wjl.cli.ConfigHolder;
 import wjl.provider.ProviderException;
 
 import java.util.HashMap;
@@ -51,15 +52,15 @@ public class VirBgpViewTest extends VirTestContainer {
         bgp1.addPeer("244.244.1.2", ag02.getAsNumber());
         bgp2.addPeer("244.244.1.1", ag01.getAsNumber());
 
-        assertTrue(ag01.checkConfig(CLI.BGP, ag01.getAsNumber()));
-        assertTrue(ag01.checkConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test"));
-        assertTrue(ag01.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, vrf1.getRtForBgpPeer(), CLI.EXPORT));
-        assertTrue(ag01.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, vrf2.getRtForBgpPeer(), CLI.IMPORT));
+        ConfigHolder ch = ag01.findHolder(CLI.BGP, ag01.getAsNumber());
+        ch = ch.findHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test");
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, vrf1.getRtForBgpPeer(), CLI.EXPORT));
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, vrf2.getRtForBgpPeer(), CLI.IMPORT));
 
-        assertTrue(ag02.checkConfig(CLI.BGP, ag02.getAsNumber()));
-        assertTrue(ag02.checkConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test"));
-        assertTrue(ag02.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, vrf2.getRtForBgpPeer(), CLI.EXPORT));
-        assertTrue(ag02.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, vrf1.getRtForBgpPeer(), CLI.IMPORT));
+        ch = ag02.findHolder(CLI.BGP, ag02.getAsNumber());
+        ch = ch.findHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test");
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, vrf2.getRtForBgpPeer(), CLI.EXPORT));
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, vrf1.getRtForBgpPeer(), CLI.IMPORT));
     }
 
     @Test
@@ -85,15 +86,15 @@ public class VirBgpViewTest extends VirTestContainer {
         bgp4.joinPeerGroupAsSpoke("group1");
         BgpPeerGroupImpl group = vpnRes.getOrCreatePeerGroup(ag01.getAsNumber(), "group1");
 
-        assertTrue(ag01.checkConfig(CLI.BGP, ag01.getAsNumber()));
-        assertTrue(ag01.checkConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test"));
-        assertTrue(ag01.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.EXPORT));
-        assertTrue(ag01.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT));
-        assertTrue(ag01.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getSpokeRT(), CLI.IMPORT));
+        ConfigHolder ch = ag01.findHolder(CLI.BGP, ag01.getAsNumber());
+        ch = ch.findHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test");
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, group.getHubRT(), CLI.EXPORT));
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT));
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, group.getSpokeRT(), CLI.IMPORT));
 
-        assertTrue(ag02.checkConfig(CLI.BGP, ag02.getAsNumber()));
-        assertTrue(ag02.checkConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test"));
-        assertTrue(ag02.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getSpokeRT(), CLI.EXPORT));
-        assertTrue(ag02.checkConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT));
+        ch = ag02.findHolder(CLI.BGP, ag02.getAsNumber());
+        ch = ch.findHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, "test");
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, group.getSpokeRT(), CLI.EXPORT));
+        assertTrue(ch.checkConfig(CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT));
     }
 }

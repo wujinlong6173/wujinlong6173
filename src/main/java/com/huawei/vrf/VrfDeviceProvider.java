@@ -3,6 +3,7 @@ package com.huawei.vrf;
 import com.huawei.common.CLI;
 import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
+import wjl.cli.ConfigHolder;
 import wjl.datamodel.SchemaParser;
 import wjl.provider.AbsProductProvider;
 import wjl.provider.DeviceProvider;
@@ -52,8 +53,8 @@ public class VrfDeviceProvider extends AbsProductProvider implements DeviceProvi
                     String.format("host %s does not exist.", host));
         }
 
-        pr.addConfig(CLI.IP, CLI.VPN_INSTANCE, name);
-        pr.addConfig(CLI.__, "address-family", "ipv4", "unicast");
+        ConfigHolder vpn = pr.addHolder(CLI.IP, CLI.VPN_INSTANCE, name);
+        vpn.addCommand("address-family", "ipv4", "unicast");
 
         Vrf vrf = new Vrf();
         vrf.setId(UUID.randomUUID().toString());
@@ -75,7 +76,7 @@ public class VrfDeviceProvider extends AbsProductProvider implements DeviceProvi
 
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
-        pr.undoConfig(CLI.IP, CLI.VPN_INSTANCE, vrf.getName());
+        pr.undo(CLI.IP, CLI.VPN_INSTANCE, vrf.getName());
 
         vrfMgr.deleteVrf(idInProvider);
     }

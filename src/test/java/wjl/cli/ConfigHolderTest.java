@@ -1,6 +1,5 @@
 package wjl.cli;
 
-import com.huawei.common.CLI;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,18 +11,18 @@ public class ConfigHolderTest {
     @Test
     public void cfgOneLevel() {
         ConfigHolder pr = new ConfigHolder();
-        pr.addConfig("mpls");
-        pr.addConfig("mpls", "ldp");
-        pr.addConfig("interface", "GE1/0.100");
-        pr.addConfig("interface", "GE1/0.200");
-        pr.addConfig("ip", "vpn-instance", "test");
+        pr.addCommand("mpls");
+        pr.addCommand("mpls", "ldp");
+        pr.addHolder("interface", "GE1/0.100");
+        pr.addHolder("interface", "GE1/0.200");
+        pr.addHolder("ip", "vpn-instance", "test");
 
         // 重复执行一遍
-        pr.addConfig("mpls");
-        pr.addConfig("mpls", "ldp");
-        pr.addConfig("interface", "GE1/0.100");
-        pr.addConfig("interface", "GE1/0.200");
-        pr.addConfig("ip", "vpn-instance", "test");
+        pr.addCommand("mpls");
+        pr.addCommand("mpls", "ldp");
+        pr.addHolder("interface", "GE1/0.100");
+        pr.addHolder("interface", "GE1/0.200");
+        pr.addHolder("ip", "vpn-instance", "test");
 
         List<String> exp = new ArrayList<>();
         exp.add("mpls");
@@ -35,8 +34,8 @@ public class ConfigHolderTest {
 
         // 下面撤销配置
 
-        pr.undoConfig("interface", "GE1/0.100");
-        pr.undoConfig("mpls", "ldp");
+        pr.undo("interface", "GE1/0.100");
+        pr.undo("mpls", "ldp");
         exp.remove(2);
         exp.remove(1);
         assertEquals(exp, pr.getConfigs());
@@ -45,17 +44,17 @@ public class ConfigHolderTest {
     @Test
     public void cfgTwoLevel() {
         ConfigHolder pr = new ConfigHolder();
-        pr.addConfig("interface", "GE1/0.100");
-        pr.addConfig(CLI.__, "encapsulation", "dot1q", "100");
-        pr.addConfig("interface", "GE1/0.200");
-        pr.addConfig(CLI.__, "encapsulation", "dot1q", "200");
+        ConfigHolder inf = pr.addHolder("interface", "GE1/0.100");
+        inf.addCommand("encapsulation", "dot1q", "100");
+        inf = pr.addHolder("interface", "GE1/0.200");
+        inf.addCommand("encapsulation", "dot1q", "200");
 
-        pr.addConfig("interface", "GE1/0.100");
-        pr.addConfig(CLI.__, "ip", "binding", "vpn-instance", "a");
-        pr.addConfig(CLI.__, "ip", "address", "192.168.0.100");
-        pr.addConfig("interface", "GE1/0.200");
-        pr.addConfig(CLI.__, "ip", "binding", "vpn-instance", "b");
-        pr.addConfig(CLI.__, "ip", "address", "192.168.0.200");
+        inf = pr.addHolder("interface", "GE1/0.100");
+        inf.addCommand("ip", "binding", "vpn-instance", "a");
+        inf.addCommand("ip", "address", "192.168.0.100");
+        inf = pr.addHolder("interface", "GE1/0.200");
+        inf.addCommand("ip", "binding", "vpn-instance", "b");
+        inf.addCommand("ip", "address", "192.168.0.200");
 
         List<String> exp = new ArrayList<>();
         exp.add("interface GE1/0.100");
@@ -70,7 +69,7 @@ public class ConfigHolderTest {
 
         // 下面撤销配置
 
-        pr.undoConfig("interface", "GE1/0.100");
+        pr.undo("interface", "GE1/0.100");
         exp.remove(3);
         exp.remove(2);
         exp.remove(1);
@@ -81,16 +80,16 @@ public class ConfigHolderTest {
     @Test
     public void cfgThreeLevel() {
         ConfigHolder pr = new ConfigHolder();
-        pr.addConfig("ospf", "100");
-        pr.addConfig(CLI.__, "area", "0.0.1.0");
-        pr.addConfig(CLI.__, CLI.__, "network", "192.168.1.0");
-        pr.addConfig(CLI.__, CLI.__, "network", "192.168.2.0");
-        pr.addConfig(CLI.__, "area", "0.0.1.1");
-        pr.addConfig(CLI.__, CLI.__, "network", "192.168.3.0");
-        pr.addConfig(CLI.__, CLI.__, "network", "192.168.4.0");
-        pr.addConfig("ospf", "200");
-        pr.addConfig(CLI.__, "area", "0.0.2.0");
-        pr.addConfig(CLI.__, "area", "0.0.2.1");
+        ConfigHolder ospf = pr.addHolder("ospf", "100");
+        ConfigHolder area = ospf.addHolder("area", "0.0.1.0");
+        area.addCommand("network", "192.168.1.0");
+        area.addCommand("network", "192.168.2.0");
+        area = ospf.addHolder("area", "0.0.1.1");
+        area.addCommand("network", "192.168.3.0");
+        area.addCommand("network", "192.168.4.0");
+        ospf = pr.addHolder("ospf", "200");
+        ospf.addHolder("area", "0.0.2.0");
+        ospf.addHolder("area", "0.0.2.1");
 
         List<String> exp = new ArrayList<>();
         exp.add("ospf 100");
@@ -105,15 +104,14 @@ public class ConfigHolderTest {
         exp.add("   area 0.0.2.1");
         assertEquals(exp, pr.getConfigs());
 
-        pr.addConfig("ospf", "100");
-        pr.addConfig(CLI.__, "area", "0.0.1.0");
-        pr.addConfig(CLI.__, CLI.__, "network", "192.168.5.0");
+        ospf = pr.addHolder("ospf", "100");
+        area = ospf.addHolder("area", "0.0.1.0");
+        area.addCommand("network", "192.168.5.0");
         exp.add(4, "      network 192.168.5.0");
         assertEquals(exp, pr.getConfigs());
 
         // 下面撤销配置
-
-        pr.undoConfig(CLI.__, "area", "0.0.1.0");
+        ospf.undo("area", "0.0.1.0");
         exp.clear();
         exp.add("ospf 100");
         exp.add("   area 0.0.1.1");
@@ -124,8 +122,8 @@ public class ConfigHolderTest {
         exp.add("   area 0.0.2.1");
         assertEquals(exp, pr.getConfigs());
 
-        pr.addConfig(CLI.__, "area", "0.0.1.1");
-        pr.undoConfig(CLI.__, CLI.__, "network", "192.168.3.0");
+        area = ospf.addHolder("area", "0.0.1.1");
+        area.undo("network", "192.168.3.0");
         exp.clear();
         exp.add("ospf 100");
         exp.add("   area 0.0.1.1");

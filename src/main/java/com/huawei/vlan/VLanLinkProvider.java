@@ -6,6 +6,7 @@ import com.huawei.physical.PhyLink;
 import com.huawei.physical.PhyLinkMgr;
 import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
+import wjl.cli.ConfigHolder;
 import wjl.datamodel.SchemaParser;
 import com.huawei.vrf.VrfMgr;
 
@@ -89,9 +90,9 @@ public class VLanLinkProvider extends AbsProductProvider implements LinkProvider
 
         PhyRouter pr = deviceMgr.getRouter(host);
         if (pr != null) {
-            pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
-            pr.addConfig(CLI.__, "description", desc);
-            pr.addConfig(CLI.__, "encapsulation", "dot1q", String.valueOf(vLanId));
+            ConfigHolder ch = pr.addHolder(CLI.INTERFACE, inf.getInterfaceName());
+            ch.addCommand("description", desc);
+            ch.addCommand("encapsulation", "dot1q", String.valueOf(vLanId));
         }
 
         return inf;
@@ -126,7 +127,7 @@ public class VLanLinkProvider extends AbsProductProvider implements LinkProvider
         ifMgr.delInterface(inf.getId());
         PhyRouter pr = deviceMgr.getRouter(inf.getHost());
         if (pr != null) {
-            pr.undoConfig(CLI.INTERFACE, inf.getInterfaceName());
+            pr.undo(CLI.INTERFACE, inf.getInterfaceName());
         }
     }
 }

@@ -6,7 +6,9 @@ import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
+import wjl.cli.ConfigHolder;
 import wjl.docker.AbstractMember;
+import wjl.util.Config;
 
 import java.util.List;
 
@@ -37,12 +39,12 @@ public class VirInterfaceView extends AbstractMember implements CommandView {
 
     @Command(command="ip address {ip}")
     public String setIpAddress(String ip) {
-        inf.addConfig(CLI.IP, CLI.ADDRESS, ip);
+        inf.addCommand(CLI.IP, CLI.ADDRESS, ip);
 
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(inf.getHost());
-        pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
-        pr.addConfig(CLI.__, CLI.IP, CLI.ADDRESS, ip);
+        ConfigHolder ch = pr.addHolder(CLI.INTERFACE, inf.getInterfaceName());
+        ch.addCommand(CLI.IP, CLI.ADDRESS, ip);
         return null;
     }
 }

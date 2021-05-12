@@ -7,6 +7,7 @@ import com.huawei.common.CLI;
 import com.huawei.common.Interface;
 import com.huawei.physical.PhyRouter;
 import com.huawei.physical.PhyDeviceMgr;
+import wjl.cli.ConfigHolder;
 import wjl.docker.AbstractMember;
 
 /**
@@ -64,8 +65,8 @@ public final class VrfMgr extends AbstractMember {
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         if (pr != null) {
-            pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
-            pr.addConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
+            ConfigHolder port = pr.addHolder(CLI.INTERFACE, inf.getInterfaceName());
+            port.addCommand(CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
         }
     }
 
@@ -87,8 +88,8 @@ public final class VrfMgr extends AbstractMember {
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         if (pr != null) {
-            pr.addConfig(CLI.INTERFACE, inf.getInterfaceName());
-            pr.undoConfig(CLI.__, CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
+            ConfigHolder port = pr.findHolder(CLI.INTERFACE, inf.getInterfaceName());
+            port.undo(CLI.IP, CLI.BINDING, CLI.VPN_INSTANCE, vrf.getName());
         }
     }
 

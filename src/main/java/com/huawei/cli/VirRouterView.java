@@ -7,6 +7,7 @@ import com.huawei.physical.PhyDeviceMgr;
 import com.huawei.vrf.Vrf;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
+import wjl.cli.ConfigHolder;
 import wjl.docker.AbstractMember;
 
 import java.util.*;
@@ -64,23 +65,23 @@ public class VirRouterView extends AbstractMember implements CommandView {
             return String.format(Locale.ENGLISH, "Error : port %s does not exist.", port);
         }
 
-        vrf.addConfig(CLI.IP, CLI.STATIC_ROUTE, dst, CLI.OUT, port, CLI.NEXT_HOP, nextIp);
+        vrf.addCommand(CLI.IP, CLI.STATIC_ROUTE, dst, CLI.OUT, port, CLI.NEXT_HOP, nextIp);
 
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
-        pr.addConfig(CLI.IP, CLI.STATIC_ROUTE, CLI.VPN_INSTANCE, vrf.getName(), dst,
+        pr.addCommand(CLI.IP, CLI.STATIC_ROUTE, CLI.VPN_INSTANCE, vrf.getName(), dst,
                 CLI.OUT, inf.getInterfaceName(), CLI.NEXT_HOP, nextIp);
         return null;
     }
 
     @Command(command="bgp")
     public Object cfgBgp() {
-        vrf.addConfig(CLI.BGP);
+        vrf.addHolder(CLI.BGP);
 
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
-        pr.addConfig(CLI.BGP, pr.getAsNumber());
-        pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+        ConfigHolder bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+        bgp.addCommand(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
         VirBgpView view = new VirBgpView(vrf);
         view.setContainer(this);
         return view;

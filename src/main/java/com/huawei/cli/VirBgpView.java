@@ -9,6 +9,7 @@ import com.huawei.vrf.Vrf;
 import com.huawei.vrf.VrfMgr;
 import wjl.cli.Command;
 import wjl.cli.CommandView;
+import wjl.cli.ConfigHolder;
 import wjl.docker.AbstractMember;
 
 import java.util.Locale;
@@ -27,14 +28,14 @@ public class VirBgpView extends AbstractMember implements CommandView {
 
     @Command(command="import-route {witch}")
     public void importRoute(String witch) {
-        vrf.addConfig(CLI.BGP);
-        vrf.addConfig(CLI.__, CLI.IMPORT_ROUTE, witch);
+        ConfigHolder bgp = vrf.addHolder(CLI.BGP);
+        bgp.addCommand(CLI.IMPORT_ROUTE, witch);
 
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
-        pr.addConfig(CLI.BGP, pr.getAsNumber());
-        pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
-        pr.addConfig(CLI.__, CLI.__, CLI.IMPORT_ROUTE, witch);
+        bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+        ConfigHolder vpn = bgp.addHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+        vpn.addCommand(CLI.IMPORT_ROUTE, witch);
     }
 
     /*
@@ -49,14 +50,14 @@ public class VirBgpView extends AbstractMember implements CommandView {
         }
 
         vrf.setBgpRouterId(ip);
-        vrf.addConfig(CLI.BGP);
-        vrf.addConfig(CLI.__, CLI.ROUTER_ID, ip);
+        ConfigHolder bgp = vrf.addHolder(CLI.BGP);
+        bgp.addCommand(CLI.ROUTER_ID, ip);
 
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
-        pr.addConfig(CLI.BGP, pr.getAsNumber());
-        pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
-        pr.addConfig(CLI.__, CLI.__, CLI.ROUTER_ID, ip);
+        bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+        ConfigHolder vpn = bgp.addHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+        vpn.addCommand(CLI.ROUTER_ID, ip);
         return null;
     }
 
@@ -82,17 +83,17 @@ public class VirBgpView extends AbstractMember implements CommandView {
 
             String otherRt = cfgRtForBgpPeer(other);
             // 本端VRF导入对端VRF的RT
-            pr.addConfig(CLI.BGP, pr.getAsNumber());
-            pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
-            pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, otherRt, CLI.IMPORT);
+            ConfigHolder bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+            ConfigHolder vpn = bgp.addHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+            vpn.addCommand(CLI.VPN_TARGET, otherRt, CLI.IMPORT);
         } else {
-            pr.addConfig(CLI.BGP, pr.getAsNumber());
-            pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
-            pr.addConfig(CLI.__, CLI.__, CLI.PEER, peer, CLI.AS_NUMBER, as);
+            ConfigHolder bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+            ConfigHolder vpn = bgp.addHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+            vpn.addCommand(CLI.PEER, peer, CLI.AS_NUMBER, as);
         }
 
-        vrf.addConfig(CLI.BGP);
-        vrf.addConfig(CLI.__, CLI.PEER, peer, CLI.AS_NUMBER, as);
+        ConfigHolder bgp = vrf.addHolder(CLI.BGP);
+        bgp.addCommand(CLI.PEER, peer, CLI.AS_NUMBER, as);
         return null;
     }
 
@@ -107,9 +108,9 @@ public class VirBgpView extends AbstractMember implements CommandView {
             String fullRt = String.format("%s:%d", pr.getAsNumber(), newRt);
             other.setRtForBgpPeer(fullRt);
 
-            pr.addConfig(CLI.BGP, pr.getAsNumber());
-            pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, other.getName());
-            pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, fullRt, CLI.EXPORT);
+            ConfigHolder bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+            ConfigHolder vpn = bgp.addHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, other.getName());
+            vpn.addCommand(CLI.VPN_TARGET, fullRt, CLI.EXPORT);
         }
 
         return other.getRtForBgpPeer();
@@ -131,16 +132,16 @@ public class VirBgpView extends AbstractMember implements CommandView {
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         VpnRes vpnRes = getInstance(VpnRes.class);
 
-        vrf.addConfig(CLI.BGP);
-        vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.HUB);
+        ConfigHolder bgp = vrf.addHolder(CLI.BGP);
+        bgp.addCommand(CLI.PEER, CLI.GROUP, name, CLI.HUB);
 
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         BgpPeerGroupImpl group = vpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
-        pr.addConfig(CLI.BGP, pr.getAsNumber());
-        pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
-        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.EXPORT);
-        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT);
-        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getSpokeRT(), CLI.IMPORT);
+        bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+        ConfigHolder vpn = bgp.addHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+        vpn.addCommand(CLI.VPN_TARGET, group.getHubRT(), CLI.EXPORT);
+        vpn.addCommand(CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT);
+        vpn.addCommand(CLI.VPN_TARGET, group.getSpokeRT(), CLI.IMPORT);
     }
 
     @Command(command="peer group {name} spoke")
@@ -148,14 +149,14 @@ public class VirBgpView extends AbstractMember implements CommandView {
         PhyDeviceMgr deviceMgr = getInstance(PhyDeviceMgr.class);
         VpnRes vpnRes = getInstance(VpnRes.class);
 
-        vrf.addConfig(CLI.BGP);
-        vrf.addConfig(CLI.__, CLI.PEER, CLI.GROUP, name, CLI.SPOKE);
+        ConfigHolder bgp = vrf.addHolder(CLI.BGP);
+        bgp.addCommand(CLI.PEER, CLI.GROUP, name, CLI.SPOKE);
 
         PhyRouter pr = deviceMgr.getRouter(vrf.getHost());
         BgpPeerGroupImpl group = vpnRes.getOrCreatePeerGroup(pr.getAsNumber(), name);
-        pr.addConfig(CLI.BGP, pr.getAsNumber());
-        pr.addConfig(CLI.__, CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
-        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getSpokeRT(), CLI.EXPORT);
-        pr.addConfig(CLI.__, CLI.__, CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT);
+        bgp = pr.addHolder(CLI.BGP, pr.getAsNumber());
+        ConfigHolder vpn = bgp.addHolder(CLI.IPV4_FAMILY, CLI.VPN_INSTANCE, vrf.getName());
+        vpn.addCommand(CLI.VPN_TARGET, group.getSpokeRT(), CLI.EXPORT);
+        vpn.addCommand(CLI.VPN_TARGET, group.getHubRT(), CLI.IMPORT);
     }
 }

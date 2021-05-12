@@ -1,263 +1,151 @@
 package wjl.cli;
 
-import com.huawei.common.CLI;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * 保存应用在某个对象上的所有配置命令。
  */
 public class ConfigHolder {
+    private static final String COMMAND_TAB = "   ";
+    private static final char COMMAND_SEP = ' ';
 
-    /**
-     * 删除命令时，将数值元素设为空，而没有删除元素
-     */
-    private List<String[]> configs = new ArrayList<>();
-    private int lastLevel = 0;
-    private int lastLine = -1;
+    private final String[] rootCommand;
+    private final List<String[]> subCommands = new ArrayList<>();
+    private final List<ConfigHolder> subHolders = new ArrayList<>();
 
-    /**
-     * 添加配置，如果子配置，会根据上次的配置自动找位置。
-     *
-     * @param cfg
-     */
-    synchronized public void addConfig(String... cfg) {
-        int cfgLevel = countConfigLevel(cfg);
-        if (cfgLevel == 0) {
-            // 从根视图开始配置
-            lastLevel = 0;
-            lastLine = findConfig(cfg);
-            if (lastLine < 0) {
-                lastLine = configs.size();
-                configs.add(cfg);
-            }
-            return;
-        } else if (invalidLastLine()) {
-            // 没法定位上次配置的视图
-            throw new InvalidCommandLine(cfg);
-        } else if (cfgLevel > lastLevel + 1) {
-            // 必须逐级进入下级视图，不能跳级
-            throw new InvalidCommandLine(cfg);
-        }
-
-        while (cfgLevel <= lastLevel) {
-            // 回退到上次配置位置的上级视图，使cfgLevel等于lastLevel + 1
-            moveToParent();
-        }
-
-        insertConfig(cfg, cfgLevel);
+    public ConfigHolder(String... rootCommand) {
+        this.rootCommand = rootCommand;
     }
 
-    private void insertConfig(String[] cfg, int cfgLevel) {
-        int line;
-        for (line = lastLine + 1; line < configs.size(); line++) {
-            String[] eachCfg = configs.get(line);
-            if (eachCfg == null) {
-                continue;
+    /**
+     * 添加带有子视图的命令。
+     *
+     * @param cfg 命令行
+     * @return 子视图
+     */
+    public ConfigHolder addHolder(String... cfg) {
+        for (ConfigHolder sub : subHolders) {
+            if (sub.isMatch(cfg)) {
+                return sub;
             }
+        }
 
-            if (Arrays.equals(cfg, eachCfg)) {
-                lastLine = line;
-                lastLevel = cfgLevel;
+        ConfigHolder added = new ConfigHolder(cfg);
+        subHolders.add(added);
+        return added;
+    }
+
+    public ConfigHolder findHolder(String... cfg) {
+        for (ConfigHolder sub : subHolders) {
+            if (sub.isMatch(cfg)) {
+                return sub;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 添加简单的命令。
+     *
+     * @param cfg 命令行
+     */
+    public void addCommand(String... cfg) {
+        for (String[] cmd : subCommands) {
+            if (Arrays.equals(cmd, cfg)) {
                 return;
             }
-
-            if (countConfigLevel(eachCfg) < cfgLevel) {
-                break;
-            }
         }
-
-        if (line < configs.size() && configs.get(line) == null) {
-            configs.set(line, cfg);
-        } else {
-            configs.add(line, cfg);
-        }
-        lastLine = line;
-        lastLevel = cfgLevel;
+        subCommands.add(cfg);
     }
 
-    /**
-     * 检查某条配置是否存在，用于单元测试
-     *
-     * @param cfg
-     * @return 存在或不存在
-     */
     public boolean checkConfig(String... cfg) {
-        int cfgLevel = countConfigLevel(cfg);
-        if (cfgLevel == 0) {
-            // 从根视图开始配置
-            lastLevel = 0;
-            lastLine = findConfig(cfg);
-            return lastLevel >= 0;
-        } else if (invalidLastLine()) {
-            // 没法定位上次配置的视图
-            return false;
-        } else if (cfgLevel > lastLevel + 1) {
-            // 必须逐级进入下级视图，不能跳级
-            return false;
+        for (String[] cmd : subCommands) {
+            if (Arrays.equals(cmd, cfg)) {
+                return true;
+            }
         }
-
-        while (cfgLevel <= lastLevel) {
-            // 回退到上次配置位置的上级视图，使cfgLevel等于lastLevel + 1
-            moveToParent();
-        }
-
-        return findConfig(cfg, cfgLevel) >= 0;
+        return false;
     }
 
     /**
-     * 撤销配置，自动撤销子配置。
+     * 撤销一个命令，包括子命令。
      *
-     * @param cfg
+     * @param cfg 要撤销的命令行
      */
-    synchronized public void undoConfig(String... cfg) {
-        int cfgLevel = countConfigLevel(cfg);
-        if (cfgLevel == 0) {
-            lastLine = -1;
-            undoConfigL1(cfg);
-            return;
-        } else if (invalidLastLine()) {
-            // 没法定位上次配置的视图
-            throw new InvalidCommandLine(cfg);
-        } else if (cfgLevel > lastLevel + 1) {
-            // 必须逐级进入下级视图，不能跳级
-            throw new InvalidCommandLine(cfg);
-        }
-
-        while (cfgLevel <= lastLevel) {
-            // 回退到上次配置位置的上级视图，使cfgLevel等于lastLevel + 1
-            moveToParent();
-        }
-
-        undoConfigLx(cfg, cfgLevel);
-    }
-
-    private void undoConfigL1(String[] cfg) {
-        int line;
-        for (line = 0; line < configs.size(); line++) {
-            String[] eachCfg = configs.get(line);
-            if (eachCfg == null) {
-                continue;
-            }
-            if (Arrays.equals(cfg, configs.get(line))) {
-                configs.set(line, null);
-                break;
+    public void undo(String... cfg) {
+        Iterator<String[]> itCmd = subCommands.iterator();
+        while (itCmd.hasNext()) {
+            String[] cmd = itCmd.next();
+            if (Arrays.equals(cmd, cfg)) {
+                itCmd.remove();
+                return;
             }
         }
 
-        for (line++; line < configs.size(); line++) {
-            String[] eachCfg = configs.get(line);
-            if (eachCfg == null) {
-                continue;
-            }
-            if (countConfigLevel(eachCfg) == 0) {
-                break;
-            }
-            configs.set(line, null);
-        }
-    }
-
-    private void undoConfigLx(String[] cfg, int cfgLevel) {
-        int line;
-        for (line = lastLine; line < configs.size(); line++) {
-            String[] eachCfg = configs.get(line);
-            if (eachCfg == null) {
-                continue;
-            }
-            if (Arrays.equals(cfg, configs.get(line))) {
-                configs.set(line, null);
-                break;
-            }
-        }
-
-        for (line++; line < configs.size(); line++) {
-            String[] eachCfg = configs.get(line);
-            if (eachCfg == null) {
-                continue;
-            }
-            if (countConfigLevel(eachCfg) <= cfgLevel) {
-                break;
-            }
-            configs.set(line, null);
-        }
-    }
-
-    private int countConfigLevel(String[] cfg) {
-        int level;
-        for (level = 0; level < cfg.length; level++) {
-            if (!CLI.__.equals(cfg[level])) {
-                break;
-            }
-        }
-        return level;
-    }
-
-    private boolean invalidLastLine() {
-        return lastLine < 0
-                || lastLine >= configs.size()
-                || configs.get(lastLine) == null;
-    }
-
-    private void moveToParent() {
-        lastLevel--;
-        for (; lastLine >= 0; lastLine--) {
-            String[] eachCfg = configs.get(lastLine);
-            if (eachCfg == null) {
-                continue;
-            }
-            if (countConfigLevel(eachCfg) == lastLevel) {
+        Iterator<ConfigHolder> itHolder = subHolders.iterator();
+        while (itHolder.hasNext()) {
+            ConfigHolder holder = itHolder.next();
+            if (holder.isMatch(cfg)) {
+                itHolder.remove();
                 return;
             }
         }
     }
 
-    private int findConfig(String[] cfg) {
-        for (int line = 0; line < configs.size(); line++) {
-            if (Arrays.equals(cfg, configs.get(line))) {
-                return line;
-            }
-        }
-        return -1;
+    private boolean isMatch(String... cfg) {
+        return Arrays.equals(rootCommand, cfg);
     }
 
-    private int findConfig(String[] cfg, int cfgLevel) {
-        int line;
-        for (line = lastLine + 1; line < configs.size(); line++) {
-            String[] eachCfg = configs.get(line);
-            if (eachCfg == null) {
-                continue;
-            }
-
-            if (Arrays.equals(cfg, eachCfg)) {
-                lastLine = line;
-                lastLevel = cfgLevel;
-                return line;
-            }
-
-            if (countConfigLevel(eachCfg) < cfgLevel) {
-                break;
-            }
-        }
-
-        return -1;
-    }
-
-    /**
-     * 获取所有的配置。
-     *
-     * @return
-     */
     synchronized public List<String> getConfigs() {
-        List<String> ret = new ArrayList<>(configs.size());
-        for (String[] eachCfg : configs) {
-            if (eachCfg != null) {
-                ret.add(StringUtils.join(eachCfg, ' '));
-            }
+        List<String> ret = new ArrayList<>();
+        getConfigs(ret, 0);
+        return ret;
+    }
+
+    private void getConfigs(List<String> output, int level) {
+        boolean flag;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < level; i++) {
+            sb.append(COMMAND_TAB);
         }
 
-        return ret;
+        int save = sb.length();
+        if (rootCommand != null && rootCommand.length > 0) {
+            flag = false;
+            for (String word : rootCommand) {
+                if (flag) {
+                    sb.append(COMMAND_SEP);
+                } else {
+                    flag = true;
+                }
+                sb.append(word);
+            }
+            output.add(sb.toString());
+            sb.delete(save, sb.length());
+            level ++;
+            sb.append(COMMAND_TAB);
+            save = sb.length();
+        }
+
+        for (String[] cmd : subCommands) {
+            flag = false;
+            for (String word : cmd) {
+                if (flag) {
+                    sb.append(COMMAND_SEP);
+                } else {
+                    flag = true;
+                }
+                sb.append(word);
+            }
+            output.add(sb.toString());
+            sb.delete(save, sb.length());
+        }
+
+        for (ConfigHolder holder : subHolders) {
+            holder.getConfigs(output, level);
+        }
     }
 }

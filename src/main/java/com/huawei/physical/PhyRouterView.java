@@ -26,6 +26,6 @@ public class PhyRouterView implements CommandView {
     @Command(command="bgp {asNumber}")
     public void makeBgp(String asNumber) {
         phyRouter.setAsNumber(asNumber);
-        phyRouter.addConfig(CLI.BGP, asNumber);
+        phyRouter.addHolder(CLI.BGP, asNumber);
     }
 }
