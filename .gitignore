@@ -4,4 +4,6 @@
 *.iml
 /.metadata
 
+/l3nms/target
+
 Thumbs.db

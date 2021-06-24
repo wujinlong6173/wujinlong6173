@@ -5,8 +5,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>wjl.net</groupId>
-  <artifactId>l3nms</artifactId>
+  <artifactId>l3nms-root</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <name>l3nms-root</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>l3nms</module>
+  </modules>
+
   <build>
     <plugins>
       <plugin>
@@ -19,10 +26,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <name>l3nms</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -37,46 +40,6 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.26</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.1</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.9.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.9.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-yaml</artifactId>
-      <version>2.9.3</version>
-    </dependency>
-    
-    
-    <dependency>
-      <groupId>com.mxgraph</groupId>
-      <artifactId>jgraphx</artifactId>
-      <version>3.10.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.sshd</groupId>
-      <artifactId>sshd-core</artifactId>
-      <version>2.5.1</version>
-    </dependency>
   </dependencies>
+
 </project>
