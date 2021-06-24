@@ -1,9 +1,9 @@
 /target
+/*/target
+
 /.idea
 /.settings
 *.iml
 /.metadata
-
-/l3nms/target
 
 Thumbs.db

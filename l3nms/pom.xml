@@ -15,6 +15,11 @@
   <name>l3nms</name>
 
   <dependencies>
+    <dependency>
+      <groupId>wjl.net</groupId>
+      <artifactId>wjl-cli</artifactId>
+      <version>${project-version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
