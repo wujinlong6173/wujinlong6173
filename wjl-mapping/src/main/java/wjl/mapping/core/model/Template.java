@@ -1,5 +1,6 @@
 package wjl.mapping.core.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,10 @@ public class Template {
         return formulas.get(id);
     }
 
+    public Map<Integer, FormulaCall> getFormulas() {
+        return Collections.unmodifiableMap(formulas);
+    }
+
     /**
      * 从模板输入复制数据到模板输出。
      *
@@ -59,6 +64,6 @@ public class Template {
      * @return 数据搬运工
      */
     public DataPorter addDataPorter(DataProvider provider, DataRecipient recipient, SimplePath srcPath, SimplePath dstPath) {
-        return new DataPorter(input, output, srcPath, dstPath);
+        return new DataPorter(provider, recipient, srcPath, dstPath);
     }
 }

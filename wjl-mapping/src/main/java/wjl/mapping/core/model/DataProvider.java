@@ -15,4 +15,8 @@ public class DataProvider {
     void addOut(DataPorter porter) {
         outList.add(porter);
     }
+
+    public List<DataPorter> getOutList() {
+        return outList;
+    }
 }

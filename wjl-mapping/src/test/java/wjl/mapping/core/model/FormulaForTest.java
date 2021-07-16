@@ -1,11 +1,14 @@
 package wjl.mapping.core.model;
 
+import org.junit.Ignore;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 单元测试使用的公式。
  */
+@Ignore
 public class FormulaForTest {
     private static FormulaRegister formulaRegister;
 

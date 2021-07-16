@@ -17,7 +17,19 @@ public class DataRecipient {
      */
     private final List<DataPorter> inList = new ArrayList<>();
 
+    public Object getConstant() {
+        return constant;
+    }
+
+    public void setConstant(Object constant) {
+        this.constant = constant;
+    }
+
     void addIn(DataPorter porter) {
         inList.add(porter);
+    }
+
+    public List<DataPorter> getInList() {
+        return inList;
     }
 }

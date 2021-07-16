@@ -54,6 +54,10 @@ public class FormulaCall {
         return output;
     }
 
+    public Map<String, DataRecipient> getInputs() {
+        return Collections.unmodifiableMap(inputs);
+    }
+
     public DataRecipient getInput(String inputName) throws IllegalArgumentException {
         DataRecipient ret = inputs.get(inputName);
         if (ret == null) {

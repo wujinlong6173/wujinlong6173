@@ -16,10 +16,11 @@ public class SimplePath {
         this.nodes = nodes;
     }
 
-    @Override
-    public String toString() {
+    public String toString(boolean withBrace) {
         StringBuilder sb = new StringBuilder();
-        sb.append("${");
+        if (withBrace) {
+            sb.append("${");
+        }
         boolean requireDot = false;
         for (Object node : nodes) {
             if (node instanceof Integer) {
@@ -37,7 +38,14 @@ public class SimplePath {
             }
             requireDot = true;
         }
-        sb.append("}");
+        if (withBrace) {
+            sb.append("}");
+        }
         return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return toString(true);
     }
 }
