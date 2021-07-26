@@ -1,6 +1,10 @@
 package wjl.mapping.core.display;
 
-import wjl.mapping.core.model.*;
+import wjl.mapping.core.model.DataPorter;
+import wjl.mapping.core.model.DataProvider;
+import wjl.mapping.core.model.DataRecipient;
+import wjl.mapping.core.model.FormulaCall;
+import wjl.mapping.core.model.Template;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,15 +40,17 @@ public class TemplateToViz {
     }
 
     private void showTemplate(Template tpl) {
+        // 先显示方框
         showDataProvider("input", tpl.getInput());
         showDataRecipient("output", tpl.getOutput());
-        for (Map.Entry<Integer, FormulaCall> call : tpl.getFormulas().entrySet()) {
-            showFormulaCall(call.getKey(), call.getValue());
+        for (FormulaCall call : tpl.getFormulas()) {
+            showFormulaCall(call);
         }
+        // 后显示连线
         for (DataPorter porter : tpl.getInput().getOutList()) {
             showDataPorter(porter);
         }
-        for (FormulaCall call : tpl.getFormulas().values()) {
+        for (FormulaCall call : tpl.getFormulas()) {
             for (DataPorter porter : call.getOutput().getOutList()) {
                 showDataPorter(porter);
             }
@@ -96,7 +102,8 @@ public class TemplateToViz {
         return cid;
     }
 
-    private void showFormulaCall(Integer id, FormulaCall call) {
+    private void showFormulaCall(FormulaCall call) {
+        int id = getCluster(call);
         sb.append("C").append(id)
             .append(" [shape=ellipse,color=greenyellow,label=\"")
             .append(call.getFormulaName())

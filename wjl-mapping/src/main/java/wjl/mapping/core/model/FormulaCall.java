@@ -1,6 +1,11 @@
 package wjl.mapping.core.model;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 对公式的调用。

@@ -1,8 +1,8 @@
 package wjl.mapping.core.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * 数据转换模板。
@@ -18,8 +18,7 @@ public class Template {
      */
     private final DataRecipient output = new DataRecipient();
 
-    private int nextFormulaId;
-    private final Map<Integer, FormulaCall> formulas = new HashMap<>();
+    private final List<FormulaCall> formulas = new ArrayList<>();
 
     public DataProvider getInput() {
         return input;
@@ -29,18 +28,12 @@ public class Template {
         return output;
     }
 
-    public int addFormulaCall(FormulaCall call) {
-        int id = ++nextFormulaId;
-        formulas.put(id, call);
-        return id;
+    public void addFormulaCall(FormulaCall call) {
+        formulas.add(call);
     }
 
-    public FormulaCall getFormulaCall(int id) {
-        return formulas.get(id);
-    }
-
-    public Map<Integer, FormulaCall> getFormulas() {
-        return Collections.unmodifiableMap(formulas);
+    public List<FormulaCall> getFormulas() {
+        return Collections.unmodifiableList(formulas);
     }
 
     /**

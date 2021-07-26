@@ -13,6 +13,7 @@
   <modules>
     <module>wjl-cli</module>
     <module>l3nms</module>
+    <module>wjl-mapping</module>
   </modules>
 
   <build>
