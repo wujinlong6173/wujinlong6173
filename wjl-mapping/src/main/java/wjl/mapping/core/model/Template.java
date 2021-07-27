@@ -2,26 +2,44 @@ package wjl.mapping.core.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 数据转换模板。
  */
 public class Template {
     /**
-     * 模板的输入数据。
+     * 模板的数据源，支持多个数据源。
      */
-    private final DataProvider input = new DataProvider();
+    private final Map<String, DataProvider> inputs;
 
     /**
      * 模板的输出数据。
      */
-    private final DataRecipient output = new DataRecipient();
+    private final DataRecipient output;
 
-    private final List<FormulaCall> formulas = new ArrayList<>();
+    /**
+     * 模板里面包含的公式调用。
+     */
+    private final List<FormulaCall> formulas;
 
-    public DataProvider getInput() {
-        return input;
+    public Template(String... inputNames) {
+        output = new DataRecipient();
+        formulas = new ArrayList<>();
+        inputs = new HashMap<>();
+        for (String inputName : inputNames) {
+            inputs.put(inputName, new DataProvider());
+        }
+    }
+
+    public Map<String, DataProvider> getInputs() {
+        return Collections.unmodifiableMap(inputs);
+    }
+
+    public DataProvider getInput(String inputName) {
+        return inputs.get(inputName);
     }
 
     public DataRecipient getOutput() {
@@ -34,17 +52,6 @@ public class Template {
 
     public List<FormulaCall> getFormulas() {
         return Collections.unmodifiableList(formulas);
-    }
-
-    /**
-     * 从模板输入复制数据到模板输出。
-     *
-     * @param srcPath 源路径
-     * @param dstPath 目标路径
-     * @return 数据搬运工
-     */
-    public DataPorter addDataPorter(SimplePath srcPath, SimplePath dstPath) {
-        return new DataPorter(input, output, srcPath, dstPath);
     }
 
     /**

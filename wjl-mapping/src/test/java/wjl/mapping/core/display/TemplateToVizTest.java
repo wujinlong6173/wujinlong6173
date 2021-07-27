@@ -11,11 +11,29 @@ import java.io.IOException;
 
 public class TemplateToVizTest {
     @Test
-    public void testDisplay() throws IOException {
-        Template tpl = TemplateForTest.buildWithConst();
+    public void showDistanceMiSo() throws IOException {
+        Template tpl = TemplateForTest.distanceMiSo();
         String viz = new TemplateToViz().display(tpl);
         System.out.print(viz);
         Graphviz.fromString(viz).render(Format.PNG)
-            .toFile(new File("example/tpl1.png"));
+            .toFile(new File("example/distanceMiSo.png"));
+    }
+
+    @Test
+    public void showDistanceSiSo() throws IOException {
+        Template tpl = TemplateForTest.distanceSiSo();
+        String viz = new TemplateToViz().display(tpl);
+        System.out.print(viz);
+        Graphviz.fromString(viz).render(Format.PNG)
+            .toFile(new File("example/distanceSiSo.png"));
+    }
+
+    @Test
+    public void showDistanceWithConst() throws IOException {
+        Template tpl = TemplateForTest.distanceWithConst();
+        String viz = new TemplateToViz().display(tpl);
+        System.out.print(viz);
+        Graphviz.fromString(viz).render(Format.PNG)
+            .toFile(new File("example/distanceWithConst.png"));
     }
 }

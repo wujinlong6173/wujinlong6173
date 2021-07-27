@@ -44,6 +44,30 @@ public class SimplePath {
         return sb.toString();
     }
 
+    /**
+     * 路径的深度，空路径的深度为零。
+     *
+     * @return 路径的深度
+     */
+    public int depth() {
+        return nodes.length;
+    }
+
+    /**
+     * 数组下标的个数。
+     *
+     * @return 数组下标的个数
+     */
+    public int arrayIndex() {
+        int count = 0;
+        for (Object node : nodes) {
+            if (node instanceof Integer) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     @Override
     public String toString() {
         return toString(true);

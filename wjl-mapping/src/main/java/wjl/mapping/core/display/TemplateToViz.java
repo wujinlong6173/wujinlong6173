@@ -41,14 +41,18 @@ public class TemplateToViz {
 
     private void showTemplate(Template tpl) {
         // 先显示方框
-        showDataProvider("input", tpl.getInput());
         showDataRecipient("output", tpl.getOutput());
+        for (Map.Entry<String, DataProvider> tplInput : tpl.getInputs().entrySet()) {
+            showDataProvider(tplInput.getKey(), tplInput.getValue());
+        }
         for (FormulaCall call : tpl.getFormulas()) {
             showFormulaCall(call);
         }
         // 后显示连线
-        for (DataPorter porter : tpl.getInput().getOutList()) {
-            showDataPorter(porter);
+        for (Map.Entry<String, DataProvider> tplInput : tpl.getInputs().entrySet()) {
+            for (DataPorter porter : tplInput.getValue().getOutList()) {
+                showDataPorter(porter);
+            }
         }
         for (FormulaCall call : tpl.getFormulas()) {
             for (DataPorter porter : call.getOutput().getOutList()) {
