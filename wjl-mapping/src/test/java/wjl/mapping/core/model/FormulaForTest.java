@@ -23,6 +23,7 @@ public class FormulaForTest {
         FormulaRegister temp = new FormulaRegister();
         temp.register("distance", distance());
         temp.register("circle_space", circleSpace());
+        temp.register("many_param", manyParam());
         return temp;
     }
 
@@ -40,6 +41,17 @@ public class FormulaForTest {
         Map<String, Integer> cost = new HashMap<>();
         cost.put("space", 1);
         cost.put("r", 1);
+        return cost;
+    }
+
+    // 拥有非常多参数的公式，p1 = f(p2, p3, p4, p5)
+    private static Map<String, Integer> manyParam() {
+        Map<String, Integer> cost = new HashMap<>();
+        cost.put("p1", 10);
+        cost.put("p2", 20);
+        cost.put("p3", 0);
+        cost.put("p4", 40);
+        cost.put("p5", 50);
         return cost;
     }
 }

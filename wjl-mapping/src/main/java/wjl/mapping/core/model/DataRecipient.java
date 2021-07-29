@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * 数据接收者，模板的输出、公式的每个输入参数，都是数据接收者。
  */
-public class DataRecipient {
+public class DataRecipient implements DataGate {
     /**
      * 接收的常量数据，模板输出的常量部分，公式输入参数的常量部分。
      */

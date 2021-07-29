@@ -1,5 +1,6 @@
 package wjl.mapping.core.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -49,5 +50,19 @@ public class FormulaRegister {
         } else {
             return new FormulaCall(formulaName, resultName, paramsCost.keySet());
         }
+    }
+
+    /**
+     * 获取计算公式参数需要的费用。
+     *
+     * @param formulaName 公式名称
+     * @return 计算每个参数需要的费用，不可修改
+     */
+    public Map<String, Integer> getParamsCost(String formulaName) {
+        Map<String, Integer> paramsCost = allFormula.get(formulaName);
+        if (paramsCost == null) {
+            return null;
+        }
+        return Collections.unmodifiableMap(paramsCost);
     }
 }

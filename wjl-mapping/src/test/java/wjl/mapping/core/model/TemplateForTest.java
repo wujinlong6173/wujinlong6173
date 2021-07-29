@@ -60,4 +60,23 @@ public final class TemplateForTest {
         tpl.addDataPorter(fc2.getOutput(), tpl.getOutput(), SimplePath.EMPTY, new SimplePath("space"));
         return tpl;
     }
+
+    public static Template manyParam() {
+        SiSoTemplate tpl = new SiSoTemplate();
+        FormulaRegister register = FormulaForTest.getRegister();
+        FormulaCall fc1 = register.makeNewCall("many_param", "p1");
+        tpl.addFormulaCall(fc1);
+
+        DataProvider p1 = fc1.getOutput();
+        DataRecipient p2 = fc1.getInput("p2");
+        DataRecipient p3 = fc1.getInput("p3");
+        DataRecipient p4 = fc1.getInput("p4");
+        DataRecipient p5 = fc1.getInput("p5");
+        tpl.addDataPorter(tpl.getInput(), p2, new SimplePath("x2"), new SimplePath("x2"));
+        tpl.addDataPorter(tpl.getInput(), p3, new SimplePath("x3"), new SimplePath("x3"));
+        tpl.addDataPorter(tpl.getInput(), p4, new SimplePath("x4"), new SimplePath("x4"));
+        tpl.addDataPorter(tpl.getInput(), p5, new SimplePath("x5"), new SimplePath("x5"));
+        tpl.addDataPorter(p1, tpl.getOutput(), SimplePath.EMPTY, new SimplePath("y1"));
+        return tpl;
+    }
 }

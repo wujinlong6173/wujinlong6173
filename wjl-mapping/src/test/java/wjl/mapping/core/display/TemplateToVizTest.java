@@ -36,4 +36,13 @@ public class TemplateToVizTest {
         Graphviz.fromString(viz).render(Format.PNG)
             .toFile(new File("example/distanceWithConst.png"));
     }
+
+    @Test
+    public void showManyParam() throws IOException {
+        Template tpl = TemplateForTest.manyParam();
+        String viz = new TemplateToViz().display(tpl);
+        System.out.print(viz);
+        Graphviz.fromString(viz).render(Format.PNG)
+            .toFile(new File("example/manyParam.png"));
+    }
 }

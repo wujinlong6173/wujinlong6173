@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * 数据提供者，模板的输入、公式的输出，都是数据提供者。
  */
-public class DataProvider {
+public class DataProvider implements DataGate {
     /**
      * 向外输出数据。
      */
