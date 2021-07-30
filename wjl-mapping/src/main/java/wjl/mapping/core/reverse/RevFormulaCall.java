@@ -8,7 +8,7 @@ import wjl.mapping.core.model.FormulaCall;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RevFormulaCall {
+class RevFormulaCall {
     // 公式的名称
     private final String formulaName;
 
@@ -24,7 +24,7 @@ public class RevFormulaCall {
     // 计算输出参数的费用，等于公式本身的费用，加上所有输入参数的费用
     private int cost;
 
-    public RevFormulaCall(FormulaCall call, Map<String, Integer> formulaCost) {
+    RevFormulaCall(FormulaCall call, Map<String, Integer> formulaCost) {
         this.formulaName = call.getFormulaName();
         this.formulaCost = formulaCost;
         allParams = new HashMap<>();
@@ -36,7 +36,7 @@ public class RevFormulaCall {
         }
     }
 
-    public boolean dataReady(DataPorter porter, boolean reverse, int dataCost) {
+    boolean dataReady(DataPorter porter, boolean reverse, int dataCost) {
         DataGate data = reverse ? porter.getProvider() : porter.getRecipient();
         RevFormulaParam param = allParams.get(data);
         if (param == null) {
@@ -97,11 +97,11 @@ public class RevFormulaCall {
         return false;
     }
 
-    public String getResultName() {
+    String getResultName() {
         return resultName;
     }
 
-    public int getCost() {
+    int getCost() {
         return cost;
     }
 }

@@ -4,7 +4,7 @@ import wjl.mapping.core.model.DataGate;
 import wjl.mapping.core.model.DataProvider;
 import wjl.mapping.core.model.DataRecipient;
 
-public class RevFormulaParam {
+class RevFormulaParam {
     // 参数名称
     private final String name;
 
@@ -17,31 +17,31 @@ public class RevFormulaParam {
     // 输入参数的总费用
     private int cost;
 
-    public RevFormulaParam(String name, DataRecipient data) {
+    RevFormulaParam(String name, DataRecipient data) {
         this.name = name;
         this.required = data.getInList().size();
     }
 
-    public RevFormulaParam(String name, DataProvider data) {
+    RevFormulaParam(String name, DataProvider data) {
         this.name = name;
         this.required = data.getOutList().size();
     }
 
-    public boolean dataReady(DataGate dataGate, int dataCost) {
+    boolean dataReady(DataGate dataGate, int dataCost) {
         provided++;
         this.cost += dataCost;
         return provided >= required;
     }
 
-    public boolean isReady() {
+    boolean isReady() {
         return provided >= required;
     }
 
-    public int getCost() {
+    int getCost() {
         return cost;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 }
