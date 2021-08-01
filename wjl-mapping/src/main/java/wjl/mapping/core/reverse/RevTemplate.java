@@ -126,6 +126,7 @@ class RevTemplate {
             if (Objects.equals(original.getResultName(), revCall.getResultName())) {
                 // 没有反转这个公式
                 for (DataRecipient input : original.getInputs().values()) {
+                    call.getInput(input.getName()).setConstant(input.getConstant());
                     for (DataPorter inputPorter : input.getInList()) {
                         queue.offer(new DataPorterCost(inputPorter, false, 0));
                     }
@@ -140,6 +141,7 @@ class RevTemplate {
                     if (Objects.equals(input.getName(), revCall.getResultName())) {
                         continue;
                     }
+                    call.getInput(input.getName()).setConstant(input.getConstant());
                     for (DataPorter inputPorter : input.getInList()) {
                         queue.offer(new DataPorterCost(inputPorter, false, 0));
                     }
