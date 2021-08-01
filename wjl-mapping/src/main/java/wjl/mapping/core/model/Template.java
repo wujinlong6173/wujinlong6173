@@ -26,11 +26,11 @@ public class Template {
     private final List<FormulaCall> formulas;
 
     public Template(String... inputNames) {
-        output = new DataRecipient();
+        output = new DataRecipient("output");
         formulas = new ArrayList<>();
         inputs = new HashMap<>();
         for (String inputName : inputNames) {
-            inputs.put(inputName, new DataProvider());
+            inputs.put(inputName, new DataProvider(inputName));
         }
     }
 

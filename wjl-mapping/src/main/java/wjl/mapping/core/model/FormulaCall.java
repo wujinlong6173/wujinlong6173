@@ -24,7 +24,7 @@ public class FormulaCall {
     /**
      * 公式的输出。
      */
-    private final DataProvider output = new DataProvider();
+    private final DataProvider output;
 
     /**
      * 公式的所有输入参数。
@@ -40,9 +40,10 @@ public class FormulaCall {
     public FormulaCall(String formulaName, String resultName, Collection<String> allParams) {
         this.formulaName = formulaName;
         this.resultName = resultName;
+        this.output = new DataProvider(resultName);
         for (String inputParam : allParams) {
             if (!Objects.equals(resultName, inputParam)) {
-                inputs.put(inputParam, new DataRecipient());
+                inputs.put(inputParam, new DataRecipient(inputParam));
             }
         }
     }
