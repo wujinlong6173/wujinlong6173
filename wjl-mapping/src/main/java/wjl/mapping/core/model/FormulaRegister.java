@@ -33,7 +33,7 @@ public class FormulaRegister {
      * @return 新建的公式调用
      * @throws IllegalArgumentException 公式名称或输出参数有误
      */
-    FormulaCall makeNewCall(String formulaName, String resultName) throws IllegalArgumentException {
+    public FormulaCall makeNewCall(String formulaName, String resultName) throws IllegalArgumentException {
         Map<String, Integer> paramsCost = allFormula.get(formulaName);
         if (paramsCost == null) {
             throw new IllegalArgumentException(String.format(Locale.ENGLISH,

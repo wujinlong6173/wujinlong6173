@@ -23,7 +23,7 @@ public class TemplateToViz {
     private Map<String, Integer> nodeMapping;
     private Map<Integer, Integer> anyNodeInCluster;
 
-    public String display(Template tpl) {
+    public String display(Template tpl, boolean reverse) {
         sb.delete(0, sb.length());
         clusterMapping = new HashMap<>();
         nodeMapping = new HashMap<>();
@@ -31,9 +31,13 @@ public class TemplateToViz {
 
         sb.append("digraph {\n" +
             "compound=true;\n" +
-            "splines=curved;\n" +
-            "graph[rankdir=LR];\n" +
+          //  "splines=curved;\n" +
             "node[shape=record,style=filled,color=white];\n");
+        if (reverse) {
+            sb.append("graph[rankdir=RL];\n");
+        } else {
+            sb.append("graph[rankdir=LR];\n");
+        }
         showTemplate(tpl);
         sb.append("}\n");
         return sb.toString();

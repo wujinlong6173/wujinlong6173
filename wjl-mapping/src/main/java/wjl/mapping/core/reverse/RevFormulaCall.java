@@ -97,6 +97,10 @@ class RevFormulaCall {
         return false;
     }
 
+    public String getFormulaName() {
+        return formulaName;
+    }
+
     String getResultName() {
         return resultName;
     }

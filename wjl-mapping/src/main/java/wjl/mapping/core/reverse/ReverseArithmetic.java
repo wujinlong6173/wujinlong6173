@@ -31,7 +31,7 @@ public class ReverseArithmetic {
             }
         }
 
-        return null;
+        return revTpl.build();
     }
 
     private void handleCandidate(FormulaCallCost fcc) {
