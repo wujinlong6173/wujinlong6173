@@ -23,7 +23,7 @@ public class TemplateToVizTest {
 
     public static void showReverse(Template tpl, String name) {
         try {
-            String filename = String.format(Locale.ENGLISH, "example/rev_%s.png", name);
+            String filename = String.format(Locale.ENGLISH, "example/%s_rev.png", name);
             String viz = new TemplateToViz().display(tpl, true);
             Graphviz.fromString(viz).render(Format.PNG).toFile(new File(filename));
         } catch (IOException err) {

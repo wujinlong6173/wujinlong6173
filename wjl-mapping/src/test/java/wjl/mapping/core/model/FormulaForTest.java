@@ -20,11 +20,31 @@ public class FormulaForTest {
     }
 
     private static FormulaRegister build() {
-        FormulaRegister temp = new FormulaRegister();
+        FormulaRegister temp = new FormulaRegisterTest();
+        temp.register("add", add());
+        temp.register("mul", mul());
         temp.register("distance", distance());
         temp.register("circle_space", circleSpace());
         temp.register("many_param", manyParam());
         return temp;
+    }
+
+    // sum = x + y
+    private static Map<String, Integer> add() {
+        Map<String, Integer> cost = new HashMap<>();
+        cost.put("sum", 1);
+        cost.put("x", 1);
+        cost.put("y", 1);
+        return cost;
+    }
+
+    // product = x * y
+    private static Map<String, Integer> mul() {
+        Map<String, Integer> cost = new HashMap<>();
+        cost.put("product", 1);
+        cost.put("x", 1);
+        cost.put("y", 1);
+        return cost;
     }
 
     // 路程公式 distance = speed * time

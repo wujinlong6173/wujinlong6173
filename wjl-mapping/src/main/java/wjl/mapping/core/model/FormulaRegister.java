@@ -34,7 +34,7 @@ public class FormulaRegister {
      * @throws IllegalArgumentException 公式名称或输出参数有误
      */
     public FormulaCall makeNewCall(String formulaName, String resultName) throws IllegalArgumentException {
-        Map<String, Integer> paramsCost = allFormula.get(formulaName);
+        Map<String, Integer> paramsCost = getParamsCost(formulaName);
         if (paramsCost == null) {
             throw new IllegalArgumentException(String.format(Locale.ENGLISH,
                     "invalid formula name %s.", formulaName));
