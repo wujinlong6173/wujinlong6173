@@ -45,9 +45,11 @@ public class TemplateToViz {
 
     private void showTemplate(Template tpl) {
         // 先显示方框
-        showDataRecipient("output", tpl.getOutput());
-        for (Map.Entry<String, DataProvider> tplInput : tpl.getInputs().entrySet()) {
-            showDataProvider(tplInput.getKey(), tplInput.getValue());
+        for (DataProvider tplInput : tpl.getInputs().values()) {
+            showDataProvider(tplInput);
+        }
+        for (DataRecipient tplOutput : tpl.getOutputs().values()) {
+            showDataRecipient(tplOutput);
         }
         for (FormulaCall call : tpl.getFormulas()) {
             showFormulaCall(call);
@@ -65,10 +67,10 @@ public class TemplateToViz {
         }
     }
 
-    private int showDataProvider(String label, DataProvider provider) {
+    private int showDataProvider(DataProvider provider) {
         int cid = getCluster(provider);
         sb.append("subgraph cluster").append(cid).append("{\n");
-        sb.append("label=").append(label).append("\n");
+        sb.append("label=").append(provider.getName()).append("\n");
         sb.append("color=lightgrey;style=filled;\n");
 
         int nodeId = 0;
@@ -84,10 +86,10 @@ public class TemplateToViz {
         return cid;
     }
 
-    private int showDataRecipient(String label, DataRecipient recipient) {
+    private int showDataRecipient(DataRecipient recipient) {
         int cid = getCluster(recipient);
         sb.append("subgraph cluster").append(cid).append("{\n");
-        sb.append("label=").append(label).append("\n");
+        sb.append("label=").append(recipient.getName()).append("\n");
         sb.append("color=lightgrey;\nstyle=filled;\n");
 
         int nodeId = 0;
@@ -116,13 +118,13 @@ public class TemplateToViz {
             .append(" [shape=ellipse,color=greenyellow,label=\"")
             .append(call.getFormulaName())
             .append("\"]\n");
-        int cid = showDataProvider(call.getResultName(), call.getOutput());
+        int cid = showDataProvider(call.getOutput());
         sb.append("C").append(id)
             .append(" -> N").append(anyNodeInCluster.get(cid))
             .append(" [lhead=cluster").append(cid)
             .append(",arrowhead=vee,weight=10]\n");
         for (Map.Entry<String, DataRecipient> input : call.getInputs().entrySet()) {
-            cid = showDataRecipient(input.getKey(), input.getValue());
+            cid = showDataRecipient(input.getValue());
             sb.append("N").append(anyNodeInCluster.get(cid))
                 .append(" -> C").append(id)
                 .append(" [ltail=cluster").append(cid)

@@ -14,8 +14,10 @@ public class ReverseArithmetic {
     public Template reverse(Template tpl, FormulaRegister register) {
         RevTemplate revTpl = new RevTemplate(tpl, register);
 
-        for (DataPorter porter : tpl.getOutput().getInList()) {
-            candidateQueue.offer(new DataPorterCost(porter, true, 0));
+        for (DataRecipient tplOutput : tpl.getOutputs().values()) {
+            for (DataPorter porter : tplOutput.getInList()) {
+                candidateQueue.offer(new DataPorterCost(porter, true, 0));
+            }
         }
 
         while (!candidateQueue.isEmpty()) {

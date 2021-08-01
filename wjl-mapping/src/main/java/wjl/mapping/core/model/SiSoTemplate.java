@@ -5,13 +5,18 @@ package wjl.mapping.core.model;
  */
 public class SiSoTemplate extends Template {
     private static final String DEFAULT_INPUT_NAME = "input";
+    private static final String DEFAULT_OUTPUT_NAME = "output";
 
     public SiSoTemplate() {
-        super(DEFAULT_INPUT_NAME);
+        super(DEFAULT_INPUT_NAME, DEFAULT_OUTPUT_NAME);
     }
 
     public DataProvider getInput() {
         return getInput(DEFAULT_INPUT_NAME);
+    }
+
+    public DataRecipient getOutput() {
+        return getOutput(DEFAULT_OUTPUT_NAME);
     }
 
     /**
