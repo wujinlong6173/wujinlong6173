@@ -98,4 +98,23 @@ public class SimplePath {
         return sb.toString();
     }
 
+    /**
+     * 替换路径的前缀。
+     *
+     * @param path 原始的路径
+     * @param oldPrefix 现在的前缀
+     * @param newPrefix 新的前缀
+     * @return 替换前缀后的新路径
+     */
+    public static SimplePath replacePrefix(SimplePath path, SimplePath oldPrefix, SimplePath newPrefix) {
+        if (oldPrefix.nodes.length == path.nodes.length) {
+            return newPrefix;
+        }
+
+        Object[] newNodes = new Object[path.nodes.length - oldPrefix.nodes.length + newPrefix.nodes.length];
+        System.arraycopy(newPrefix.nodes, 0, newNodes, 0, newPrefix.nodes.length);
+        System.arraycopy(path.nodes, newPrefix.nodes.length, newNodes, newPrefix.nodes.length,
+            path.nodes.length - newPrefix.nodes.length);
+        return new SimplePath(newNodes);
+    }
 }

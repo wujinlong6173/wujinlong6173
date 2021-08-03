@@ -23,6 +23,7 @@ public class FormulaForTest {
         FormulaRegister temp = new FormulaRegisterTest();
         temp.register("add", add());
         temp.register("mul", mul());
+        temp.register("minus", minus());
         temp.register("distance", distance());
         temp.register("circle_space", circleSpace());
         temp.register("many_param", manyParam());
@@ -42,6 +43,14 @@ public class FormulaForTest {
     private static Map<String, Integer> mul() {
         Map<String, Integer> cost = new HashMap<>();
         cost.put("product", 1);
+        cost.put("x", 1);
+        cost.put("y", 1);
+        return cost;
+    }
+
+    // y = -x
+    private static Map<String, Integer> minus() {
+        Map<String, Integer> cost = new HashMap<>();
         cost.put("x", 1);
         cost.put("y", 1);
         return cost;

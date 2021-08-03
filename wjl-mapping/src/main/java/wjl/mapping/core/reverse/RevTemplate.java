@@ -94,7 +94,7 @@ class RevTemplate {
                 DataPorter ahead = searchAhead(result, pro.getName(), proPath);
                 if (ahead != null) {
                     result.addDataPorter(ahead.getProvider(), dataRecipient,
-                        ahead.getSrcPath(),
+                        SimplePath.replacePrefix(porter.getSrcPath(), ahead.getDstPath(), ahead.getSrcPath()),
                         seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
                 } else {
                     DataProvider dataProvider = result.getInput(pro.getName());
@@ -122,7 +122,7 @@ class RevTemplate {
         // 如果存在多个匹配的，选择最精确匹配的
         DataPorter best = null;
         for (DataPorter ahead : tplOutput.getInList()) {
-            if (proPath.contain(ahead.getDstPath())) {
+            if (ahead.getDstPath().contain(proPath)) {
                 if (best == null || best.getDstPath().contain(ahead.getDstPath())) {
                     best = ahead;
                 }

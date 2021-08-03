@@ -11,88 +11,66 @@ import wjl.mapping.core.model.SimplePath;
 import wjl.mapping.core.model.Template;
 import wjl.mapping.core.utils.MyAssert;
 
-public class ReverseSimpleDataTest {
+public class ReverseComplexDataTest {
     private FormulaRegister register = FormulaForTest.getRegister();
     private TemplateToData comparator = new TemplateToData();
 
-    /**
-     * y1 = x1
-     * y2 = (x1 + x2) * 3
-     */
     private Template case1_a() {
         SiSoTemplate tpl = new SiSoTemplate();
+        DataProvider input = tpl.getInput();
+        DataRecipient output = tpl.getOutput();
 
         // y1 = x1
         tpl.addDataPorter(new SimplePath("x1"), new SimplePath("y1"));
 
-        // add1 = x1 + x2
+        // add1 = x1.age + x2.age
         FormulaCall add1 = register.makeNewCall("add.1", "sum");
         tpl.addFormulaCall(add1);
-        tpl.addDataPorter(tpl.getInput(), add1.getInput("x"),
-            new SimplePath("x1"), SimplePath.EMPTY);
-        tpl.addDataPorter(tpl.getInput(), add1.getInput("y"),
-            new SimplePath("x2"), SimplePath.EMPTY);
+        tpl.addDataPorter(input, add1.getInput("x"),
+            new SimplePath("x1", "age"), SimplePath.EMPTY);
+        tpl.addDataPorter(input, add1.getInput("y"),
+            new SimplePath("x2", "age"), SimplePath.EMPTY);
 
-        // mul1 = add1 * 3
-        FormulaCall mul2 = register.makeNewCall("mul.2", "product");
-        tpl.addFormulaCall(mul2);
-        tpl.addDataPorter(add1.getOutput(), mul2.getInput("x"),
-            SimplePath.EMPTY, SimplePath.EMPTY);
-        mul2.getInput("y").setConstant(3);
-
-        // y2 = mul1
-        tpl.addDataPorter(mul2.getOutput(), tpl.getOutput(),
+        // y2 = add1
+        tpl.addDataPorter(add1.getOutput(), output,
             SimplePath.EMPTY, new SimplePath("y2"));
-
         return tpl;
     }
 
-    /**
-     * case1_a的反转模板。
-     * x1 = y1
-     */
     private Template case1_b() {
         Template tpl = new Template("output", "input");
         DataProvider input = tpl.getInput("output");
         DataRecipient output = tpl.getOutput("input");
 
-        // y1 = x1
-        tpl.addDataPorter(input, output, new SimplePath("y1"), new SimplePath("x1"));
+        // x1 = y1
+        tpl.addDataPorter(input, output,
+            new SimplePath("y1"), new SimplePath("x1"));
 
-        // mul2 = y2 / 3
-        FormulaCall mul2 = register.makeNewCall("mul.2", "x");
-        tpl.addFormulaCall(mul2);
-        tpl.addDataPorter(input, mul2.getInput("product"),
-            new SimplePath("y2"), SimplePath.EMPTY);
-        mul2.getInput("y").setConstant(3);
-
-        // add1 = mul2 - y1
+        // add1 y = y2 - y1.age
         FormulaCall add1 = register.makeNewCall("add.1", "y");
         tpl.addFormulaCall(add1);
-        tpl.addDataPorter(mul2.getOutput(), add1.getInput("sum"),
-            SimplePath.EMPTY, SimplePath.EMPTY);
+        tpl.addDataPorter(input, add1.getInput("sum"),
+            new SimplePath("y2"), SimplePath.EMPTY);
         tpl.addDataPorter(input, add1.getInput("x"),
-            new SimplePath("y1"), SimplePath.EMPTY);
+            new SimplePath("y1", "age"), SimplePath.EMPTY);
 
-        // x2 = add1
+        // x2.age = add1
         tpl.addDataPorter(add1.getOutput(), output,
-            SimplePath.EMPTY, new SimplePath("x2"));
-
+            SimplePath.EMPTY, new SimplePath("x2", "age"));
         return tpl;
     }
 
+    /**
+     * 利用还原的数据的一部分，还原其它数据。
+     */
     @Test
     public void test1() {
         Template a = case1_a();
         Template b = case1_b();
         ReverseArithmetic reverse = new ReverseArithmetic();
         Template ra = reverse.reverse(a, FormulaForTest.getRegister());
-        Template rb = reverse.reverse(b, FormulaForTest.getRegister());
-        Object aData = comparator.templateToData(a);
         Object bData = comparator.templateToData(b);
         Object raData = comparator.templateToData(ra);
-        Object rbData = comparator.templateToData(rb);
         MyAssert.assertEquals(raData, bData);
-        MyAssert.assertEquals(rbData, aData);
     }
 }
