@@ -1,5 +1,6 @@
 package wjl.mapping.core.model;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -63,6 +64,18 @@ public class SimplePath {
             }
         }
         return count;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        } else if (other instanceof SimplePath) {
+            SimplePath otherPath = (SimplePath)other;
+            return Arrays.equals(this.nodes, otherPath.nodes);
+        } else {
+            return false;
+        }
     }
 
     @Override
