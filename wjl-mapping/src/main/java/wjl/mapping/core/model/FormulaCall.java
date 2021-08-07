@@ -17,11 +17,6 @@ public class FormulaCall {
     private final String formulaName;
 
     /**
-     * 输出参数的名称。
-     */
-    private final String resultName;
-
-    /**
      * 公式的输出。
      */
     private final DataProvider output;
@@ -39,7 +34,6 @@ public class FormulaCall {
      */
     public FormulaCall(String formulaName, String resultName, Collection<String> allParams) {
         this.formulaName = formulaName;
-        this.resultName = resultName;
         this.output = new DataProvider(resultName);
         for (String inputParam : allParams) {
             if (!Objects.equals(resultName, inputParam)) {
@@ -53,7 +47,7 @@ public class FormulaCall {
     }
 
     public String getResultName() {
-        return resultName;
+        return output.getName();
     }
 
     public DataProvider getOutput() {
