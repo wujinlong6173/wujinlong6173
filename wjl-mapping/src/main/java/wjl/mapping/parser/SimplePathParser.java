@@ -13,9 +13,16 @@ import java.util.Locale;
  * @since 2021-8-5
  */
 public class SimplePathParser {
+    // 包含路径的字符串，和路径的起始、结束位置。
     private String strPath;
+    private int start;
+    private int end;
+
+    // 一致性约束：ch永远等于ptrCh位置的字符。
     private int ptrCh;
     private char ch;
+
+    // 错误信息
     private String error;
 
     /**
@@ -37,13 +44,16 @@ public class SimplePathParser {
      * @return 返回空表示存在错误
      */
     public SimplePath parse(String strPath, int start, int end) {
-        error = null;
+        this.error = null;
         if (strPath == null || start >= end) {
             return SimplePath.EMPTY;
         }
 
         this.strPath = strPath;
+        this.start = start;
+        this.end = end;
         ptrCh = start;
+        ch = strPath.charAt(ptrCh);
 
         List<Object> nodeList = new ArrayList<>();
         Object node = firstToken();
@@ -52,8 +62,9 @@ public class SimplePathParser {
             node = nextToken();
         }
 
-        if (ptrCh < end) {
-            ch = strPath.charAt(ptrCh);
+        if (error != null) {
+            return null;
+        } else if (ptrCh < end) {
             error = String.format(Locale.ENGLISH, "unsupported char '%c' at %d in '%s'",
                 ch, ptrCh - start, strPath.substring(start, end));
             return null;
@@ -67,9 +78,30 @@ public class SimplePathParser {
     }
 
     private Object firstToken() {
+        if (ch == '[') {
+            return squareBracketToken();
+        } else {
+            return nameOrIndex();
+        }
+    }
+
+    private Object nextToken() {
+        if (ch == '.') {
+            if (ptrCh + 1 == end) {
+                return null;
+            }
+            ch = strPath.charAt(++ptrCh);
+            return firstToken();
+        } else if (ch == '[') {
+            return squareBracketToken();
+        } else {
+            return null;
+        }
+    }
+
+    private Object nameOrIndex() {
         int intValue = 0;
         int tokenStart = ptrCh;
-        ch = strPath.charAt(ptrCh);
         while (isNumber(ch)) {
             intValue = intValue * 10 + ch - '0';
             ch = strPath.charAt(++ptrCh);
@@ -92,10 +124,28 @@ public class SimplePathParser {
         return null;
     }
 
-    private Object nextToken() {
-        if (ch == '.') {
-            ++ptrCh;
-            return firstToken();
+    // 前置条件：ch等于左方括号
+    // 结束状态：ch等于右方括号后面的一个字符
+    private Object squareBracketToken() {
+        ch = strPath.charAt(++ptrCh);
+        Object token = nameOrIndex();
+        if (ch == ']') {
+            if (token != null) {
+                ch = strPath.charAt(++ptrCh);
+                return token;
+            } else {
+                error = String.format(Locale.ENGLISH, "empty '[]' at %d in '%s'",
+                    ptrCh - start, strPath.substring(start, end));
+                return null;
+            }
+        }
+
+        if (ptrCh == end) {
+            error = String.format(Locale.ENGLISH, "require ']' at %d in '%s'",
+                ptrCh - start, strPath.substring(start, end));
+        } else {
+            error = String.format(Locale.ENGLISH, "unsupported char '%c' at %d in '%s'",
+                ch, ptrCh - start, strPath.substring(start, end));
         }
         return null;
     }
