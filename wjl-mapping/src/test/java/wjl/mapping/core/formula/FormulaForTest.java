@@ -1,6 +1,9 @@
-package wjl.mapping.core.model;
+package wjl.mapping.core.formula;
 
 import org.junit.Ignore;
+import wjl.mapping.formula.FormulaRegisterSupportId;
+import wjl.mapping.core.model.FormulaRegister;
+import wjl.mapping.formula.DefaultFormulaRegister;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +23,7 @@ public class FormulaForTest {
     }
 
     private static FormulaRegister build() {
-        FormulaRegister temp = new FormulaRegisterTest();
+        DefaultFormulaRegister temp = new FormulaRegisterSupportId();
         temp.register("add", add());
         temp.register("mul", mul());
         temp.register("minus", minus());

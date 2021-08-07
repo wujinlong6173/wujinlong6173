@@ -150,7 +150,7 @@ class RevTemplate {
         Queue<DataPorterCost> queue) {
         FormulaCall call = cache.get(revCall);
         if (call == null) {
-            call = register.makeNewCall(revCall.getFormulaName(), revCall.getResultName());
+            call = register.createCall(revCall.getFormulaName(), revCall.getResultName());
             cache.put(revCall, call);
             tpl.addFormulaCall(call);
 

@@ -4,7 +4,7 @@ import org.junit.Test;
 import wjl.mapping.core.model.DataProvider;
 import wjl.mapping.core.model.DataRecipient;
 import wjl.mapping.core.model.FormulaCall;
-import wjl.mapping.core.model.FormulaForTest;
+import wjl.mapping.core.formula.FormulaForTest;
 import wjl.mapping.core.model.FormulaRegister;
 import wjl.mapping.core.model.SiSoTemplate;
 import wjl.mapping.core.model.SimplePath;
@@ -26,7 +26,7 @@ public class ReverseSimpleDataTest {
         tpl.addDataPorter(new SimplePath("x1"), new SimplePath("y1"));
 
         // add1 = x1 + x2
-        FormulaCall add1 = register.makeNewCall("add.1", "sum");
+        FormulaCall add1 = register.createCall("add.1", "sum");
         tpl.addFormulaCall(add1);
         tpl.addDataPorter(tpl.getInput(), add1.getInput("x"),
             new SimplePath("x1"), SimplePath.EMPTY);
@@ -34,7 +34,7 @@ public class ReverseSimpleDataTest {
             new SimplePath("x2"), SimplePath.EMPTY);
 
         // mul1 = add1 * 3
-        FormulaCall mul2 = register.makeNewCall("mul.2", "product");
+        FormulaCall mul2 = register.createCall("mul.2", "product");
         tpl.addFormulaCall(mul2);
         tpl.addDataPorter(add1.getOutput(), mul2.getInput("x"),
             SimplePath.EMPTY, SimplePath.EMPTY);
@@ -60,14 +60,14 @@ public class ReverseSimpleDataTest {
         tpl.addDataPorter(input, output, new SimplePath("y1"), new SimplePath("x1"));
 
         // mul2 = y2 / 3
-        FormulaCall mul2 = register.makeNewCall("mul.2", "x");
+        FormulaCall mul2 = register.createCall("mul.2", "x");
         tpl.addFormulaCall(mul2);
         tpl.addDataPorter(input, mul2.getInput("product"),
             new SimplePath("y2"), SimplePath.EMPTY);
         mul2.getInput("y").setConstant(3);
 
         // add1 = mul2 - y1
-        FormulaCall add1 = register.makeNewCall("add.1", "y");
+        FormulaCall add1 = register.createCall("add.1", "y");
         tpl.addFormulaCall(add1);
         tpl.addDataPorter(mul2.getOutput(), add1.getInput("sum"),
             SimplePath.EMPTY, SimplePath.EMPTY);

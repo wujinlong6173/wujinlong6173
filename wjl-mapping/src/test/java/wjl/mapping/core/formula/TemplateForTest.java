@@ -1,6 +1,15 @@
-package wjl.mapping.core.model;
+package wjl.mapping.core.formula;
 
 import org.junit.Ignore;
+import wjl.mapping.core.formula.FormulaForTest;
+import wjl.mapping.core.model.DataProvider;
+import wjl.mapping.core.model.DataRecipient;
+import wjl.mapping.core.model.FormulaCall;
+import wjl.mapping.core.model.FormulaRegister;
+import wjl.mapping.core.model.MiSoTemplate;
+import wjl.mapping.core.model.SiSoTemplate;
+import wjl.mapping.core.model.SimplePath;
+import wjl.mapping.core.model.Template;
 
 @Ignore
 public final class TemplateForTest {
@@ -9,8 +18,8 @@ public final class TemplateForTest {
         // PI * (speed * time) => space
         SiSoTemplate tpl = new SiSoTemplate();
         FormulaRegister register = FormulaForTest.getRegister();
-        FormulaCall fc1 = register.makeNewCall("distance", "distance");
-        FormulaCall fc2 = register.makeNewCall("circle_space", "space");
+        FormulaCall fc1 = register.createCall("distance", "distance");
+        FormulaCall fc2 = register.createCall("circle_space", "space");
         tpl.addFormulaCall(fc1);
         tpl.addFormulaCall(fc2);
 
@@ -28,8 +37,8 @@ public final class TemplateForTest {
         // PI * (speed * 12) => space
         SiSoTemplate tpl = new SiSoTemplate();
         FormulaRegister register = FormulaForTest.getRegister();
-        FormulaCall fc1 = register.makeNewCall("distance", "distance");
-        FormulaCall fc2 = register.makeNewCall("circle_space", "space");
+        FormulaCall fc1 = register.createCall("distance", "distance");
+        FormulaCall fc2 = register.createCall("circle_space", "space");
         tpl.addFormulaCall(fc1);
         tpl.addFormulaCall(fc2);
 
@@ -46,8 +55,8 @@ public final class TemplateForTest {
         // PI * ([I1]speed * [I2]time) => space
         MiSoTemplate tpl = new MiSoTemplate("I1", "I2");
         FormulaRegister register = FormulaForTest.getRegister();
-        FormulaCall fc1 = register.makeNewCall("distance", "distance");
-        FormulaCall fc2 = register.makeNewCall("circle_space", "space");
+        FormulaCall fc1 = register.createCall("distance", "distance");
+        FormulaCall fc2 = register.createCall("circle_space", "space");
         tpl.addFormulaCall(fc1);
         tpl.addFormulaCall(fc2);
 
@@ -65,7 +74,7 @@ public final class TemplateForTest {
     public static Template manyParam() {
         SiSoTemplate tpl = new SiSoTemplate();
         FormulaRegister register = FormulaForTest.getRegister();
-        FormulaCall fc1 = register.makeNewCall("many_param", "p1");
+        FormulaCall fc1 = register.createCall("many_param", "p1");
         tpl.addFormulaCall(fc1);
 
         DataProvider p1 = fc1.getOutput();

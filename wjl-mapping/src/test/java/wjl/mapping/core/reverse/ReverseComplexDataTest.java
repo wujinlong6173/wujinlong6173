@@ -4,7 +4,7 @@ import org.junit.Test;
 import wjl.mapping.core.model.DataProvider;
 import wjl.mapping.core.model.DataRecipient;
 import wjl.mapping.core.model.FormulaCall;
-import wjl.mapping.core.model.FormulaForTest;
+import wjl.mapping.core.formula.FormulaForTest;
 import wjl.mapping.core.model.FormulaRegister;
 import wjl.mapping.core.model.SiSoTemplate;
 import wjl.mapping.core.model.SimplePath;
@@ -24,7 +24,7 @@ public class ReverseComplexDataTest {
         tpl.addDataPorter(new SimplePath("x1"), new SimplePath("y1"));
 
         // add1 = x1.age + x2.age
-        FormulaCall add1 = register.makeNewCall("add.1", "sum");
+        FormulaCall add1 = register.createCall("add.1", "sum");
         tpl.addFormulaCall(add1);
         tpl.addDataPorter(input, add1.getInput("x"),
             new SimplePath("x1", "age"), SimplePath.EMPTY);
@@ -47,7 +47,7 @@ public class ReverseComplexDataTest {
             new SimplePath("y1"), new SimplePath("x1"));
 
         // add1 y = y2 - y1.age
-        FormulaCall add1 = register.makeNewCall("add.1", "y");
+        FormulaCall add1 = register.createCall("add.1", "y");
         tpl.addFormulaCall(add1);
         tpl.addDataPorter(input, add1.getInput("sum"),
             new SimplePath("y2"), SimplePath.EMPTY);

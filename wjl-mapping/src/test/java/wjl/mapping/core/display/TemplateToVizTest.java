@@ -4,7 +4,7 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import org.junit.Test;
 import wjl.mapping.core.model.Template;
-import wjl.mapping.core.model.TemplateForTest;
+import wjl.mapping.core.formula.TemplateForTest;
 
 import java.io.File;
 import java.io.IOException;

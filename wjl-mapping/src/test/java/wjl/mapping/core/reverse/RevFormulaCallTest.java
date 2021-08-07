@@ -5,9 +5,9 @@ import org.junit.Test;
 import wjl.mapping.core.model.DataProvider;
 import wjl.mapping.core.model.DataRecipient;
 import wjl.mapping.core.model.FormulaCall;
-import wjl.mapping.core.model.FormulaForTest;
+import wjl.mapping.core.formula.FormulaForTest;
 import wjl.mapping.core.model.Template;
-import wjl.mapping.core.model.TemplateForTest;
+import wjl.mapping.core.formula.TemplateForTest;
 
 import java.util.Map;
 
