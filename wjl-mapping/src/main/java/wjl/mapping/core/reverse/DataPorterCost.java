@@ -3,15 +3,29 @@ package wjl.mapping.core.reverse;
 import wjl.mapping.core.model.DataPorter;
 import wjl.mapping.core.model.SimplePath;
 
-class DataPorterCost extends Candidate {
-    private final DataPorter porter; // 数据搬运工
-    private final boolean reverse; // 正向搬运，或反向搬运
-    private final int cost; // 搬运到目的地的费用
+/**
+ * 数据搬运工作为候选节点，费用等于源数据费用加搬运费用，搬运费用由
+ * 源路径的复杂性决定。每个搬运工有两次机会称为候选节点，正向搬运，
+ * 和反向搬运。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
+ */
+class DataPorterCost extends CandidateCost {
+    private final DataPorter porter;
+    private final boolean reverse;
 
-    DataPorterCost(DataPorter porter, boolean reverse, int baseCost) {
+    /**
+     * 数据搬运工作为候选节点。
+     *
+     * @param porter 原模板中的数据搬运工
+     * @param reverse 标记正向搬运，或反向搬运
+     * @param srcDataCost 源数据的费用
+     */
+    DataPorterCost(DataPorter porter, boolean reverse, int srcDataCost) {
+        super(srcDataCost + porterCost(porter, reverse));
         this.porter = porter;
         this.reverse = reverse;
-        this.cost = baseCost + porterCost(porter, reverse);
     }
 
     public DataPorter getPorter() {
@@ -20,11 +34,6 @@ class DataPorterCost extends Candidate {
 
     public boolean isReverse() {
         return reverse;
-    }
-
-    @Override
-    public int getCost() {
-        return cost;
     }
 
     private static int porterCost(DataPorter porter, boolean reverse) {

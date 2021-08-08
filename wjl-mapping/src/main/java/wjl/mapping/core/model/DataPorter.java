@@ -3,6 +3,9 @@ package wjl.mapping.core.model;
 /**
  * 数据搬运工，从数据提供者复制数据到接收者。
  * 例如，将模板输入的 abc.name 复制到模板输出的 items[0]。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
 public class DataPorter {
     private final DataProvider provider;

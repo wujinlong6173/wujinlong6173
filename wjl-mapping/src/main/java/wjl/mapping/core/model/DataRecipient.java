@@ -5,8 +5,11 @@ import java.util.List;
 
 /**
  * 数据接收者，模板的输出、公式的每个输入参数，都是数据接收者。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
-public class DataRecipient implements DataGate {
+public class DataRecipient {
     private final String name;
 
     /**
@@ -23,7 +26,6 @@ public class DataRecipient implements DataGate {
         this.name = name;
     }
 
-    @Override
     public String getName() {
         return name;
     }

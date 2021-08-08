@@ -1,6 +1,5 @@
 package wjl.mapping.core.reverse;
 
-import wjl.mapping.core.model.DataGate;
 import wjl.mapping.core.model.DataPorter;
 import wjl.mapping.core.model.DataRecipient;
 import wjl.mapping.core.model.FormulaCall;
@@ -12,8 +11,8 @@ class RevFormulaCall {
     // 公式的名称
     private final String formulaName;
 
-    // 公式的所有参数，包括输入和输出
-    private final Map<DataGate, RevFormulaParam> allParams;
+    // 公式的所有参数，包括输入和输出，键值必须是参数名
+    private final Map<String, RevFormulaParam> allParams;
 
     // 公式计算每个参数的费用，费用为零表示没法计算此参数
     private final Map<String, Integer> formulaCost;
@@ -28,22 +27,21 @@ class RevFormulaCall {
         this.formulaName = call.getFormulaName();
         this.formulaCost = formulaCost;
         allParams = new HashMap<>();
-        allParams.put(call.getOutput(),
-            new RevFormulaParam(call.getResultName(), call.getOutput()));
+        allParams.put(call.getOutput().getName(),
+            new RevFormulaParam(call.getOutput()));
         for (Map.Entry<String, DataRecipient> input : call.getInputs().entrySet()) {
-            allParams.put(input.getValue(),
-                new RevFormulaParam(input.getKey(), input.getValue()));
+            allParams.put(input.getKey(),
+                new RevFormulaParam(input.getValue()));
         }
     }
 
     boolean dataReady(DataPorter porter, boolean reverse, int dataCost) {
-        DataGate data = reverse ? porter.getProvider() : porter.getRecipient();
-        RevFormulaParam param = allParams.get(data);
+        RevFormulaParam param = findParamByPorter(porter, reverse);
         if (param == null) {
             return false;
         }
 
-        if (!param.dataReady(data, dataCost)) {
+        if (!param.dataReady(porter, dataCost)) {
             return false;
         }
 
@@ -97,7 +95,15 @@ class RevFormulaCall {
         return false;
     }
 
-    public String getFormulaName() {
+    private RevFormulaParam findParamByPorter(DataPorter porter, boolean reverse) {
+        if (reverse) {
+            return allParams.get(porter.getProvider().getName());
+        } else {
+            return allParams.get(porter.getRecipient().getName());
+        }
+    }
+
+    String getFormulaName() {
         return formulaName;
     }
 

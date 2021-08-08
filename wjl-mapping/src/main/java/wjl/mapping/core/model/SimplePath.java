@@ -5,6 +5,9 @@ import java.util.Objects;
 
 /**
  * 属性名和整数下标构成的路径，表示 abc.items[2].name 这样的路径。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
 public class SimplePath {
     public static final SimplePath EMPTY = new SimplePath();

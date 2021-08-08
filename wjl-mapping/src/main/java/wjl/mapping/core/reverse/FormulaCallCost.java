@@ -1,32 +1,51 @@
 package wjl.mapping.core.reverse;
 
+import wjl.mapping.core.model.DataPorter;
+import wjl.mapping.core.model.DataRecipient;
 import wjl.mapping.core.model.FormulaCall;
 
-class FormulaCallCost extends Candidate {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * 公式调用作为候选节点，费用等于所有输入参数的费用，加上公式注册的计算费用。
+ * 每个公式最多有两次机会作为候选节点：准备好了 N-1 个参数时，选择剩下的参数
+ * 作为输出；准备好了 N 个参数时，选择费用最小的参数作为输出。如果第二次选择
+ * 更优，优先队列里会出现两个候选节点，费用较大的那个是失效的。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
+ */
+class FormulaCallCost extends CandidateCost {
     private final FormulaCall call;
     private final RevFormulaCall revCall;
-    private final int cost;
 
     FormulaCallCost(FormulaCall call, RevFormulaCall revCall, int cost) {
+        super(cost);
         this.call = call;
         this.revCall = revCall;
-        this.cost = cost;
     }
 
-    FormulaCall getCall() {
-        return call;
-    }
+    List<DataPorterCost> newCandidate() {
+        if (revCall.getCost() < getCost()) {
+            // 添加到队列后，公式选出了更好的输出参数，本对象已经失效
+            return Collections.emptyList();
+        }
 
-    RevFormulaCall getRevCall() {
-        return revCall;
-    }
+        List<DataPorterCost> nextList = new ArrayList<>();
+        if (Objects.equals(call.getResultName(), revCall.getResultName())) {
+            for (DataPorter porter : call.getOutput().getOutList()) {
+                nextList.add(new DataPorterCost(porter, false, getCost()));
+            }
+        } else {
+            DataRecipient callInput = call.getInput(revCall.getResultName());
+            for (DataPorter porter : callInput.getInList()) {
+                nextList.add(new DataPorterCost(porter, true, getCost()));
+            }
+        }
 
-    @Override
-    int getCost() {
-        return cost;
-    }
-
-    boolean isFinalChoice() {
-        return revCall.getCost() == cost;
+        return nextList;
     }
 }

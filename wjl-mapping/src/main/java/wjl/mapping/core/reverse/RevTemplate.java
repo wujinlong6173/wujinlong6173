@@ -1,6 +1,5 @@
 package wjl.mapping.core.reverse;
 
-import wjl.mapping.core.model.DataGate;
 import wjl.mapping.core.model.DataPorter;
 import wjl.mapping.core.model.DataProvider;
 import wjl.mapping.core.model.DataRecipient;
@@ -20,8 +19,9 @@ import java.util.Queue;
 import java.util.Set;
 
 class RevTemplate {
-    private final Map<RevFormulaCall, FormulaCall> formulaRevMap;
-    private final Map<DataGate, RevFormulaCall> formulaOfDataGates;
+    private final Map<RevFormulaCall, FormulaCall> revCallToCall;
+    private final Map<DataProvider, RevFormulaCall> providerToRevCall;
+    private final Map<DataRecipient, RevFormulaCall> recipientToRevCall;
     private final List<DataPorterCost> bestForTplInput;
     private final Set<DataPorter> doneInTplInput;
     private final FormulaRegister register;
@@ -30,31 +30,26 @@ class RevTemplate {
     RevTemplate(Template tpl, FormulaRegister register) {
         this.register = register;
         this.originalTpl = tpl;
-        formulaRevMap = new HashMap<>();
-        formulaOfDataGates = new HashMap<>();
+        revCallToCall = new HashMap<>();
+        providerToRevCall = new HashMap<>();
+        recipientToRevCall = new HashMap<>();
         bestForTplInput = new ArrayList<>();
         doneInTplInput = new HashSet<>();
 
         for (FormulaCall call : tpl.getFormulas()) {
             RevFormulaCall revCall = new RevFormulaCall(call, register.getParamsCost(call.getFormulaName()));
-            formulaRevMap.put(revCall, call);
-            formulaOfDataGates.put(call.getOutput(), revCall);
+            revCallToCall.put(revCall, call);
+            providerToRevCall.put(call.getOutput(), revCall);
             for (DataRecipient callInput : call.getInputs().values()) {
-                formulaOfDataGates.put(callInput, revCall);
+                recipientToRevCall.put(callInput, revCall);
             }
         }
     }
 
-    Candidate dataReady(DataPorter porter, boolean reverse, int dataCost) {
-        DataGate data = reverse ? porter.getProvider() : porter.getRecipient();
-        RevFormulaCall revCall = formulaOfDataGates.get(data);
-        if (revCall != null) {
-            if (revCall.dataReady(porter, reverse, dataCost)) {
-                return new FormulaCallCost(formulaRevMap.get(revCall), revCall, revCall.getCost());
-            }
-        } else if (data instanceof DataProvider) {
+    CandidateCost dataReady(DataPorter porter, boolean reverse, int dataCost) {
+        if (reverse) {
             // 肯定是模板的输入
-            DataProvider tplInput = (DataProvider)data;
+            DataProvider tplInput = porter.getProvider();
             if (!isBestPorter(porter, dataCost)) {
                 return null;
             }
@@ -72,6 +67,20 @@ class RevTemplate {
         return null;
     }
 
+    /**
+     * 返回数据目的地的公式调用，如果目的地是模板则返回空。
+     *
+     * @param dataPorter
+     * @return
+     */
+    public RevFormulaCall findRevCall(DataPorterCost dataPorter) {
+        if (dataPorter.isReverse()) {
+            return providerToRevCall.get(dataPorter.getPorter().getProvider());
+        } else {
+            return recipientToRevCall.get(dataPorter.getPorter().getRecipient());
+        }
+    }
+
     Template build() {
         Template result = new Template(
             originalTpl.getOutputs().keySet(), originalTpl.getInputs().keySet());
@@ -84,30 +93,46 @@ class RevTemplate {
         while (!queue.isEmpty()) {
             DataPorterCost seed = queue.poll();
             DataPorter porter = seed.getPorter();
-            DataGate pro = seed.isReverse() ? porter.getRecipient() : porter.getProvider();
-            DataGate rec = seed.isReverse() ? porter.getProvider() : porter.getRecipient();
-            SimplePath proPath = seed.isReverse() ? porter.getDstPath() : porter.getSrcPath();
-            RevFormulaCall proRevCall = formulaOfDataGates.get(pro);
-            RevFormulaCall recRevCall = formulaOfDataGates.get(rec);
-            if (proRevCall == null) {
-                DataRecipient dataRecipient = getRecipient(result, resultCall, recRevCall, rec.getName(), queue);
-                DataPorter ahead = searchAhead(result, pro.getName(), proPath);
-                if (ahead != null) {
-                    result.addDataPorter(ahead.getProvider(), dataRecipient,
-                        SimplePath.replacePrefix(porter.getSrcPath(), ahead.getDstPath(), ahead.getSrcPath()),
-                        seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+            if (seed.isReverse()) {
+                DataRecipient src = porter.getRecipient();
+                DataProvider dst = porter.getProvider();
+                SimplePath srcPath = porter.getDstPath();
+                RevFormulaCall srcRevCall = recipientToRevCall.get(src);
+                RevFormulaCall dstRevCall = providerToRevCall.get(dst);
+                if (srcRevCall == null) {
+                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
+                    DataPorter ahead = searchAhead(result, src.getName(), srcPath);
+                    if (ahead != null) {
+                        result.addDataPorter(ahead.getProvider(), dataRecipient, SimplePath.replacePrefix(porter.getSrcPath(), ahead.getDstPath(), ahead.getSrcPath()), seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+                    } else {
+                        DataProvider dataProvider = result.getInput(src.getName());
+                        result.addDataPorter(dataProvider, dataRecipient, seed.isReverse() ? porter.getDstPath() : porter.getSrcPath(), seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+                    }
                 } else {
-                    DataProvider dataProvider = result.getInput(pro.getName());
-                    result.addDataPorter(dataProvider, dataRecipient,
-                        seed.isReverse() ? porter.getDstPath() : porter.getSrcPath(),
-                        seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+                    DataProvider dataProvider = getProvider(result, resultCall, srcRevCall, queue);
+                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
+                    result.addDataPorter(dataProvider, dataRecipient, seed.isReverse() ? porter.getDstPath() : porter.getSrcPath(), seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
                 }
             } else {
-                DataProvider dataProvider = getProvider(result, resultCall, proRevCall, queue);
-                DataRecipient dataRecipient = getRecipient(result, resultCall, recRevCall, rec.getName(), queue);
-                result.addDataPorter(dataProvider, dataRecipient,
-                    seed.isReverse() ? porter.getDstPath() : porter.getSrcPath(),
-                    seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+                DataProvider src = porter.getProvider();
+                DataRecipient dst = porter.getRecipient();
+                SimplePath srcPath = porter.getSrcPath();
+                RevFormulaCall srcRevCall = providerToRevCall.get(src);
+                RevFormulaCall dstRevCall = recipientToRevCall.get(dst);
+                if (srcRevCall == null) {
+                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
+                    DataPorter ahead = searchAhead(result, src.getName(), srcPath);
+                    if (ahead != null) {
+                        result.addDataPorter(ahead.getProvider(), dataRecipient, SimplePath.replacePrefix(porter.getSrcPath(), ahead.getDstPath(), ahead.getSrcPath()), seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+                    } else {
+                        DataProvider dataProvider = result.getInput(src.getName());
+                        result.addDataPorter(dataProvider, dataRecipient, seed.isReverse() ? porter.getDstPath() : porter.getSrcPath(), seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+                    }
+                } else {
+                    DataProvider dataProvider = getProvider(result, resultCall, srcRevCall, queue);
+                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
+                    result.addDataPorter(dataProvider, dataRecipient, seed.isReverse() ? porter.getDstPath() : porter.getSrcPath(), seed.isReverse() ? porter.getSrcPath() : porter.getDstPath());
+                }
             }
         }
 
@@ -154,7 +179,7 @@ class RevTemplate {
             cache.put(revCall, call);
             tpl.addFormulaCall(call);
 
-            FormulaCall original = formulaRevMap.get(revCall);
+            FormulaCall original = revCallToCall.get(revCall);
             if (Objects.equals(original.getResultName(), revCall.getResultName())) {
                 // 没有反转这个公式
                 for (DataRecipient input : original.getInputs().values()) {
@@ -199,5 +224,9 @@ class RevTemplate {
         // 情况4：newPath包含existPath，虽然existPath差一点，但带来更多的数据
         bestForTplInput.add(new DataPorterCost(porter, true, dataCost));
         return true;
+    }
+
+    public FormulaCall getCall(RevFormulaCall revCall) {
+        return revCallToCall.get(revCall);
     }
 }

@@ -14,6 +14,9 @@ import java.util.Map;
 /**
  * 使用GraphViz工具显示转换模板，主要显示数据流向。
  * 这里只输出字符串，在其它地方转换成图像。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
 public class TemplateToViz {
     private final StringBuffer sb = new StringBuffer();

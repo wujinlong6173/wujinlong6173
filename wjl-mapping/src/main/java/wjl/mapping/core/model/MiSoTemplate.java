@@ -5,6 +5,9 @@ import java.util.Collections;
 
 /**
  * Multiple Input Single Output Template.
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
 public class MiSoTemplate extends Template {
     private static final String DEFAULT_OUTPUT_NAME = "output";

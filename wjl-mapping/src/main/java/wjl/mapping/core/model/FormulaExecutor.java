@@ -4,6 +4,9 @@ import java.util.Map;
 
 /**
  * 公式的执行器。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
 public interface FormulaExecutor {
     /**

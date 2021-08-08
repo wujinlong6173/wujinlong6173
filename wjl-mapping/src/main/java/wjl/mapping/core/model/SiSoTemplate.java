@@ -2,6 +2,9 @@ package wjl.mapping.core.model;
 
 /**
  * Single Input Single Output Template.
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
 public class SiSoTemplate extends Template {
     private static final String DEFAULT_INPUT_NAME = "input";

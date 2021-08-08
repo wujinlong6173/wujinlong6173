@@ -5,8 +5,11 @@ import java.util.List;
 
 /**
  * 数据提供者，模板的输入、公式的输出，都是数据提供者。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
  */
-public class DataProvider implements DataGate {
+public class DataProvider {
     private final String name;
 
     /**
@@ -19,7 +22,6 @@ public class DataProvider implements DataGate {
         outList = new ArrayList<>();
     }
 
-    @Override
     public String getName() {
         return name;
     }
