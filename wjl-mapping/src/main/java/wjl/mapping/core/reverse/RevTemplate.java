@@ -9,6 +9,7 @@ import wjl.mapping.core.model.SimplePath;
 import wjl.mapping.core.model.Template;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,8 +19,13 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 
+/**
+ * 在反转算法表示一个模板，管理算法需要的各种数据。
+ *
+ * @author wujinlong
+ * @since 2021-8-7
+ */
 class RevTemplate {
-    private final Map<RevFormulaCall, FormulaCall> revCallToCall;
     private final Map<DataProvider, RevFormulaCall> providerToRevCall;
     private final Map<DataRecipient, RevFormulaCall> recipientToRevCall;
     private final List<DataPorterCost> bestForTplInput;
@@ -30,7 +36,6 @@ class RevTemplate {
     RevTemplate(Template tpl, FormulaRegister register) {
         this.register = register;
         this.originalTpl = tpl;
-        revCallToCall = new HashMap<>();
         providerToRevCall = new HashMap<>();
         recipientToRevCall = new HashMap<>();
         bestForTplInput = new ArrayList<>();
@@ -38,7 +43,6 @@ class RevTemplate {
 
         for (FormulaCall call : tpl.getFormulas()) {
             RevFormulaCall revCall = new RevFormulaCall(call, register.getParamsCost(call.getFormulaName()));
-            revCallToCall.put(revCall, call);
             providerToRevCall.put(call.getOutput(), revCall);
             for (DataRecipient callInput : call.getInputs().values()) {
                 recipientToRevCall.put(callInput, revCall);
@@ -46,25 +50,48 @@ class RevTemplate {
         }
     }
 
-    CandidateCost dataReady(DataPorter porter, boolean reverse, int dataCost) {
-        if (reverse) {
-            // 肯定是模板的输入
-            DataProvider tplInput = porter.getProvider();
-            if (!isBestPorter(porter, dataCost)) {
-                return null;
+    List<DataPorterCost> dataReady(DataPorter porter, boolean reverse, int dataCost) {
+        if (!reverse) {
+            // 正向搬运将数据传给模板的输出，没有任何意义，忽略它。
+            return null;
+        }
+
+        // 反向搬运将输出传给模板的输入，只保留费用最低的
+        DataProvider tplInput = porter.getProvider();
+        if (!saveBestPorter(porter, dataCost)) {
+            return null;
+        }
+
+        List<DataPorterCost> nextList = new ArrayList<>();
+        for (DataPorter each : tplInput.getOutList()) {
+            if (doneInTplInput.contains(each)) {
+                // 该搬运工反方向的费用更低，没必要尝试正方向。
+                continue;
             }
-            for (DataPorter each : tplInput.getOutList()) {
-                if (doneInTplInput.contains(each)) {
-                    // 已经用过该搬运工的反方向，不能再使用正方向
-                    continue;
-                }
-                // TODO 应该返回一个列表
-                if (each != porter  && porter.getSrcPath().contain(each.getSrcPath())) {
-                    return new DataPorterCost(each, false, dataCost);
-                }
+            if (porter.getSrcPath().contain(each.getSrcPath())) {
+                // 已经还原出数据 a.b 的情况下，可以利用数据 a.b 或 a.b.c 还原其它数据。
+                nextList.add(new DataPorterCost(each, false, dataCost));
             }
         }
-        return null;
+        return nextList;
+    }
+
+    private boolean saveBestPorter(DataPorter porter, int dataCost) {
+        doneInTplInput.add(porter);
+
+        // bestForTplInput中每条记录的费用肯定比dataCost低。
+        // 假如已存在existPath=a.b ， newPath=a.b 或 newPath=a.b.c 时返回假，
+        // newPath = a 时返回真，newPath = x.y.z 时返回真。
+        SimplePath newPath = porter.getSrcPath();
+        for (DataPorterCost exist : bestForTplInput) {
+            SimplePath existPath = exist.getPorter().getSrcPath();
+            if (existPath.contain(newPath)) {
+                return false;
+            }
+        }
+
+        bestForTplInput.add(new DataPorterCost(porter, true, dataCost));
+        return true;
     }
 
     /**
@@ -73,7 +100,7 @@ class RevTemplate {
      * @param dataPorter
      * @return
      */
-    public RevFormulaCall findRevCall(DataPorterCost dataPorter) {
+    RevFormulaCall findRevCall(DataPorterCost dataPorter) {
         if (dataPorter.isReverse()) {
             return providerToRevCall.get(dataPorter.getPorter().getProvider());
         } else {
@@ -179,7 +206,7 @@ class RevTemplate {
             cache.put(revCall, call);
             tpl.addFormulaCall(call);
 
-            FormulaCall original = revCallToCall.get(revCall);
+            FormulaCall original = revCall.getCall();
             if (Objects.equals(original.getResultName(), revCall.getResultName())) {
                 // 没有反转这个公式
                 for (DataRecipient input : original.getInputs().values()) {
@@ -208,25 +235,4 @@ class RevTemplate {
         return call;
     }
 
-    private boolean isBestPorter(DataPorter porter, int dataCost) {
-        doneInTplInput.add(porter);
-        SimplePath newPath = porter.getSrcPath();
-        for (DataPorterCost exist : bestForTplInput) {
-            SimplePath existPath = exist.getPorter().getSrcPath();
-            if (existPath.contain(newPath)) {
-                // 情况1：同一个数据，已经存在更好的
-                // 情况2：newPath属于existPath的子集
-                return false;
-            }
-        }
-
-        // 情况3：newPath和existPath没有任何关系，是最好的
-        // 情况4：newPath包含existPath，虽然existPath差一点，但带来更多的数据
-        bestForTplInput.add(new DataPorterCost(porter, true, dataCost));
-        return true;
-    }
-
-    public FormulaCall getCall(RevFormulaCall revCall) {
-        return revCallToCall.get(revCall);
-    }
 }

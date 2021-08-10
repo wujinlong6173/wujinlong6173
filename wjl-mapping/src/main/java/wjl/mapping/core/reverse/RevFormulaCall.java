@@ -7,9 +7,14 @@ import wjl.mapping.core.model.FormulaCall;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 在反转算法表示一个公式调用，和模板中的公式调用一一对应。
+ *
+ * @author wujinlong
+ * @since 2021-8-8
+ */
 class RevFormulaCall {
-    // 公式的名称
-    private final String formulaName;
+    private final FormulaCall call;
 
     // 公式的所有参数，包括输入和输出，键值必须是参数名
     private final Map<String, RevFormulaParam> allParams;
@@ -24,14 +29,12 @@ class RevFormulaCall {
     private int cost;
 
     RevFormulaCall(FormulaCall call, Map<String, Integer> formulaCost) {
-        this.formulaName = call.getFormulaName();
+        this.call = call;
         this.formulaCost = formulaCost;
         allParams = new HashMap<>();
-        allParams.put(call.getOutput().getName(),
-            new RevFormulaParam(call.getOutput()));
+        allParams.put(call.getOutput().getName(), new RevFormulaParam(call.getOutput()));
         for (Map.Entry<String, DataRecipient> input : call.getInputs().entrySet()) {
-            allParams.put(input.getKey(),
-                new RevFormulaParam(input.getValue()));
+            allParams.put(input.getKey(), new RevFormulaParam(input.getValue()));
         }
     }
 
@@ -103,8 +106,12 @@ class RevFormulaCall {
         }
     }
 
+    FormulaCall getCall() {
+        return call;
+    }
+
     String getFormulaName() {
-        return formulaName;
+        return call.getFormulaName();
     }
 
     String getResultName() {

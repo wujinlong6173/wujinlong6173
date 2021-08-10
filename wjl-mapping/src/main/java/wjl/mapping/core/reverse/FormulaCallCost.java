@@ -19,21 +19,21 @@ import java.util.Objects;
  * @since 2021-8-7
  */
 class FormulaCallCost extends CandidateCost {
-    private final FormulaCall call;
     private final RevFormulaCall revCall;
 
-    FormulaCallCost(FormulaCall call, RevFormulaCall revCall, int cost) {
+    FormulaCallCost(RevFormulaCall revCall, int cost) {
         super(cost);
-        this.call = call;
         this.revCall = revCall;
     }
 
-    List<DataPorterCost> newCandidate() {
+    @Override
+    List<DataPorterCost> newCandidate(RevTemplate revTpl) {
         if (revCall.getCost() < getCost()) {
             // 添加到队列后，公式选出了更好的输出参数，本对象已经失效
             return Collections.emptyList();
         }
 
+        FormulaCall call = revCall.getCall();
         List<DataPorterCost> nextList = new ArrayList<>();
         if (Objects.equals(call.getResultName(), revCall.getResultName())) {
             for (DataPorter porter : call.getOutput().getOutList()) {

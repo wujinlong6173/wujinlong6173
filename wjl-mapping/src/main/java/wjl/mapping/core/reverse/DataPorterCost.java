@@ -3,6 +3,9 @@ package wjl.mapping.core.reverse;
 import wjl.mapping.core.model.DataPorter;
 import wjl.mapping.core.model.SimplePath;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * 数据搬运工作为候选节点，费用等于源数据费用加搬运费用，搬运费用由
  * 源路径的复杂性决定。每个搬运工有两次机会称为候选节点，正向搬运，
@@ -42,5 +45,18 @@ class DataPorterCost extends CandidateCost {
 
     private static int pathCost(SimplePath path) {
         return path.depth() + 10 * path.arrayIndex();
+    }
+
+    @Override
+    List<? extends CandidateCost> newCandidate(RevTemplate revTpl) {
+        RevFormulaCall revCall = revTpl.findRevCall(this);
+        if (revCall == null) {
+            return revTpl.dataReady(porter, reverse, getCost());
+        } else if (revCall.dataReady(porter, reverse, getCost())) {
+            FormulaCallCost fcc = new FormulaCallCost(revCall, revCall.getCost());
+            return Collections.singletonList(fcc);
+        } else {
+            return null;
+        }
     }
 }

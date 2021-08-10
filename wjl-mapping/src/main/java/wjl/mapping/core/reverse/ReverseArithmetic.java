@@ -5,6 +5,7 @@ import wjl.mapping.core.model.DataRecipient;
 import wjl.mapping.core.model.FormulaRegister;
 import wjl.mapping.core.model.Template;
 
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -16,40 +17,40 @@ import java.util.PriorityQueue;
  * @author wujinlong
  * @since 2021-8-8
  */
-public class ReverseArithmetic {
-    private final PriorityQueue<CandidateCost> candidateQueue = new PriorityQueue<>();
+public final class ReverseArithmetic {
+    private final FormulaRegister register;
 
-    public Template reverse(Template tpl, FormulaRegister register) {
+    public ReverseArithmetic(FormulaRegister register) {
+        this.register = register;
+    }
+
+    /**
+     * 生成反向转换模板
+     *
+     * @param tpl 正向转换模板
+     * @return 反向转换模板
+     */
+    public Template reverse(Template tpl) {
         RevTemplate revTpl = new RevTemplate(tpl, register);
 
+        // 生成初始的候选节点
+        final PriorityQueue<CandidateCost> candidateQueue = new PriorityQueue<>();
         for (DataRecipient tplOutput : tpl.getOutputs().values()) {
             for (DataPorter porter : tplOutput.getInList()) {
                 candidateQueue.offer(new DataPorterCost(porter, true, 0));
             }
         }
 
+        // 取费用最低的候选节点，生成更多的候选节点
         while (!candidateQueue.isEmpty()) {
             CandidateCost seed = candidateQueue.poll();
-            if (seed instanceof DataPorterCost) {
-                DataPorterCost dpc = (DataPorterCost)seed;
-                RevFormulaCall revCall = revTpl.findRevCall(dpc);
-                if (revCall != null) {
-                    if (revCall.dataReady(dpc.getPorter(), dpc.isReverse(), dpc.getCost())) {
-                        candidateQueue.offer(new FormulaCallCost(
-                            revTpl.getCall(revCall), revCall, revCall.getCost()));
-                    }
-                } else {
-                    CandidateCost next = revTpl.dataReady(dpc.getPorter(), dpc.isReverse(), dpc.getCost());
-                    if (next != null) {
-                        candidateQueue.offer(next);
-                    }
-                }
-            } else if (seed instanceof FormulaCallCost) {
-                FormulaCallCost fcc = (FormulaCallCost)seed;
-                candidateQueue.addAll(fcc.newCandidate());
+            List<? extends CandidateCost> nextList = seed.newCandidate(revTpl);
+            if (nextList != null) {
+                candidateQueue.addAll(nextList);
             }
         }
 
+        // 生成反向转换模板
         return revTpl.build();
     }
 }
