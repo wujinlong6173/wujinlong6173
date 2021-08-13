@@ -30,6 +30,7 @@ public class FormulaForTest {
         temp.register("distance", distance());
         temp.register("circle_space", circleSpace());
         temp.register("many_param", manyParam());
+        temp.register("copy", copy());
         return temp;
     }
 
@@ -84,6 +85,13 @@ public class FormulaForTest {
         cost.put("p3", 0);
         cost.put("p4", 40);
         cost.put("p5", 50);
+        return cost;
+    }
+
+    private static Map<String, Integer> copy() {
+        Map<String, Integer> cost = new HashMap<>();
+        cost.put("in", 1);
+        cost.put("out", 1);
         return cost;
     }
 }

@@ -67,8 +67,8 @@ public class ReverseComplexDataTest {
     public void test1() {
         Template a = case1_a();
         Template b = case1_b();
-        ReverseArithmetic reverse = new ReverseArithmetic();
-        Template ra = reverse.reverse(a, FormulaForTest.getRegister());
+        ReverseArithmetic reverse = new ReverseArithmetic(FormulaForTest.getRegister());
+        Template ra = reverse.reverse(a);
         Object bData = comparator.templateToData(b);
         Object raData = comparator.templateToData(ra);
         MyAssert.assertEquals(raData, bData);

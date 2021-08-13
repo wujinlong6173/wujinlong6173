@@ -31,11 +31,11 @@ class DataPorterCost extends CandidateCost {
         this.reverse = reverse;
     }
 
-    public DataPorter getPorter() {
+    DataPorter getPorter() {
         return porter;
     }
 
-    public boolean isReverse() {
+    boolean isReverse() {
         return reverse;
     }
 
@@ -51,11 +51,14 @@ class DataPorterCost extends CandidateCost {
     List<? extends CandidateCost> newCandidate(RevTemplate revTpl) {
         RevFormulaCall revCall = revTpl.findRevCall(this);
         if (revCall == null) {
+            // 数据搬运的目的地是模板的输入或输出
             return revTpl.dataReady(porter, reverse, getCost());
         } else if (revCall.dataReady(porter, reverse, getCost())) {
+            // 数据搬运的目的地是公式调用，公式已经收到了足够的数据
             FormulaCallCost fcc = new FormulaCallCost(revCall, revCall.getCost());
             return Collections.singletonList(fcc);
         } else {
+            // 数据搬运的目的地是公式调用，公式还没有收到足够的数据
             return null;
         }
     }

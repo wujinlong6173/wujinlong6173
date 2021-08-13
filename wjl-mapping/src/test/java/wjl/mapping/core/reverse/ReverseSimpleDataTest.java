@@ -1,15 +1,20 @@
 package wjl.mapping.core.reverse;
 
 import org.junit.Test;
+import wjl.mapping.core.display.TemplateToVizTest;
 import wjl.mapping.core.model.DataProvider;
 import wjl.mapping.core.model.DataRecipient;
 import wjl.mapping.core.model.FormulaCall;
 import wjl.mapping.core.formula.FormulaForTest;
 import wjl.mapping.core.model.FormulaRegister;
+import wjl.mapping.core.model.MiSoTemplate;
 import wjl.mapping.core.model.SiSoTemplate;
 import wjl.mapping.core.model.SimplePath;
 import wjl.mapping.core.model.Template;
 import wjl.mapping.core.utils.MyAssert;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class ReverseSimpleDataTest {
     private FormulaRegister register = FormulaForTest.getRegister();
@@ -85,9 +90,59 @@ public class ReverseSimpleDataTest {
     public void test1() {
         Template a = case1_a();
         Template b = case1_b();
-        ReverseArithmetic reverse = new ReverseArithmetic();
-        Template ra = reverse.reverse(a, FormulaForTest.getRegister());
-        Template rb = reverse.reverse(b, FormulaForTest.getRegister());
+        ReverseArithmetic reverse = new ReverseArithmetic(FormulaForTest.getRegister());
+        Template ra = reverse.reverse(a);
+        Template rb = reverse.reverse(b);
+        Object aData = comparator.templateToData(a);
+        Object bData = comparator.templateToData(b);
+        Object raData = comparator.templateToData(ra);
+        Object rbData = comparator.templateToData(rb);
+        MyAssert.assertEquals(raData, bData);
+        MyAssert.assertEquals(rbData, aData);
+    }
+
+    private Template case2_a() {
+        MiSoTemplate tpl = new MiSoTemplate("input1", "input2");
+
+        FormulaCall copy1 = register.createCall("copy.1", "out");
+        tpl.addFormulaCall(copy1);
+        tpl.addDataPorter(tpl.getInput("input1"), copy1.getInput("in"),
+            new SimplePath("desc"), new SimplePath(0));
+        tpl.addDataPorter(tpl.getInput("input2"), copy1.getInput("in"),
+            new SimplePath("desc"), new SimplePath(1));
+
+        tpl.addDataPorter(copy1.getOutput(), tpl.getOutput(),
+            SimplePath.EMPTY, new SimplePath("label"));
+        return tpl;
+    }
+
+    private Template case2_b() {
+        Template tpl = new Template(Collections.singletonList("output"), Arrays.asList("input1", "input2"));
+        DataProvider input = tpl.getInput("output");
+        DataRecipient out1 = tpl.getOutput("input1");
+        DataRecipient out2 = tpl.getOutput("input2");
+
+        FormulaCall copy1 = register.createCall("copy.1", "in");
+        tpl.addFormulaCall(copy1);
+        tpl.addDataPorter(input, copy1.getInput("out"),
+            new SimplePath("label"), SimplePath.EMPTY);
+        tpl.addDataPorter(copy1.getOutput(), out1,
+            new SimplePath(0), new SimplePath("desc"));
+        tpl.addDataPorter(copy1.getOutput(), out2,
+            new SimplePath(1), new SimplePath("desc"));
+        return tpl;
+    }
+
+    /**
+     * 模板有两个数据源，而且数据源包含同名属性，反转算法不能弄混。
+     */
+    @Test
+    public void test2() {
+        Template a = case2_a();
+        Template b = case2_b();
+        ReverseArithmetic reverse = new ReverseArithmetic(FormulaForTest.getRegister());
+        Template ra = reverse.reverse(a);
+        Template rb = reverse.reverse(b);
         Object aData = comparator.templateToData(a);
         Object bData = comparator.templateToData(b);
         Object raData = comparator.templateToData(ra);

@@ -30,16 +30,18 @@ class FormulaCallCost extends CandidateCost {
     List<DataPorterCost> newCandidate(RevTemplate revTpl) {
         if (revCall.getCost() < getCost()) {
             // 添加到队列后，公式选出了更好的输出参数，本对象已经失效
-            return Collections.emptyList();
+            return null;
         }
 
         FormulaCall call = revCall.getCall();
         List<DataPorterCost> nextList = new ArrayList<>();
         if (Objects.equals(call.getResultName(), revCall.getResultName())) {
+            // 公式调用以相同的形式出现在正向、反向模板中
             for (DataPorter porter : call.getOutput().getOutList()) {
                 nextList.add(new DataPorterCost(porter, false, getCost()));
             }
         } else {
+            // 公式调用以相反的形式出现在正向、反向模板中
             DataRecipient callInput = call.getInput(revCall.getResultName());
             for (DataPorter porter : callInput.getInList()) {
                 nextList.add(new DataPorterCost(porter, true, getCost()));

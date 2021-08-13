@@ -21,7 +21,7 @@ abstract class CandidateCost implements Comparable<CandidateCost> {
         return Integer.compare(this.cost, other.cost);
     }
 
-    public int getCost() {
+    int getCost() {
         return cost;
     }
 
