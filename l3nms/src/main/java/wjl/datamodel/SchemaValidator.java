@@ -1,7 +1,7 @@
 package wjl.datamodel;
 
 import wjl.datamodel.schema.ObjectSchema;
-import wjl.util.ErrorCollector;
+import wjl.utils.ErrorCollector;
 
 import java.util.Map;
 

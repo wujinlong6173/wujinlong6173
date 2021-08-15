@@ -2,7 +2,7 @@ package wjl.provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import wjl.datamodel.schema.ObjectSchema;
-import wjl.util.YamlLoader;
+import wjl.utils.YamlUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +69,7 @@ public class ProductProviderMgr {
         }
 
         try {
-            return YamlLoader.obj2str(schema.serialize());
+            return YamlUtil.obj2str(schema.serialize());
         } catch (JsonProcessingException e) {
             return e.getMessage();
         }

@@ -12,8 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import com.mxgraph.model.mxCell;
-
-import wjl.util.YamlLoader;
+import wjl.utils.YamlUtil;
 
 /**
  * 支持往拓扑图拖拽的工具栏
@@ -50,7 +49,7 @@ public class TabbedToolsPane extends JTabbedPane {
     }
     
     private void initEditorPalette(EditorPalette palette, String filename) {
-        EditorPaletteConf conf = YamlLoader.fileToObject(EditorPaletteConf.class, filename);
+        EditorPaletteConf conf = YamlUtil.file2obj(filename, EditorPaletteConf.class);
         if (conf == null) {
             return;
         }

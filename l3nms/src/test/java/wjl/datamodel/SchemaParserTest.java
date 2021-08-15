@@ -2,7 +2,7 @@ package wjl.datamodel;
 
 import org.junit.Test;
 import wjl.datamodel.schema.ObjectSchema;
-import wjl.util.YamlLoader;
+import wjl.utils.YamlUtil;
 
 import java.io.IOException;
 
@@ -27,6 +27,6 @@ public class SchemaParserTest {
         SchemaParser parser = new SchemaParser();
         ObjectSchema schema = parser.parse("test", raw);
         assertNull(parser.getErrors());
-        assertEquals(YamlLoader.str2obj(raw), schema.serialize());
+        assertEquals(YamlUtil.str2obj(raw), schema.serialize());
     }
 }

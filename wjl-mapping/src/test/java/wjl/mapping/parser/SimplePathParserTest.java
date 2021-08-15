@@ -3,7 +3,7 @@ package wjl.mapping.parser;
 import org.junit.Assert;
 import org.junit.Test;
 
-import wjl.mapping.core.model.SimplePath;
+import wjl.mapping.model.SimplePath;
 
 public class SimplePathParserTest {
     private SimplePathParser parser = new SimplePathParser();

@@ -21,7 +21,7 @@ import javax.swing.JTextArea;
 
 import org.apache.commons.lang3.StringUtils;
 import wjl.util.ErrorType;
-import wjl.util.YamlLoader;
+import wjl.utils.YamlUtil;
 
 /**
  * 部署设备或链路时，选择供应商，输入供应商需要的参数
@@ -120,7 +120,7 @@ class InputDeployParamDialog extends JDialog {
                     String raw = textInput.getText();
                     inputs = StringUtils.isEmpty(raw)
                             ? new HashMap<>()
-                            : (Map<String,Object>)YamlLoader.str2obj(raw, Map.class);
+                            : YamlUtil.str2map(raw);
                     confirm = true;
                     InputDeployParamDialog.this.dispose();
                 } catch (IOException e1) {

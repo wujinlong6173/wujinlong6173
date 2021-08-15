@@ -1,16 +1,22 @@
 package wjl.datamodel;
 
 import wjl.datamodel.schema.*;
-import wjl.util.ErrorCollector;
-import wjl.util.YamlLoader;
+import wjl.utils.ErrorCollector;
+import wjl.utils.YamlUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class SchemaParser extends ErrorCollector {
     public ObjectSchema parse(String name, String yaml) {
-        Map<?,?> mapSchema = YamlLoader.yamlToObject(Map.class, yaml);
+        Map<?, ?> mapSchema = null;
+        try {
+            mapSchema = YamlUtil.str2map(yaml);
+        } catch (IOException err) {
+            reportError(name, err.getMessage());
+        }
         if (mapSchema == null) {
             reportError(name, "schema must be map.");
             return null;

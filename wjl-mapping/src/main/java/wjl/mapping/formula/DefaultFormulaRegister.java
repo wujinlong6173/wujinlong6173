@@ -1,7 +1,7 @@
 package wjl.mapping.formula;
 
-import wjl.mapping.core.model.FormulaCall;
-import wjl.mapping.core.model.FormulaRegister;
+import wjl.mapping.model.FormulaCall;
+import wjl.mapping.model.FormulaRegister;
 
 import java.util.Collections;
 import java.util.HashMap;

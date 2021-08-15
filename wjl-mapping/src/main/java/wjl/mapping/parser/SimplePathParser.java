@@ -1,6 +1,6 @@
 package wjl.mapping.parser;
 
-import wjl.mapping.core.model.SimplePath;
+import wjl.mapping.model.SimplePath;
 
 import java.util.ArrayList;
 import java.util.List;

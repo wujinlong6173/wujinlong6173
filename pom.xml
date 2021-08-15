@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>wjl-utils</module>
     <module>wjl-cli</module>
     <module>l3nms</module>
     <module>wjl-mapping</module>

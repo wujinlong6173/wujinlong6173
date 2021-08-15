@@ -1,6 +1,6 @@
 package wjl.datamodel.schema;
 
-import wjl.util.ErrorCollector;
+import wjl.utils.ErrorCollector;
 
 import java.util.HashMap;
 import java.util.Map;
