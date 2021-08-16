@@ -1,8 +1,10 @@
 package wjl.mapping.reverse;
 
-import wjl.mapping.model.DataPorter;
 import wjl.mapping.model.DataProvider;
 import wjl.mapping.model.DataRecipient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 在反转算法表示公式调用的一个参数，记录需要的数据和已到达的数据。
@@ -19,7 +21,7 @@ class RevFormulaParam {
     private final int required;
 
     // 已经到达的搬运工总数
-    private int provided;
+    private final List<DataPorterCost> provided = new ArrayList<>();
 
     // 输入参数的总费用
     private int cost;
@@ -37,14 +39,13 @@ class RevFormulaParam {
     /**
      * 有一份数据准备好了。
      *
-     * @param porter 提供数据的搬运工
-     * @param dataCost 准备该数据的费用
+     * @param dpc 提供数据的搬运工
      * @return 该参数有没有准备好
      */
-    boolean dataReady(DataPorter porter, int dataCost) {
-        provided++;
-        this.cost += dataCost;
-        return provided >= required;
+    boolean dataReady(DataPorterCost dpc) {
+        provided.add(dpc);
+        cost += dpc.getCost();
+        return provided.size() >= required;
     }
 
     /**
@@ -53,7 +54,7 @@ class RevFormulaParam {
      * @return 该参数有没有准备好
      */
     boolean isReady() {
-        return provided >= required;
+        return provided.size() >= required;
     }
 
     int getCost() {
@@ -62,5 +63,9 @@ class RevFormulaParam {
 
     String getName() {
         return name;
+    }
+
+    List<DataPorterCost> getProvided() {
+        return provided;
     }
 }

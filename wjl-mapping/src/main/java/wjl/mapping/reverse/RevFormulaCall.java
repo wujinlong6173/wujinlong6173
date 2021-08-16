@@ -4,8 +4,11 @@ import wjl.mapping.model.DataPorter;
 import wjl.mapping.model.DataRecipient;
 import wjl.mapping.model.FormulaCall;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 在反转算法表示一个公式调用，和模板中的公式调用一一对应。
@@ -38,13 +41,13 @@ class RevFormulaCall {
         }
     }
 
-    boolean dataReady(DataPorter porter, boolean reverse, int dataCost) {
-        RevFormulaParam param = findParamByPorter(porter, reverse);
+    boolean dataReady(DataPorterCost dpc) {
+        RevFormulaParam param = findParamByPorter(dpc.getPorter(), dpc.isReverse());
         if (param == null) {
             return false;
         }
 
-        if (!param.dataReady(porter, dataCost)) {
+        if (!param.dataReady(dpc)) {
             return false;
         }
 
@@ -120,5 +123,15 @@ class RevFormulaCall {
 
     int getCost() {
         return cost;
+    }
+
+    List<RevFormulaParam> getInputParams() {
+        List<RevFormulaParam> inputOnly = new ArrayList<>(allParams.size());
+        for (RevFormulaParam param : allParams.values()) {
+            if (!Objects.equals(param.getName(), resultName)) {
+                inputOnly.add(param);
+            }
+        }
+        return inputOnly;
     }
 }

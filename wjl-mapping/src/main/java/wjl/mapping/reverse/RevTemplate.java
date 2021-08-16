@@ -1,5 +1,7 @@
 package wjl.mapping.reverse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wjl.mapping.model.DataPorter;
 import wjl.mapping.model.DataProvider;
 import wjl.mapping.model.DataRecipient;
@@ -12,7 +14,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Queue;
 
 /**
@@ -22,6 +23,7 @@ import java.util.Queue;
  * @since 2021-8-7
  */
 class RevTemplate {
+    private final static Logger LOGGER = LoggerFactory.getLogger(RevTemplate.class);
     private final FormulaRegister register;
     private final Template originalTpl;
     private final Map<DataProvider, RevTemplateInput> revTplInputs;
@@ -83,7 +85,7 @@ class RevTemplate {
 
     Template build() {
         // 反转模板对调原模板的输入和输出
-        Template result = new Template(originalTpl.getOutputs().keySet(), originalTpl.getInputs().keySet());
+        Template retTpl = new Template(originalTpl.getOutputs().keySet(), originalTpl.getInputs().keySet());
 
         // 从选中的搬运工开始，反向查找所有选中的搬运工
         Queue<DataPorterCost> queue = new LinkedList<>();
@@ -93,62 +95,59 @@ class RevTemplate {
             }
         }
 
-        Map<RevFormulaCall, FormulaCall> resultCall = new HashMap<>();
+        Map<RevFormulaCall, FormulaCall> retCalls = new HashMap<>();
         while (!queue.isEmpty()) {
+            String srcDataName;
+            String dstDataName;
+            SimplePath srcPath;
+            SimplePath dstPath;
+            RevFormulaCall srcRevCall;
+            RevFormulaCall dstRevCall;
+
             DataPorterCost seed = queue.poll();
             DataPorter porter = seed.getPorter();
-            SimplePath srcPath = seed.isReverse() ? porter.getDstPath() : porter.getSrcPath();
-            SimplePath dstPath = seed.isReverse() ? porter.getSrcPath() : porter.getDstPath();
             if (seed.isReverse()) {
                 DataRecipient src = porter.getRecipient();
                 DataProvider dst = porter.getProvider();
-                RevFormulaCall srcRevCall = recipientToRevCall.get(src);
-                RevFormulaCall dstRevCall = providerToRevCall.get(dst);
-                if (srcRevCall == null) {
-                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
-                    DataPorter ahead = searchAhead(result, src.getName(), srcPath);
-                    if (ahead != null) {
-                        result.addDataPorter(ahead.getProvider(), dataRecipient,
-                            SimplePath.replacePrefix(porter.getSrcPath(), ahead.getDstPath(), ahead.getSrcPath()),
-                            dstPath);
-                    } else {
-                        DataProvider dataProvider = result.getInput(src.getName());
-                        result.addDataPorter(dataProvider, dataRecipient, srcPath, dstPath);
-                    }
-                } else {
-                    DataProvider dataProvider = getProvider(result, resultCall, srcRevCall, queue);
-                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
-                    result.addDataPorter(dataProvider, dataRecipient, srcPath, dstPath);
-                }
+                srcDataName = src.getName();
+                dstDataName = dst.getName();
+                srcPath = porter.getDstPath();
+                dstPath = porter.getSrcPath();
+                srcRevCall = recipientToRevCall.get(src);
+                dstRevCall = providerToRevCall.get(dst);
             } else {
                 DataProvider src = porter.getProvider();
                 DataRecipient dst = porter.getRecipient();
-                RevFormulaCall srcRevCall = providerToRevCall.get(src);
-                RevFormulaCall dstRevCall = recipientToRevCall.get(dst);
-                if (srcRevCall == null) {
-                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
-                    DataPorter ahead = searchAhead(result, src.getName(), srcPath);
-                    if (ahead != null) {
-                        result.addDataPorter(ahead.getProvider(), dataRecipient,
-                            SimplePath.replacePrefix(porter.getSrcPath(), ahead.getDstPath(), ahead.getSrcPath()),
-                            dstPath);
-                    } else {
-                        DataProvider dataProvider = result.getInput(src.getName());
-                        result.addDataPorter(dataProvider, dataRecipient, srcPath, dstPath);
-                    }
+                srcPath = porter.getSrcPath();
+                dstPath = porter.getDstPath();
+                srcDataName = src.getName();
+                dstDataName = dst.getName();
+                srcRevCall = providerToRevCall.get(src);
+                dstRevCall = recipientToRevCall.get(dst);
+            }
+
+            DataProvider dataProvider = getProvider(retTpl, retCalls, srcRevCall, srcDataName, queue);
+            DataRecipient dataRecipient = getRecipient(retTpl, retCalls, dstRevCall, dstDataName, queue);
+            if (dataProvider == null) {
+                // 数据源即不是函数，也不是反向模板的输入，肯定是利用已还原数据的情况
+                DataPorter ahead = searchPrePorter(retTpl, srcDataName, srcPath);
+                if (ahead != null) {
+                    dataProvider = ahead.getProvider();
+                    srcPath = SimplePath.replacePrefix(srcPath, ahead.getDstPath(), ahead.getSrcPath());
                 } else {
-                    DataProvider dataProvider = getProvider(result, resultCall, srcRevCall, queue);
-                    DataRecipient dataRecipient = getRecipient(result, resultCall, dstRevCall, dst.getName(), queue);
-                    result.addDataPorter(dataProvider, dataRecipient, srcPath, dstPath);
+                    LOGGER.error("search previous porter failed, {}-{}", srcDataName, srcPath.toString());
+                    break;
                 }
             }
+
+            retTpl.addDataPorter(dataProvider, dataRecipient, srcPath, dstPath);
         }
 
-        return result;
+        return retTpl;
     }
 
-    private DataPorter searchAhead(Template result, String name, SimplePath proPath) {
-        DataRecipient tplOutput = result.getOutput(name);
+    private DataPorter searchPrePorter(Template result, String dataName, SimplePath proPath) {
+        DataRecipient tplOutput = result.getOutput(dataName);
         if (tplOutput == null) {
             return null;
         }
@@ -165,7 +164,10 @@ class RevTemplate {
     }
 
     private DataProvider getProvider(Template result, Map<RevFormulaCall, FormulaCall> cache,
-        RevFormulaCall revCall, Queue<DataPorterCost> queue) {
+        RevFormulaCall revCall, String dataName, Queue<DataPorterCost> queue) {
+        if (revCall == null) {
+            return result.getInput(dataName);
+        }
         FormulaCall call = makeFormulaCall(result, revCall, cache, queue);
         return call.getOutput();
     }
@@ -186,34 +188,15 @@ class RevTemplate {
             call = register.createCall(revCall.getFormulaName(), revCall.getResultName());
             cache.put(revCall, call);
             tpl.addFormulaCall(call);
-
             FormulaCall original = revCall.getCall();
-            if (Objects.equals(original.getResultName(), revCall.getResultName())) {
-                // 没有反转这个公式
-                for (DataRecipient input : original.getInputs().values()) {
-                    call.getInput(input.getName()).setConstant(input.getConstant());
-                    for (DataPorter inputPorter : input.getInList()) {
-                        queue.offer(new DataPorterCost(inputPorter, false, 0));
-                    }
-                }
-            } else {
-                // 反转了这个公式
-                for (DataPorter outputPorter : original.getOutput().getOutList()) {
-                    queue.offer(new DataPorterCost(outputPorter, true, 0));
-                }
-
-                for (DataRecipient input : original.getInputs().values()) {
-                    if (Objects.equals(input.getName(), revCall.getResultName())) {
-                        continue;
-                    }
-                    call.getInput(input.getName()).setConstant(input.getConstant());
-                    for (DataPorter inputPorter : input.getInList()) {
-                        queue.offer(new DataPorterCost(inputPorter, false, 0));
-                    }
+            for (RevFormulaParam inputOnly : revCall.getInputParams()) {
+                queue.addAll(inputOnly.getProvided());
+                DataRecipient originalInput = original.getInput(inputOnly.getName());
+                if (originalInput != null) {
+                    call.getInput(inputOnly.getName()).setConstant(originalInput.getConstant());
                 }
             }
         }
         return call;
     }
-
 }

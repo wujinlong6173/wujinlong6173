@@ -3,7 +3,6 @@ package wjl.mapping.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -61,12 +60,7 @@ public class FormulaCall {
         return Collections.unmodifiableMap(inputs);
     }
 
-    public DataRecipient getInput(String inputName) throws IllegalArgumentException {
-        DataRecipient ret = inputs.get(inputName);
-        if (ret == null) {
-            throw new IllegalArgumentException(String.format(Locale.ENGLISH,
-                    "invalid input parameter name %s(%s).", formulaName, inputName));
-        }
-        return ret;
+    public DataRecipient getInput(String inputName) {
+        return inputs.get(inputName);
     }
 }

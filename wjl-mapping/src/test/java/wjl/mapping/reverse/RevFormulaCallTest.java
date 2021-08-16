@@ -25,36 +25,45 @@ public class RevFormulaCallTest {
 
         // 第一次没有选中最低费用，第二次选中最低费用
         RevFormulaCall rc1 = new RevFormulaCall(fc1, fc1Cost);
-        Assert.assertFalse(rc1.dataReady(p1.getOutList().get(0), true, 1));
-        Assert.assertFalse(rc1.dataReady(p2.getInList().get(0), false, 1));
-        Assert.assertFalse(rc1.dataReady(p3.getInList().get(0), false, 1));
-        Assert.assertTrue(rc1.dataReady(p4.getInList().get(0), false, 1));
+        Assert.assertFalse(wrap(rc1, p1));
+        Assert.assertFalse(wrap(rc1, p2));
+        Assert.assertFalse(wrap(rc1, p3));
+        Assert.assertTrue(wrap(rc1, p4));
         Assert.assertEquals("p5", rc1.getResultName());
-        Assert.assertEquals(54, rc1.getCost());
-        Assert.assertTrue(rc1.dataReady(p5.getInList().get(0), false, 1));
+        Assert.assertEquals(62, rc1.getCost()); // 3 * 4 + 50 = 62
+        Assert.assertTrue(wrap(rc1, p5));
         Assert.assertEquals("p1", rc1.getResultName());
-        Assert.assertEquals(14, rc1.getCost());
+        Assert.assertEquals(22, rc1.getCost()); // 3 * 4 + 10 = 22
 
         // 第一次就选中最低费用
         RevFormulaCall rc2 = new RevFormulaCall(fc1, fc1Cost);
-        Assert.assertFalse(rc2.dataReady(p5.getInList().get(0), false, 1));
-        Assert.assertFalse(rc2.dataReady(p4.getInList().get(0), false, 1));
-        Assert.assertFalse(rc2.dataReady(p3.getInList().get(0), false, 1));
-        Assert.assertTrue(rc2.dataReady(p2.getInList().get(0), false, 1));
+        Assert.assertFalse(wrap(rc2, p5));
+        Assert.assertFalse(wrap(rc2, p4));
+        Assert.assertFalse(wrap(rc2, p3));
+        Assert.assertTrue(wrap(rc2, p2));
         Assert.assertEquals("p1", rc2.getResultName());
-        Assert.assertEquals(14, rc2.getCost());
-        Assert.assertFalse(rc2.dataReady(p1.getOutList().get(0), true, 1));
+        Assert.assertEquals(22, rc2.getCost()); // 3 * 4 + 10 = 22
+        Assert.assertFalse(wrap(rc2, p1));
         Assert.assertEquals("p1", rc2.getResultName());
-        Assert.assertEquals(14, rc2.getCost());
+        Assert.assertEquals(22, rc2.getCost()); // 3 * 4 + 10 = 22
 
         // 第一次选择了参数p3，不支持反向计算，第二次选中最低费用
         RevFormulaCall rc3 = new RevFormulaCall(fc1, fc1Cost);
-        Assert.assertFalse(rc3.dataReady(p1.getOutList().get(0), true, 1));
-        Assert.assertFalse(rc3.dataReady(p5.getInList().get(0), false, 1));
-        Assert.assertFalse(rc3.dataReady(p4.getInList().get(0), false, 1));
-        Assert.assertFalse(rc3.dataReady(p2.getInList().get(0), false, 1));
-        Assert.assertTrue(rc3.dataReady(p3.getInList().get(0), false, 1));
+        Assert.assertFalse(wrap(rc3, p1));
+        Assert.assertFalse(wrap(rc3, p5));
+        Assert.assertFalse(wrap(rc3, p4));
+        Assert.assertFalse(wrap(rc3, p2));
+        Assert.assertTrue(wrap(rc3, p3));
         Assert.assertEquals("p1", rc3.getResultName());
-        Assert.assertEquals(14, rc3.getCost());
+        Assert.assertEquals(22, rc3.getCost()); // 3 * 4 + 10 = 22
+    }
+
+    private boolean wrap(RevFormulaCall rev, DataRecipient param) {
+        return rev.dataReady(new DataPorterCost(param.getInList().get(0), false, 1));
+    }
+
+    private boolean wrap(RevFormulaCall rev, DataProvider param) {
+        return rev.dataReady(new DataPorterCost(param.getOutList().get(0), true, 1));
     }
 }
+
