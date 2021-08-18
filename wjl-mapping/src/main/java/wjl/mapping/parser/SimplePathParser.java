@@ -31,8 +31,12 @@ public class SimplePathParser {
      * @param strPath 必须是 ${...} 格式的字符串
      * @return 返回空表示存在错误
      */
-    public SimplePath parse(String strPath) {
+    public SimplePath parseWithBrace(String strPath) {
         return parse(strPath, 2, strPath.length() - 1);
+    }
+
+    public SimplePath parseNoBrace(String strPath) {
+        return parse(strPath, 0, strPath.length());
     }
 
     /**
@@ -77,6 +81,15 @@ public class SimplePathParser {
         return error;
     }
 
+    private char nextChar() {
+        ++ptrCh;
+        if (ptrCh >= end) {
+            return 0;
+        } else {
+            return strPath.charAt(ptrCh);
+        }
+    }
+
     private Object firstToken() {
         if (ch == '[') {
             return squareBracketToken();
@@ -90,7 +103,7 @@ public class SimplePathParser {
             if (ptrCh + 1 == end) {
                 return null;
             }
-            ch = strPath.charAt(++ptrCh);
+            ch = nextChar();
             return firstToken();
         } else if (ch == '[') {
             return squareBracketToken();
@@ -104,13 +117,13 @@ public class SimplePathParser {
         int tokenStart = ptrCh;
         while (isNumber(ch)) {
             intValue = intValue * 10 + ch - '0';
-            ch = strPath.charAt(++ptrCh);
+            ch = nextChar();
         }
 
         if (isTokenChar(ch)) {
             intValue = -1;
             do {
-                ch = strPath.charAt(++ptrCh);
+                ch = nextChar();
             } while (isTokenChar(ch));
         }
 
@@ -127,11 +140,11 @@ public class SimplePathParser {
     // 前置条件：ch等于左方括号
     // 结束状态：ch等于右方括号后面的一个字符
     private Object squareBracketToken() {
-        ch = strPath.charAt(++ptrCh);
+        ch = nextChar();
         Object token = nameOrIndex();
         if (ch == ']') {
             if (token != null) {
-                ch = strPath.charAt(++ptrCh);
+                ch = nextChar();
                 return token;
             } else {
                 error = String.format(Locale.ENGLISH, "empty '[]' at %d in '%s'",
