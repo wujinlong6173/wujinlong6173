@@ -88,13 +88,7 @@ class RevTemplate {
         Template retTpl = new Template(originalTpl.getOutputs().keySet(), originalTpl.getInputs().keySet());
 
         // 从选中的搬运工开始，反向查找所有选中的搬运工
-        Queue<DataPorterCost> queue = new LinkedList<>();
-        for (RevTemplateInput revTplInput : revTplInputs.values()) {
-            for (DataPorterCost start : revTplInput.getBestPorters()) {
-                queue.offer(start);
-            }
-        }
-
+        Queue<DataPorterCost> queue = initBuildQueue();
         Map<RevFormulaCall, FormulaCall> retCalls = new HashMap<>();
         while (!queue.isEmpty()) {
             String srcDataName;
@@ -126,8 +120,10 @@ class RevTemplate {
                 dstRevCall = recipientToRevCall.get(dst);
             }
 
-            DataProvider dataProvider = getProvider(retTpl, retCalls, srcRevCall, srcDataName, queue);
-            DataRecipient dataRecipient = getRecipient(retTpl, retCalls, dstRevCall, dstDataName, queue);
+            FormulaCall srcCall = makeFormulaCall(retTpl, srcRevCall, retCalls, queue);
+            FormulaCall dstCall = makeFormulaCall(retTpl, dstRevCall, retCalls, queue);
+            DataProvider dataProvider = getProvider(retTpl, srcCall, srcDataName);
+            DataRecipient dataRecipient = getRecipient(retTpl, dstCall, dstDataName);
             if (dataProvider == null) {
                 // 数据源即不是函数，也不是反向模板的输入，肯定是利用已还原数据的情况
                 DataPorter ahead = searchPrePorter(retTpl, srcDataName, srcPath);
@@ -146,10 +142,21 @@ class RevTemplate {
         return retTpl;
     }
 
+    private Queue<DataPorterCost> initBuildQueue() {
+        // 从选中的搬运工开始，反向查找所有选中的搬运工
+        Queue<DataPorterCost> queue = new LinkedList<>();
+        for (RevTemplateInput revTplInput : revTplInputs.values()) {
+            for (DataPorterCost start : revTplInput.getBestPorters()) {
+                queue.offer(start);
+            }
+        }
+        return queue;
+    }
+
     private DataPorter searchPrePorter(Template result, String dataName, SimplePath proPath) {
         DataRecipient tplOutput = result.getOutput(dataName);
         if (tplOutput == null) {
-            return null;
+            return null; // 不应该执行到这里
         }
         // 如果存在多个匹配的，选择最精确匹配的
         DataPorter best = null;
@@ -163,26 +170,26 @@ class RevTemplate {
         return best; // 不应该返回空
     }
 
-    private DataProvider getProvider(Template result, Map<RevFormulaCall, FormulaCall> cache,
-        RevFormulaCall revCall, String dataName, Queue<DataPorterCost> queue) {
-        if (revCall == null) {
+    private DataProvider getProvider(Template result, FormulaCall call, String dataName) {
+        if (call == null) {
             return result.getInput(dataName);
         }
-        FormulaCall call = makeFormulaCall(result, revCall, cache, queue);
         return call.getOutput();
     }
 
-    private DataRecipient getRecipient(Template result, Map<RevFormulaCall, FormulaCall> cache,
-        RevFormulaCall revCall, String dataName, Queue<DataPorterCost> queue) {
-        if (revCall == null) {
+    private DataRecipient getRecipient(Template result, FormulaCall call, String dataName) {
+        if (call == null) {
             return result.getOutput(dataName);
         }
-        FormulaCall call = makeFormulaCall(result, revCall, cache, queue);
         return call.getInput(dataName);
     }
 
-    private FormulaCall makeFormulaCall(Template tpl, RevFormulaCall revCall, Map<RevFormulaCall, FormulaCall> cache,
-        Queue<DataPorterCost> queue) {
+    private FormulaCall makeFormulaCall(Template tpl, RevFormulaCall revCall,
+        Map<RevFormulaCall, FormulaCall> cache, Queue<DataPorterCost> queue) {
+        if (revCall == null) {
+            return null;
+        }
+
         FormulaCall call = cache.get(revCall);
         if (call == null) {
             call = register.createCall(revCall.getFormulaName(), revCall.getResultName());
