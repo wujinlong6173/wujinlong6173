@@ -4,9 +4,10 @@ import wjl.mapping.model.DataPorter;
 import wjl.mapping.model.DataProvider;
 import wjl.mapping.model.DataRecipient;
 import wjl.mapping.model.FormulaCall;
+import wjl.mapping.model.SimplePath;
 import wjl.mapping.model.Template;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,38 +20,23 @@ import java.util.Map;
  * @since 2021-8-1
  */
 public class TemplateToData {
-    private Map<DataProvider, String> providerLocators;
+    private Map<DataProvider, String> providerToCall;
 
     public Map<String, Object> templateToData(Template tpl) {
         buildMapping(tpl);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("inputs", providersToData(tpl.getInputs()));
+        result.put("inputs", tpl.getInputs().keySet());
         result.put("outputs", recipientsToData(tpl.getOutputs()));
         result.put("calls", callsToData(tpl.getFormulas()));
         return result;
     }
 
     private void buildMapping(Template tpl) {
-        providerLocators = new HashMap<>();
-        for (DataProvider tplInput : tpl.getInputs().values()) {
-            providerLocators.put(tplInput, "inputs");
-        }
+        providerToCall = new HashMap<>();
         for (FormulaCall call : tpl.getFormulas()) {
-            providerLocators.put(call.getOutput(), call.getFormulaName());
+            providerToCall.put(call.getOutput(), call.getFormulaName());
         }
-    }
-
-    private Map<String, Object> providersToData(Map<String, DataProvider> providers) {
-        if (providers == null) {
-            return null;
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        for (Map.Entry<String, DataProvider> each : providers.entrySet()) {
-            result.put(each.getKey(), null);
-        }
-        return result;
     }
 
     private Object recipientsToData(Map<String, DataRecipient> recipients) {
@@ -65,20 +51,63 @@ public class TemplateToData {
         return result;
     }
 
-    private Map<String, Object> recipientToData(DataRecipient recipient) {
+    private Object recipientToData(DataRecipient recipient) {
         if (recipient == null) {
             return null;
         }
+
+        if (recipient.getInList().isEmpty()) {
+            // 只有常量的特殊情况
+            return recipient.getConstant();
+        }
+
+        if (recipient.getConstant() == null && recipient.getInList().size() == 1) {
+            DataPorter porter = recipient.getInList().get(0);
+            SimplePath dstPath = porter.getDstPath();
+            if (SimplePath.EMPTY.equals(dstPath)) {
+                // 只有一个赋值语句的特殊情况
+                Map<String, Object> loc;
+                String callName = providerToCall.get(porter.getProvider());
+                if (callName == null) {
+                    loc = funcTemplateInput(porter.getProvider(), porter.getSrcPath());
+                } else {
+                    loc = funcFormulaResult(callName, porter.getSrcPath());
+                }
+                return loc;
+            }
+        }
+
         Map<String, Object> result = new HashMap<>();
-        result.put("constant", recipient.getConstant());
+        if (recipient.getConstant() != null) {
+            result.put("constant", recipient.getConstant());
+        }
         for (DataPorter porter : recipient.getInList()) {
-            List<String> loc = new ArrayList<>(3);
-            loc.add(providerLocators.get(porter.getProvider()));
-            loc.add(porter.getProvider().getName());
-            loc.add(porter.getSrcPath().toString(true));
-            result.put(porter.getDstPath().toString(true), loc);
+            Map<String, Object> loc;
+            String callName = providerToCall.get(porter.getProvider());
+            if (callName == null) {
+                loc = funcTemplateInput(porter.getProvider(), porter.getSrcPath());
+            } else {
+                loc = funcFormulaResult(callName, porter.getSrcPath());
+            }
+            result.put(porter.getDstPath().toString(false), loc);
         }
         return result;
+    }
+
+    private Map<String, Object> funcTemplateInput(DataProvider input, SimplePath path) {
+        Map<String, Object> func = new HashMap<>();
+        func.put("template_input", Arrays.asList(input.getName(), path.toString(false)));
+        return func;
+    }
+
+    private Map<String, Object> funcFormulaResult(String callName, SimplePath path) {
+        Map<String, Object> func = new HashMap<>();
+        if (path.depth() == 0) {
+            func.put("formula_result", callName);
+        } else {
+            func.put("formula_result", Arrays.asList(callName, path.toString(false)));
+        }
+        return func;
     }
 
     private Map<String, Object> callsToData(List<FormulaCall> formulas) {

@@ -2,9 +2,7 @@ package wjl.mapping.display;
 
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import org.junit.Test;
 import wjl.mapping.model.Template;
-import wjl.mapping.formula.TemplateForTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,41 +27,5 @@ public class TemplateToVizTest {
         } catch (IOException err) {
             err.printStackTrace();
         }
-    }
-
-    @Test
-    public void showDistanceMiSo() throws IOException {
-        Template tpl = TemplateForTest.distanceMiSo();
-        String viz = new TemplateToViz().display(tpl, false);
-        System.out.print(viz);
-        Graphviz.fromString(viz).render(Format.PNG)
-            .toFile(new File("example/distanceMiSo.png"));
-    }
-
-    @Test
-    public void showDistanceSiSo() throws IOException {
-        Template tpl = TemplateForTest.distanceSiSo();
-        String viz = new TemplateToViz().display(tpl, false);
-        System.out.print(viz);
-        Graphviz.fromString(viz).render(Format.PNG)
-            .toFile(new File("example/distanceSiSo.png"));
-    }
-
-    @Test
-    public void showDistanceWithConst() throws IOException {
-        Template tpl = TemplateForTest.distanceWithConst();
-        String viz = new TemplateToViz().display(tpl, false);
-        System.out.print(viz);
-        Graphviz.fromString(viz).render(Format.PNG)
-            .toFile(new File("example/distanceWithConst.png"));
-    }
-
-    @Test
-    public void showManyParam() throws IOException {
-        Template tpl = TemplateForTest.manyParam();
-        String viz = new TemplateToViz().display(tpl, false);
-        System.out.print(viz);
-        Graphviz.fromString(viz).render(Format.PNG)
-            .toFile(new File("example/manyParam.png"));
     }
 }

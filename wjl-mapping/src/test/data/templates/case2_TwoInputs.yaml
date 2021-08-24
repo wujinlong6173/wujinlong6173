@@ -1,0 +1,26 @@
+# 模板有两个数据源，而且数据源包含同名属性，反转算法不能弄混。
+positive:
+  inputs: [input1, input2]
+  outputs:
+    output:
+      label: {formula_result: copy@1}
+  calls:
+    copy@1:
+      output: out
+      inputs:
+        in:
+          ${0}: {template_input: [input1, desc]}
+          ${1}: {template_input: [input2, desc]}
+
+opposite:
+  inputs: [output]
+  outputs:
+    input1:
+      desc: {formula_result: [copy@1, '0']}
+    input2:
+      desc: {formula_result: [copy@1, '1']}
+  calls:
+    copy@1:
+      output: in
+      inputs:
+        out: {template_input: [output, label]}

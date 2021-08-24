@@ -49,7 +49,7 @@ public class TabbedToolsPane extends JTabbedPane {
     }
     
     private void initEditorPalette(EditorPalette palette, String filename) {
-        EditorPaletteConf conf = YamlUtil.file2obj(filename, EditorPaletteConf.class);
+        EditorPaletteConf conf = YamlUtil.file2obj(EditorPaletteConf.class, filename);
         if (conf == null) {
             return;
         }

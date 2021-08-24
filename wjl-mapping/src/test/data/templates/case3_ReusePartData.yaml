@@ -1,0 +1,28 @@
+# 利用还原的数据的一部分，还原其它数据。
+# y1 = x1
+# // y2 = add@1 = x1.age + x2.age
+positive:
+  inputs: [input]
+  outputs:
+    output:
+      y1: {template_input: [input, x1]}
+      y2: {formula_result: add@1}
+  calls:
+    add@1:
+      output: sum
+      inputs:
+        x: {template_input: [input, x1.age]}
+        y: {template_input: [input, x2.age]}
+
+opposite:
+  inputs: [output]
+  outputs:
+    input:
+      x1: {template_input: [output, y1]}
+      ${x2.age}: {formula_result: add@1}
+  calls:
+    add@1:
+      output: y
+      inputs:
+        sum: {template_input: [output, y2]}
+        x: {template_input: [output, y1.age]}

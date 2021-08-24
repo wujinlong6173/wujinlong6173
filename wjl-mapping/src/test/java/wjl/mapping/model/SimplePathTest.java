@@ -2,7 +2,6 @@ package wjl.mapping.model;
 
 import org.junit.Assert;
 import org.junit.Test;
-import wjl.mapping.model.SimplePath;
 
 public class SimplePathTest {
     @Test

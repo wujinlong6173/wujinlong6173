@@ -32,10 +32,16 @@ public class SimplePathParser {
      * @return 返回空表示存在错误
      */
     public SimplePath parseWithBrace(String strPath) {
+        if (strPath == null || strPath.length() <= 3) {
+            return SimplePath.EMPTY;
+        }
         return parse(strPath, 2, strPath.length() - 1);
     }
 
     public SimplePath parseNoBrace(String strPath) {
+        if (strPath == null || strPath.isEmpty()) {
+            return SimplePath.EMPTY;
+        }
         return parse(strPath, 0, strPath.length());
     }
 

@@ -53,14 +53,12 @@ public final class YamlUtil {
     }
 
     public static Object file2obj(String filename) throws IOException {
-        try (InputStream is = YamlUtil.class.getResourceAsStream(filename)){
-            return YAML.readValue(is, Object.class);
-        }
+        return YAML.readValue(new File(filename), Object.class);
     }
 
-    public static <T> T file2obj(String filename, Class<T> cls) {
-        try (InputStream is = YamlUtil.class.getResourceAsStream(filename)){
-            return YAML.readValue(is, cls);
+    public static <T> T file2obj( Class<T> cls, String filename) {
+        try {
+            return YAML.readValue(new File(filename), cls);
         } catch (IOException err) {
             LOGGER.error("read yaml file {} to class {} failed.", filename, cls.getName());
             return null;

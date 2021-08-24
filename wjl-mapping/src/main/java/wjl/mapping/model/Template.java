@@ -91,12 +91,12 @@ public class Template {
      * 添加一条复制数据的路线。
      *
      * @param provider 数据提供者
-     * @param recipient 数据接收者
      * @param srcPath 源路径
+     * @param recipient 数据接收者
      * @param dstPath 目标路径
      * @return 数据搬运工
      */
-    public DataPorter addDataPorter(DataProvider provider, DataRecipient recipient, SimplePath srcPath, SimplePath dstPath) {
+    public DataPorter addDataPorter(DataProvider provider,  SimplePath srcPath, DataRecipient recipient, SimplePath dstPath) {
         return new DataPorter(provider, recipient, srcPath, dstPath);
     }
 }

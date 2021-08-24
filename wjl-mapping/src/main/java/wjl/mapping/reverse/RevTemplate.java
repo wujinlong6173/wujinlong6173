@@ -136,7 +136,7 @@ class RevTemplate {
                 }
             }
 
-            retTpl.addDataPorter(dataProvider, dataRecipient, srcPath, dstPath);
+            retTpl.addDataPorter(dataProvider, srcPath, dataRecipient, dstPath);
         }
 
         return retTpl;

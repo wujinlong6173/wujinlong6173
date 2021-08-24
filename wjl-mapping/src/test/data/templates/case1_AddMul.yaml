@@ -1,0 +1,44 @@
+# 公式的一个输入参数是常量
+# y1 = x1
+# y2 = (x1 + x2) * 3
+positive:
+  inputs: [input]
+
+  outputs:
+    output:
+      y1: {template_input: [input, x1]}
+      y2: {formula_result: mul@2}
+
+  calls:
+    add@1:
+      output: "sum"
+      inputs:
+        x: {template_input: [input, x1]}
+        y: {template_input: [input, x2]}
+
+    mul@2:
+      output: "product"
+      inputs:
+        x: {formula_result: add@1}
+        y: 3
+
+opposite:
+  inputs: [output]
+
+  outputs:
+    input:
+      x1: {template_input: [output, y1]}
+      x2: {formula_result: add@1}
+
+  calls:
+    add@1:
+      output: "y"
+      inputs:
+        x: {template_input: [output, y1]}
+        sum: {formula_result: mul@2}
+
+    mul@2:
+      output: "x"
+      inputs:
+        product: {template_input: [output, y2]}
+        y: 3

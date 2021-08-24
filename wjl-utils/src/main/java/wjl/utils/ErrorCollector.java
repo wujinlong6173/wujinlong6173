@@ -9,6 +9,11 @@ public class ErrorCollector {
     private int stackTop = -1;
     private final Map<String, String> errors = new HashMap<>();
 
+    public void reset() {
+        stackTop = -1;
+        errors.clear();
+    }
+
     public void pushLocator(String loc) {
         stackTop++;
         if (stackTop < MAX_LEVEL) {
@@ -34,6 +39,12 @@ public class ErrorCollector {
     }
 
     public void reportError(String loc, String msg) {
+        pushLocator(loc);
+        errors.put(buildLocation(), msg);
+        popLocator();
+    }
+
+    public void reportError(int loc, String msg) {
         pushLocator(loc);
         errors.put(buildLocation(), msg);
         popLocator();

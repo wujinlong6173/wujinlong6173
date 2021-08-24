@@ -1,0 +1,37 @@
+# name => title
+# PI * (speed * time) => space
+positive:
+  inputs: [input]
+  outputs:
+    output:
+      title: {template_input: [input, name]}
+      time2: {template_input: [input, time]}
+      space: {formula_result: circle_space}
+  calls:
+    distance:
+      output: distance
+      inputs:
+        time: {template_input: [input, time]}
+        speed: {template_input: [input, speed]}
+    circle_space:
+      output: space
+      inputs:
+        r: {formula_result: distance}
+
+opposite:
+  inputs: [output]
+  outputs:
+    input:
+      name: {template_input: [output, title]}
+      time: {template_input: [output, time2]}
+      speed: {formula_result: distance}
+  calls:
+    circle_space:
+      output: r
+      inputs:
+        space: {template_input: [output, space]}
+    distance:
+      output: speed
+      inputs:
+        distance: {formula_result: circle_space}
+        time: {template_input: [output, time2]}
