@@ -13,7 +13,7 @@ positive:
           ${1}: {template_input: [input2, desc]}
 
 opposite:
-  inputs: [output]
+  inputs: output
   outputs:
     input1:
       desc: {formula_result: [copy@1, '0']}

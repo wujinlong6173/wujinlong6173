@@ -2,7 +2,7 @@
 # y1 = x1
 # // y2 = add@1 = x1.age + x2.age
 positive:
-  inputs: [input]
+  inputs: input
   outputs:
     output:
       y1: {template_input: [input, x1]}
@@ -15,7 +15,7 @@ positive:
         y: {template_input: [input, x2.age]}
 
 opposite:
-  inputs: [output]
+  inputs: output
   outputs:
     input:
       x1: {template_input: [output, y1]}

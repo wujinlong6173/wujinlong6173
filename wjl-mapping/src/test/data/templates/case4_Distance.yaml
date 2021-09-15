@@ -1,7 +1,7 @@
 # name => title
 # PI * (speed * time) => space
 positive:
-  inputs: [input]
+  inputs: input
   outputs:
     output:
       title: {template_input: [input, name]}
@@ -19,7 +19,7 @@ positive:
         r: {formula_result: distance}
 
 opposite:
-  inputs: [output]
+  inputs: output
   outputs:
     input:
       name: {template_input: [output, title]}

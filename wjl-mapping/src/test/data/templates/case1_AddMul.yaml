@@ -2,7 +2,7 @@
 # y1 = x1
 # y2 = (x1 + x2) * 3
 positive:
-  inputs: [input]
+  inputs: input
 
   outputs:
     output:
@@ -23,7 +23,7 @@ positive:
         y: 3
 
 opposite:
-  inputs: [output]
+  inputs: output
 
   outputs:
     input:

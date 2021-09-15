@@ -57,25 +57,10 @@ public class TemplateFromData extends ErrorCollector {
 
     private List<String> parseInputName(Map<?, ?> rawTpl) {
         Object inputs = rawTpl.get(INPUTS);
-        if (inputs instanceof List) {
-            pushLocator(INPUTS);
-            List<?> lstInputs = (List<?>)inputs;
-            List<String> ret = new ArrayList<>(lstInputs.size());
-            int idx = 0;
-            for (Object each : lstInputs) {
-                if (each instanceof String) {
-                    ret.add((String)each);
-                } else {
-                    reportError(idx, "require string");
-                }
-                idx++;
-            }
-            popLocator();
-            return ret;
-        } else {
-            reportError(INPUTS, "require list of string.");
-            return null;
-        }
+        pushLocator(INPUTS);
+        List<String> ret = StringParser.parseList(this, inputs);
+        popLocator();
+        return ret;
     }
 
     private List<String> parseOutputName(Map<?,?> rawTpl) {
