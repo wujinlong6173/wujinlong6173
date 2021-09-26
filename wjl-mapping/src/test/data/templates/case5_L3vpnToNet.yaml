@@ -1,0 +1,80 @@
+# 转换双重列表，l3vpn.vrfList.tpList转换为net.nodeList.portList
+
+# 将L3VPN转换为Network时丢失了rd属性。
+l3vpn_to_net:
+  inputs: l3vpn
+  outputs:
+    net:
+      name: {template_input: [l3vpn, name]}
+      creator: {template_input: [l3vpn, creator]}
+      nodeList: {formula_result: [repeat@1, nodeList]}
+    l3vpn:
+      rd: {template_input: [l3vpn, rd]}
+      vrfList: {formula_result: [repeat@1, vrfList]}
+
+  calls:
+    repeat@1:
+      output: [nodeList, vrfList]
+      inputs:
+        vrfList: {template_input: [l3vpn, vrfList]}
+      template: vrf_to_node
+
+vrf_to_node:
+  inputs: vrf
+  outputs:
+    node:
+      portList: {formula_result: [repeat@2, portList]}
+    vrf:
+      tpList: {formula_result: [repeat@2, tpList]}
+  calls:
+    repeat@2:
+      output: [portList, tpList]
+      inputs:
+        tpList: {template_input: [vrf, tpList]}
+      template: tp_to_port
+
+tp_to_port:
+  inputs: tp
+  outputs:
+    port:
+      ip: {template_input: [tp, ip]}
+    tp:
+      vlan: {template_input: [tp, vlan]}
+
+# 反向转换模板
+
+net_to_l3vpn:
+  inputs: [net, l3vpn]
+  outputs:
+    l3vpn:
+      name: {template_input: [net, name]}
+      creator: {template_input: [net, creator]}
+      rd: {template_input: [l3vpn, rd]}
+      vrfList: {formula_result: [repeat@1, vrfList]}
+  calls:
+    repeat@1:
+      output: [vrfList]
+      inputs:
+        nodeList: {template_input: [net, nodeList]}
+        vrfList: {template_input: [l3vpn, vrfList]}
+      template: node_to_vrf
+
+node_to_vrf:
+  inputs: [node, vrf]
+  outputs:
+    vrf:
+      tpList: {formula_result: [repeat@2, tpList]}
+  calls:
+    repeat@2:
+      output: tpList
+      inputs:
+        portList: {template_input: [node, portList]}
+        tpList: {template_input: [vrf, tpList]}
+      template: port_to_tp
+
+port_to_tp:
+  inputs: [port, tp]
+  outputs:
+    tp:
+      ip: {template_input: [port, ip]}
+      vlan: {template_input: [tp, vlan]}
