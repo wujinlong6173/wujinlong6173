@@ -1,0 +1,17 @@
+# 模板的输入、输出参数有相同的名称
+l3vpn_to_net:
+  inputs: l3vpn
+  outputs:
+    net:
+      name: {template_input: [l3vpn, name]}
+      creator: {template_input: [l3vpn, creator]}
+    l3vpn:
+      rd: {template_input: [l3vpn, rd]}
+
+net_to_l3vpn:
+  inputs: [net, l3vpn]
+  outputs:
+    l3vpn:
+      name: {template_input: [net, name]}
+      creator: {template_input: [net, creator]}
+      rd: {template_input: [l3vpn, rd]}
