@@ -96,16 +96,16 @@ public class TemplateToData {
 
     private Map<String, Object> funcTemplateInput(DataProvider input, SimplePath path) {
         Map<String, Object> func = new HashMap<>();
-        func.put("template_input", Arrays.asList(input.getName(), path.toString(false)));
+        func.put(TemplateFromData.TEMPLATE_INPUT, Arrays.asList(input.getName(), path.toString(false)));
         return func;
     }
 
     private Map<String, Object> funcFormulaResult(String callName, SimplePath path) {
         Map<String, Object> func = new HashMap<>();
         if (path.depth() == 0) {
-            func.put("formula_result", callName);
+            func.put(TemplateFromData.CALL_RESULT, callName);
         } else {
-            func.put("formula_result", Arrays.asList(callName, path.toString(false)));
+            func.put(TemplateFromData.CALL_RESULT, Arrays.asList(callName, path.toString(false)));
         }
         return func;
     }

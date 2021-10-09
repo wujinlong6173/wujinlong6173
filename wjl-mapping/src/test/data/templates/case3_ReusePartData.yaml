@@ -6,7 +6,7 @@ positive:
   outputs:
     output:
       y1: {template_input: [input, x1]}
-      y2: {formula_result: add@1}
+      y2: {call_result: add@1}
   calls:
     add@1:
       output: sum
@@ -19,7 +19,7 @@ opposite:
   outputs:
     input:
       x1: {template_input: [output, y1]}
-      ${x2.age}: {formula_result: add@1}
+      ${x2.age}: {call_result: add@1}
   calls:
     add@1:
       output: y

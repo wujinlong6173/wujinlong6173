@@ -3,7 +3,7 @@ positive:
   inputs: [input1, input2]
   outputs:
     output:
-      label: {formula_result: copy@1}
+      label: {call_result: copy@1}
   calls:
     copy@1:
       output: out
@@ -16,9 +16,9 @@ opposite:
   inputs: output
   outputs:
     input1:
-      desc: {formula_result: [copy@1, '0']}
+      desc: {call_result: [copy@1, '0']}
     input2:
-      desc: {formula_result: [copy@1, '1']}
+      desc: {call_result: [copy@1, '1']}
   calls:
     copy@1:
       output: in

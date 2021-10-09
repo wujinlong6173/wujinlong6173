@@ -7,7 +7,7 @@ positive:
   outputs:
     output:
       y1: {template_input: [input, x1]}
-      y2: {formula_result: mul@2}
+      y2: {call_result: mul@2}
 
   calls:
     add@1:
@@ -19,7 +19,7 @@ positive:
     mul@2:
       output: "product"
       inputs:
-        x: {formula_result: add@1}
+        x: {call_result: add@1}
         y: 3
 
 opposite:
@@ -28,14 +28,14 @@ opposite:
   outputs:
     input:
       x1: {template_input: [output, y1]}
-      x2: {formula_result: add@1}
+      x2: {call_result: add@1}
 
   calls:
     add@1:
       output: "y"
       inputs:
         x: {template_input: [output, y1]}
-        sum: {formula_result: mul@2}
+        sum: {call_result: mul@2}
 
     mul@2:
       output: "x"

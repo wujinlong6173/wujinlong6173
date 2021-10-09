@@ -7,10 +7,10 @@ l3vpn_to_net:
     net:
       name: {template_input: [l3vpn, name]}
       creator: {template_input: [l3vpn, creator]}
-      nodeList: {formula_result: [repeat@1, nodeList]}
+      nodeList: {call_result: [repeat@1, nodeList]}
     l3vpn:
       rd: {template_input: [l3vpn, rd]}
-      vrfList: {formula_result: [repeat@1, vrfList]}
+      vrfList: {call_result: [repeat@1, vrfList]}
 
   calls:
     repeat@1:
@@ -23,9 +23,9 @@ vrf_to_node:
   inputs: vrf
   outputs:
     node:
-      portList: {formula_result: [repeat@2, portList]}
+      portList: {call_result: [repeat@2, portList]}
     vrf:
-      tpList: {formula_result: [repeat@2, tpList]}
+      tpList: {call_result: [repeat@2, tpList]}
   calls:
     repeat@2:
       output: [portList, tpList]
@@ -50,7 +50,7 @@ net_to_l3vpn:
       name: {template_input: [net, name]}
       creator: {template_input: [net, creator]}
       rd: {template_input: [l3vpn, rd]}
-      vrfList: {formula_result: [repeat@1, vrfList]}
+      vrfList: {call_result: [repeat@1, vrfList]}
   calls:
     repeat@1:
       output: [vrfList]
@@ -63,7 +63,7 @@ node_to_vrf:
   inputs: [node, vrf]
   outputs:
     vrf:
-      tpList: {formula_result: [repeat@2, tpList]}
+      tpList: {call_result: [repeat@2, tpList]}
   calls:
     repeat@2:
       output: tpList

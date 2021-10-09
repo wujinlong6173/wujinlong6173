@@ -6,7 +6,7 @@ positive:
     output:
       title: {template_input: [input, name]}
       time2: {template_input: [input, time]}
-      space: {formula_result: circle_space}
+      space: {call_result: circle_space}
   calls:
     distance:
       output: distance
@@ -16,7 +16,7 @@ positive:
     circle_space:
       output: space
       inputs:
-        r: {formula_result: distance}
+        r: {call_result: distance}
 
 opposite:
   inputs: output
@@ -24,7 +24,7 @@ opposite:
     input:
       name: {template_input: [output, title]}
       time: {template_input: [output, time2]}
-      speed: {formula_result: distance}
+      speed: {call_result: distance}
   calls:
     circle_space:
       output: r
@@ -33,5 +33,5 @@ opposite:
     distance:
       output: speed
       inputs:
-        distance: {formula_result: circle_space}
+        distance: {call_result: circle_space}
         time: {template_input: [output, time2]}

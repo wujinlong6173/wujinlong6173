@@ -22,8 +22,8 @@ public class TemplateFromData extends ErrorCollector {
     private static final String INPUTS = "inputs";
     private static final String OUTPUT = "output";
     private static final String OUTPUTS = "outputs";
-    private static final String TEMPLATE_INPUT = "template_input";
-    private static final String FORMULA_RESULT = "formula_result";
+    public static final String TEMPLATE_INPUT = "template_input";
+    public static final String CALL_RESULT = "call_result";
 
     private final FormulaRegister register;
     private final Map<String, FormulaCall> allCalls = new HashMap<>();
@@ -277,9 +277,9 @@ public class TemplateFromData extends ErrorCollector {
             return null;
         }
 
-        Object value = mapFunc.get(FORMULA_RESULT);
+        Object value = mapFunc.get(CALL_RESULT);
         if (value != null) {
-            pushLocator(FORMULA_RESULT);
+            pushLocator(CALL_RESULT);
             FakeFunction fake = parseFormulaResult(value);
             popLocator();
             return fake;
