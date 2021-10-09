@@ -35,7 +35,7 @@ public class TemplateToData {
     private void buildMapping(Template tpl) {
         providerToCall = new HashMap<>();
         for (FormulaCall call : tpl.getFormulas()) {
-            providerToCall.put(call.getOutput(), call.getFormulaName());
+            providerToCall.put(call.getOutput(), call.getName());
         }
     }
 
@@ -119,7 +119,7 @@ public class TemplateToData {
         for (FormulaCall call : formulas) {
             if (call != null) {
                 // 公式名称应该是name:id格式，在一个模板内唯一
-                result.put(call.getFormulaName(), callToData(call));
+                result.put(call.getName(), callToData(call));
             }
         }
         return result;

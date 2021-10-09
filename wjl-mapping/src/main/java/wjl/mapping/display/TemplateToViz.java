@@ -119,7 +119,7 @@ public class TemplateToViz {
         int id = getCluster(call);
         sb.append("C").append(id)
             .append(" [shape=ellipse,color=greenyellow,label=\"")
-            .append(call.getFormulaName())
+            .append(call.getName())
             .append("\"]\n");
         int cid = showDataProvider(call.getOutput());
         sb.append("C").append(id)

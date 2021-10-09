@@ -37,7 +37,7 @@ class RevTemplate {
         providerToRevCall = new HashMap<>();
         recipientToRevCall = new HashMap<>();
         for (FormulaCall call : tpl.getFormulas()) {
-            RevFormulaCall revCall = new RevFormulaCall(call, register.getParamsCost(call.getFormulaName()));
+            RevFormulaCall revCall = new RevFormulaCall(call, register.getParamsCost(call.getName()));
             providerToRevCall.put(call.getOutput(), revCall);
             for (DataRecipient callInput : call.getInputs().values()) {
                 recipientToRevCall.put(callInput, revCall);

@@ -12,12 +12,7 @@ import java.util.Objects;
  * @author wujinlong
  * @since 2021-8-7
  */
-public class FormulaCall {
-    /**
-     * 公式的名称。
-     */
-    private final String formulaName;
-
+public class FormulaCall extends DataConverter {
     /**
      * 公式的输出。
      */
@@ -31,21 +26,17 @@ public class FormulaCall {
     /**
      * 生成一个公式调用。
      *
-     * @param formulaName 公式的名称
+     * @param callName 公式调用的名称
      * @param resultName 输出参数的名称
      */
-    public FormulaCall(String formulaName, String resultName, Collection<String> allParams) {
-        this.formulaName = formulaName;
+    public FormulaCall(String callName, String resultName, Collection<String> allParams) {
+        super(callName);
         this.output = new DataProvider(resultName);
         for (String inputParam : allParams) {
             if (!Objects.equals(resultName, inputParam)) {
                 inputs.put(inputParam, new DataRecipient(inputParam));
             }
         }
-    }
-
-    public String getFormulaName() {
-        return formulaName;
     }
 
     public String getResultName() {

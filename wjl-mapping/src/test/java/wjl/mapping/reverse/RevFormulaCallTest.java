@@ -28,7 +28,7 @@ public class RevFormulaCallTest {
         DataRecipient p3 = fc1.getInput("p3");
         DataRecipient p4 = fc1.getInput("p4");
         DataRecipient p5 = fc1.getInput("p5");
-        Map<String, Integer> fc1Cost = register.getParamsCost(fc1.getFormulaName());
+        Map<String, Integer> fc1Cost = register.getParamsCost(fc1.getName());
 
         // 第一次没有选中最低费用，第二次选中最低费用
         RevFormulaCall rc1 = new RevFormulaCall(fc1, fc1Cost);

@@ -114,7 +114,7 @@ class RevFormulaCall {
     }
 
     String getFormulaName() {
-        return call.getFormulaName();
+        return call.getName();
     }
 
     String getResultName() {
